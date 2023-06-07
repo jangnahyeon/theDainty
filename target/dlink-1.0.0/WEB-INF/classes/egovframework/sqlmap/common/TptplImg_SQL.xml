@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="TPtplimg">
+
+	<typeAlias  alias="egovMap" type="org.egovframe.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias alias="TPtplimgVO" type="dlink.common.vo.TPtplimgVO" />
+	
+	<select id="TptplimgDAO.selectTptplimgList" parameterClass="TPtplimgVO" resultClass="egovMap">
+			SELECT
+					LOGIN_ID
+					, PTPL_NO
+					, FILE_SEQ
+					, TITLE_YN
+					, REG_DT
+					, REGISTER
+				FROM t_ptpl_img
+			WHERE 
+				1=1		
+			<isNotEmpty prepend="AND" property="ptplNo">
+					PTPL_NO = #ptplNo#
+			</isNotEmpty>					
+			<isNotEmpty prepend="AND" property="loginId">
+					LOGIN_ID = #loginId#
+			</isNotEmpty>			
+	</select>
+	
+</sqlMap>

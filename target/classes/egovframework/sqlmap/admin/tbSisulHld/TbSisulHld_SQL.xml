@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TbSisulHld">
+	
+	<typeAlias  alias="egovMap" type="org.egovframe.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="tbSisulHldSerarchVO" type="dlink_new.admin.vo.TbSisulHldDefaultVO"/>
+	
+	<resultMap id="tbSisulHld" class="dlink_new.admin.vo.TbSisulHldVO">
+		<result property="hldSeq" column="HLD_SEQ" columnIndex="1"/>
+		<result property="sisulSeq" column="SISUL_SEQ" columnIndex="2"/>
+		<result property="hldNm" column="HLD_NM" columnIndex="3"/>
+		<result property="hldDt" column="HLD_DT" columnIndex="4"/>
+		<result property="regDt" column="REG_DT" columnIndex="5"/>
+		<result property="regId" column="REG_ID" columnIndex="6"/>
+	</resultMap>
+	
+	<insert id="tbSisulHldDAO.insertTbSisulHld_S">
+		<![CDATA[
+			INSERT INTO tb_sisul_hld 
+				( HLD_SEQ
+				  , SISUL_SEQ
+				  , HLD_NM
+				  , HLD_DT
+				  , REG_DT
+				  , REG_ID )
+			VALUES ( #hldSeq#
+				  , #sisulSeq#
+				  , #hldNm#
+				  , #hldDt#
+				  , now()
+				  , #regId# )
+		]]>
+	</insert>
+	
+	<update id="tbSisulHldDAO.updateTbSisulHld_S">
+		<![CDATA[
+			UPDATE tb_sisul_hld
+			SET 
+				SISUL_SEQ= 1
+				, HLD_NM=#hldNm#
+				, HLD_DT=#hldDt#
+				, REG_DT=NOW()
+				, REG_ID=#regId#
+			WHERE 1=1
+				AND HLD_SEQ = #hldSeq#
+			]]>
+	</update>
+	
+	<delete id="tbSisulHldDAO.deleteTbSisulHld_S">
+		<![CDATA[
+			DELETE FROM tb_sisul_hld
+			WHERE 1=1
+				AND HLD_SEQ = #hldSeq#
+			]]>
+	</delete>
+	
+	<select id="tbSisulHldDAO.selectTbSisulHldDetail" resultMap="tbSisulHld">
+		<![CDATA[
+			SELECT
+				HLD_SEQ
+				, SISUL_SEQ
+				, HLD_NM
+				, HLD_DT
+				, DATE_FORMAT(REG_DT,'%Y-%m-%d') AS REG_DT
+				, REG_ID
+			FROM tb_sisul_hld
+			WHERE 1=1
+			AND HLD_SEQ = #hldSeq#
+			]]>
+	</select>
+	
+	<select id="tbSisulHldDAO.selectTbSisulHld_S" parameterClass="tbSisulHldSerarchVO" resultMap="tbSisulHld">
+		<![CDATA[
+			SELECT
+				HLD_SEQ
+				, SISUL_SEQ
+				, HLD_NM
+				, HLD_DT
+				, REG_DT
+				, REG_ID
+			FROM tb_sisul_hld
+			WHERE 1=1
+			]]>
+	</select>
+	
+	<select id="tbSisulHldDAO.selectTbSisulHld_L" parameterClass="tbSisulHldSerarchVO" resultMap="tbSisulHld">
+	    <![CDATA[
+			SELECT
+				HLD_SEQ
+				, SISUL_SEQ
+				, HLD_NM
+				, HLD_DT
+				, REG_DT
+				, REG_ID
+			FROM tb_sisul_hld
+			WHERE 1=1
+			]]>
+<!-- 			<isEmpty property="hldDt" prepend="AND">			    
+			    DATE_FORMAT(HLD_DT,'%Y-%m') = DATE_FORMAT(NOW(),'%Y-%m')
+			</isEmpty>
+			<isNotEmpty property="hldDt" prepend="AND">
+			    DATE_FORMAT(HLD_DT,'%Y-%m') = #hldDt#
+			</isNotEmpty> -->
+	</select>
+	
+	<select id="tbSisulHldDAO.selectTbSisulHldList_D" parameterClass="tbSisulHldSerarchVO" resultClass="egovMap">
+			SELECT
+				HLD_SEQ
+				, SISUL_SEQ
+				, HLD_NM
+				, HLD_DT
+				, DATE_FORMAT(REG_DT,'%Y-%m-%d') REG_DT
+				, REG_ID
+			FROM tb_sisul_hld
+			WHERE 1=1
+			<isNotEmpty property="searchKeyword">
+				AND HLD_NM LIKE CONCAT('%',#searchKeyword#,'%')
+			</isNotEmpty>
+				ORDER BY HLD_SEQ DESC
+				limit #firstIndex#, #recordCountPerPage#
+	</select>	
+
+	<select id="tbSisulHldDAO.selectTbSisulHldListTotCnt_S" parameterClass="tbSisulHldSerarchVO" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM tb_sisul_hld
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				HLD_SEQ = #searchKeyword#
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				SISUL_SEQ LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+	</select>
+
+</sqlMap>

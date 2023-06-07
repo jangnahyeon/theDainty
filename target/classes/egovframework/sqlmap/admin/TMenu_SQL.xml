@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TMenu">
+	
+	<typeAlias  alias="egovMap" type="org.egovframe.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="SearchVo" type="dlink.admin.vo.SearchVO"/>
+	<typeAlias alias="TMenu" type="dlink.admin.vo.TMenuVO"/>
+	
+	<resultMap id="TMenu" class="dlink.admin.vo.TMenuVO">
+		<result property="menuId" column="MENU_ID" columnIndex="1"/>
+		<result property="menuNm" column="MENU_NM" columnIndex="2"/>
+		<result property="upMenuId" column="UP_MENU_ID" columnIndex="3"/>
+		<result property="menuPath" column="MENU_PATH" columnIndex="4"/>
+		<result property="ordSeq" column="ORD_SEQ" columnIndex="5"/>
+		<result property="disYn" column="DIS_YN" columnIndex="6"/>
+		<result property="menuCont" column="MENU_CONT" columnIndex="7"/>
+		<result property="regDt" column="REG_DT" columnIndex="8"/>
+		<result property="register" column="REGISTER" columnIndex="9"/>
+		<result property="menuGubun" column="MENU_GUBUN" columnIndex="10"/>
+		<result property="menuDepth" column="MENU_DEPTH" columnIndex="11"/>
+	</resultMap>
+	
+	<insert id="TMenuDAO.insertTMenu_S">
+		<![CDATA[
+			INSERT INTO t_menu 
+				( MENU_ID
+				  , MENU_NM
+				  , UP_MENU_ID
+				  , MENU_PATH
+				  , ORD_SEQ
+				  , DIS_YN
+				  , MENU_CONT
+				  , REG_DT
+				  , REGISTER
+				  , MENU_GUBUN
+				  , MENU_DEPTH )
+			VALUES ( #menuId#
+				  , #menuNm#
+				  , (SELECT IF(CNT = 0 , '##', MENU_ID ) AS T1 FROM (SELECT COUNT(MENU_ID) as CNT , MENU_ID  FROM t_menu WHERE MENU_ID = #upMenuId#) A)
+				  , #menuPath#
+				  , #ordSeq#
+				  , #disYn#
+				  , #menuCont#
+				  , NOW()
+				  , #register#
+				  , #menuGubun#
+				  , (SELECT T2 FROM (SELECT IFNULL(MAX(CAST(MENU_DEPTH AS UNSIGNED)),0)+1 AS T2 FROM t_menu WHERE MENU_ID = #upMenuId#) B)
+				  )
+		]]>
+	</insert>
+	
+	<update id="TMenuDAO.updateTMenu_S">
+		<![CDATA[
+			UPDATE t_menu
+			SET  MENU_NM=#menuNm#
+				, UP_MENU_ID=#upMenuId#
+				, MENU_PATH=#menuPath#
+				, ORD_SEQ=#ordSeq#
+				, DIS_YN=#disYn#
+				, MENU_CONT=#menuCont#
+				, REG_DT= NOW()
+				, REGISTER=#register#
+				, MENU_GUBUN = #menuGubun#
+				, MENU_DEPTH = (SELECT T2 FROM (SELECT IFNULL(MAX(CAST(MENU_DEPTH AS UNSIGNED)),0)+1 AS T2 FROM t_menu WHERE MENU_ID = #upMenuId#) B)
+			WHERE MENU_ID=#menuId#
+			]]>
+	</update>
+	
+	<delete id="TMenuDAO.deleteTMenu_S">
+		<![CDATA[
+			DELETE FROM t_menu WHERE MENU_ID=#menuId#
+			]]>
+	</delete>
+	
+	<select id="TMenuDAO.selectTMenu_S" resultMap="TMenu">
+		<![CDATA[
+			SELECT
+				MENU_ID
+				, MENU_NM
+				, UP_MENU_ID
+				, MENU_PATH
+				, ORD_SEQ
+				, DIS_YN
+				, MENU_CONT
+				, REG_DT
+				, REGISTER
+				, MENU_GUBUN
+				, MENU_DEPTH
+			FROM t_menu
+			]]>
+			WHERE 1=1
+				<isNotEmpty property="upMenuId" prepend="AND">
+					UP_MENU_ID = #upMenuId#
+				</isNotEmpty>
+				<isNotEmpty property="menuId" prepend="AND">
+					MENU_ID = #menuId#
+				</isNotEmpty>
+				<isNotEmpty property="menuGubun" prepend="AND">
+					MENU_GUBUN = #menuGubun#
+				</isNotEmpty>
+				<isNotEmpty property="menuPath" prepend="AND">
+					MENU_PATH LIKE CONCAT(#menuPath#,'%')
+				</isNotEmpty>
+			ORDER BY cast(ORD_SEQ as unsigned) desc LIMIT  0,1
+				
+		
+	</select>
+	
+	<select id="TMenuDAO.selectTMenuList_D" parameterClass="TMenu" resultClass="egovMap">
+			SELECT
+								MENU_ID
+								, MENU_NM
+								, UP_MENU_ID
+								, MENU_PATH
+								, ORD_SEQ
+								, DIS_YN
+								, MENU_CONT
+								, REG_DT
+								, REGISTER
+								, MENU_GUBUN
+								, MENU_DEPTH
+					FROM t_menu
+			WHERE DIS_YN = 'Y'
+			<isNotEmpty property="upMenuId" prepend="AND">
+				UP_MENU_ID = #upMenuId#
+			</isNotEmpty>
+			<isNotEmpty property="menuId" prepend="AND">
+				MENU_ID = #menuId#
+			</isNotEmpty>
+			<isNotEmpty property="menuGubun" prepend="AND">
+				MENU_GUBUN = #menuGubun#
+			</isNotEmpty>
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				<isNotEmpty property="searchKeyword">
+					MENU_ID = #searchKeyword#
+				</isNotEmpty>
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				<isNotEmpty property="searchKeyword">
+					MENU_NM LIKE CONCAT('%',#searchKeyword#,'%')
+				</isNotEmpty>
+			</isEqual>
+			
+				ORDER BY cast(ORD_SEQ as unsigned)
+				
+			<isNotEqual property="pagingYn" compareValue="N">
+				limit #firstIndex#, #recordCountPerPage#	
+			</isNotEqual>
+	</select>	
+	<select id="TMenuDAO.selectTMenuListTotCnt_S" parameterClass="SearchVo" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM t_menu
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				MENU_ID = #searchKeyword#
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				MENU_NM LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+	</select>
+	
+	<select id="TMenuDAO.selectTMenuTreeList" parameterClass="TMenu" resultClass="egovMap">
+			SELECT
+						MENU_ID AS ID
+						, MENU_NM AS TEXT
+						, UP_MENU_ID AS PARENT
+					FROM t_menu
+			WHERE 1=1
+				ORDER BY cast(ORD_SEQ as unsigned)
+				
+	</select>
+
+</sqlMap>

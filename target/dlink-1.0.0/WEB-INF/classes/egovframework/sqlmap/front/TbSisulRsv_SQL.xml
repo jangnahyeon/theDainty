@@ -1,0 +1,460 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="FrontTbSisulRsv">
+	
+	<typeAlias  alias="egovMap" type="org.egovframe.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="FrontTbSisulRsvSerarchVO" type="dlink_new.front.vo.TbSisulRsvDefaultVO"/>
+	<typeAlias  alias="FrontTbSisulRsvVO" type="dlink_new.front.vo.TbSisulRsvVO"/>
+	
+	<resultMap id="tbSisulRsv" class="dlink_new.front.vo.TbSisulRsvVO">
+		<result property="rsvSeq" column="RSV_SEQ" columnIndex="1"/>
+		<result property="sisulSeq" column="SISUL_SEQ" columnIndex="2"/>
+		<result property="memSeq" column="MEM_SEQ" columnIndex="3"/>
+		<result property="memId" column="MEM_ID" columnIndex="4"/>
+		<result property="title" column="TITLE" columnIndex="5"/>
+		<result property="rsvYear" column="RSV_YEAR" columnIndex="6"/>
+		<result property="rsvMonth" column="RSV_MONTH" columnIndex="7"/>
+		<result property="rsvDay" column="RSV_DAY" columnIndex="8"/>
+		<result property="rsvSt" column="RSV_ST" columnIndex="9"/>
+		<result property="rsvEt" column="RSV_ET" columnIndex="10"/>
+		<result property="prodCnt" column="PROD_CNT" columnIndex="11"/>
+		<result property="prod1" column="PROD_1" columnIndex="12"/>
+		<result property="prod2" column="PROD_2" columnIndex="13"/>
+		<result property="prodSizeCd" column="PROD_SIZE_CD" columnIndex="14"/>
+		<result property="prodRefCd" column="PROD_REF_CD" columnIndex="15"/>
+		<result property="fodChrCd" column="FOD_CHR_CD" columnIndex="16"/>
+		<result property="purposeCd" column="PURPOSE_CD" columnIndex="17"/>
+		<result property="pwd" column="PWD" columnIndex="18"/>
+		<result property="fileSeq" column="FILE_SEQ" columnIndex="19"/>
+		<result property="acceptYn" column="ACCEPT_YN" columnIndex="20"/>
+		<result property="regDt" column="REG_DT" columnIndex="21"/>
+		<result property="regId" column="REG_ID" columnIndex="22"/>
+		<result property="updDt" column="UPD_DT" columnIndex="23"/>
+		<result property="updId" column="UPD_ID" columnIndex="24"/>
+		<result property="email" column="EMAIL" columnIndex="25"/>
+		<result property="smBizFileSeq" column="SM_BIZ_FILE_SEQ" columnIndex="26"/>
+		<result property="readCnt" column="READ_CNT" columnIndex="27"/>
+		<result property="memNm" column="MEM_NM" columnIndex="28"/>
+		<result property="comNm" column="COM_NM" columnIndex="29"/>
+		<result property="fileNm" column="FILE_NM" columnIndex="30"/>
+		
+		<result property="tbSisulRsvFileVOList" column="{rsvSeq=RSV_SEQ}" select="frontDsnStdDAO.selectTbSisulRsvSeqList" />
+		<result property="sisulCmtCnt" column="{rsvSeq=RSV_SEQ}" select="tbSisulRsvCmtDAO.selectTbSisulRsvCmtListTotCnt_S" />
+		<result property="tbSisulVOList" column="{sisulSeq=SISUL_SEQ}" select="tbSisulDAO.selectTbSisul_S" />
+	</resultMap>
+	
+	<select id="frontDsnStdDAO.selectTbSisulRsv_L" resultClass="egovMap">
+	    	SELECT
+				A.RSV_SEQ
+				, A.SISUL_SEQ
+				, A.MEM_SEQ
+				, A.MEM_ID
+				, A.TITLE
+				, A.RSV_YEAR
+				, A.RSV_MONTH
+				, A.RSV_DAY
+				, A.RSV_ST
+				, A.RSV_ET
+				, A.PROD_CNT
+				, A.PROD_1
+				, A.PROD_2
+				, A.PROD_SIZE_CD
+				, A.PROD_REF_CD
+				, A.FOD_CHR_CD
+				, A.PURPOSE_CD
+				, A.PWD
+				, A.ACCEPT_YN
+				, A.REG_DT
+				, A.REG_ID
+				, A.UPD_DT
+				, A.UPD_ID
+				, A.EMAIL
+				, A.SM_BIZ_FILE_SEQ
+				, A.READ_CNT
+				, A.RSV_SEQ
+				, B.MEM_NM
+				, B.COM_NM
+			FROM tb_sisul_rsv A
+			LEFT JOIN tb_mem B
+			ON A.MEM_ID = B.MEM_ID
+			WHERE 1=1
+			<isEmpty property="rsvYear">			    
+			    AND A.RSV_YEAR = DATE_FORMAT( NOW(), '%Y' )	
+			    
+			    <isEmpty property="rsvMonth">
+				    AND A.RSV_MONTH = DATE_FORMAT( NOW(), '%m' )
+				</isEmpty>
+			</isEmpty>
+			
+			<isNotEmpty property="rsvYear">
+			    AND A.RSV_YEAR = #rsvYear#
+			    <isNotEmpty property="rsvMonth">
+				    AND A.RSV_MONTH = #rsvMonth#
+				</isNotEmpty>
+			</isNotEmpty>
+	</select>
+	
+	<select id="frontDsnStdDAO.selectTbSisulRsv_S" resultClass="egovMap">
+			SELECT
+				A.RSV_SEQ
+				, A.SISUL_SEQ
+				, A.MEM_SEQ
+				, A.MEM_ID
+				, A.TITLE
+				, A.RSV_YEAR
+				, A.RSV_MONTH
+				, A.RSV_DAY
+				, A.RSV_ST
+				, A.RSV_ET
+				, A.PROD_CNT
+				, A.PROD_1
+				, A.PROD_2
+				, A.PROD_SIZE_CD
+				, A.PROD_REF_CD
+				, A.FOD_CHR_CD
+				, A.PURPOSE_CD
+				, A.PWD
+				, A.ACCEPT_YN
+				, A.REG_DT
+				, A.REG_ID
+				, A.UPD_DT
+				, A.UPD_ID
+				, A.EMAIL
+				, A.SM_BIZ_FILE_SEQ
+				, A.READ_CNT
+				, A.RSV_SEQ
+				, B.MEM_NM
+				, B.COM_NM
+			FROM tb_sisul_rsv A
+			LEFT JOIN tb_mem B
+			ON A.MEM_ID = B.MEM_ID
+			WHERE 1=1
+	</select>
+	
+	<select id="frontDsnStdDAO.selectTbSisulRsvSeq" parameterClass="FrontTbSisulRsvVO" resultMap="tbSisulRsv">
+	    <![CDATA[
+			SELECT
+				A.RSV_SEQ
+				, A.SISUL_SEQ
+				, A.MEM_SEQ
+				, A.MEM_ID
+				, A.TITLE
+				, A.RSV_YEAR
+				, A.RSV_MONTH
+				, A.RSV_DAY
+				, A.RSV_ST
+				, A.RSV_ET
+				, A.PROD_CNT
+				, A.PROD_1
+				, A.PROD_2
+				, A.PROD_SIZE_CD
+				, A.PROD_REF_CD
+				, A.FOD_CHR_CD
+				, A.PURPOSE_CD
+				, A.PWD
+				, A.ACCEPT_YN
+				, A.REG_DT
+				, A.REG_ID
+				, A.UPD_DT
+				, A.UPD_ID
+				, A.EMAIL
+				, A.SM_BIZ_FILE_SEQ
+				, A.READ_CNT
+				, A.RSV_SEQ
+				, B.FILE_NM
+				, B.FILE_SEQ
+				, C.MEM_NM
+				, C.COM_NM
+			FROM tb_sisul_rsv A
+			LEFT OUTER JOIN tb_att_file B 
+			ON A.SM_BIZ_FILE_SEQ = B.FILE_SEQ
+			LEFT OUTER JOIN tb_mem C
+			ON A.MEM_ID = C.MEM_ID
+			WHERE A.RSV_SEQ = #rsvSeq#
+	    ]]>
+	</select>
+	
+	<insert id="frontDsnStdDAO.insertTbSisulRsvForm">
+		<![CDATA[
+			INSERT INTO tb_sisul_rsv 
+				( RSV_SEQ
+				  , SISUL_SEQ
+				  , MEM_SEQ
+				  , MEM_ID
+				  , TITLE
+				  , RSV_YEAR
+				  , RSV_MONTH
+				  , RSV_DAY
+				  , RSV_ST
+				  , RSV_ET
+				  , PROD_CNT
+				  , PROD_1
+				  , PROD_2
+				  , PROD_SIZE_CD
+				  , PROD_REF_CD
+				  , FOD_CHR_CD
+				  , PURPOSE_CD
+				  , PWD
+				  , ACCEPT_YN
+				  , REG_DT
+				  , REG_ID
+				  , UPD_DT
+				  , UPD_ID
+				  , EMAIL
+				  , SM_BIZ_FILE_SEQ
+				  , READ_CNT )
+			VALUES ( #rsvSeq#
+				  , #sisulSeq#
+				  , #memSeq#
+				  , #memId#
+				  , #title#
+				  , #rsvYear#
+				  , #rsvMonth#
+				  , #rsvDay#
+				  , #rsvSt#
+				  , #rsvEt#
+				  , #prodCnt#
+				  , #prod1#
+				  , #prod2#
+				  , #prodSizeCd#
+				  , #prodRefCd#
+				  , #fodChrCd#
+				  , #purposeCd#
+				  , #pwd#
+				  , 'W'
+				  , NOW()
+				  , #regId#
+				  , NOW()
+				  , #updId#
+				  , #email#
+				  , #smBizFileSeq#
+				  , 0 )
+		]]>
+		<selectKey keyProperty="rsvSeq" resultClass="int">
+			SELECT IFNULL( MAX( RSV_SEQ ), 0 ) FROM tb_sisul_rsv
+		</selectKey>
+	</insert>
+	
+	<update id="frontDsnStdDAO.updateSisulRsvReadCnt">
+	<!-- <![CDATA[ -->
+		UPDATE tb_sisul_rsv
+		SET 
+		<isNotEqual property="searchCondition" compareValue="readCnt">
+			MEM_SEQ=#memSeq#
+			, MEM_ID=#memId#
+			, TITLE=#title#
+		</isNotEqual>
+		<isEqual property="searchCondition" compareValue="readCnt">
+			READ_CNT = READ_CNT + 1				
+		</isEqual>
+			, UPD_DT=NOW()
+			, UPD_ID=#updId#
+		WHERE 1=1
+			AND RSV_SEQ = #rsvSeq#
+		<!-- ]]> -->
+	</update>
+	
+	<update id="frontDsnStdDAO.updateTbSisulRsv_S">
+		<![CDATA[
+			UPDATE tb_sisul_rsv
+			SET RSV_SEQ=#rsvSeq#
+				, SISUL_SEQ=#sisulSeq#
+				, MEM_SEQ=#memSeq#
+				, MEM_ID=#memId#
+				, TITLE=#title#
+				, RSV_YEAR=#rsvYear#
+				, RSV_MONTH=#rsvMonth#
+				, RSV_DAY=#rsvDay#
+				, RSV_ST=#rsvSt#
+				, RSV_ET=#rsvEt#
+				, PROD_CNT=#prodCnt#
+				, PROD_1=#prod1#
+				, PROD_2=#prod2#
+				, PROD_SIZE_CD=#prodSizeCd#
+				, PROD_REF_CD=#prodRefCd#
+				, PURPOSE_CD=#purposeCd#
+				, PWD=#pwd#
+				, ACCEPT_YN=#acceptYn#
+				, REG_DT=#regDt#
+				, REG_ID=#regId#
+				, UPD_DT=#updDt#
+				, UPD_ID=#updId#
+				, EMAIL=#email#
+				, SM_BIZ_FILE_SEQ=#smBizFileSeq#
+			]]>
+	</update>
+	
+	<delete id="frontDsnStdDAO.deleteTbSisulRsv_S">
+		<![CDATA[
+			DELETE FROM tb_sisul_rsv 
+			]]>
+	</delete>
+	
+	<select id="frontDsnStdDAO.selectTbSisulRsvList_D" parameterClass="FrontTbSisulRsvVO" resultMap="tbSisulRsv">
+			SELECT
+				A.RSV_SEQ
+				, A.SISUL_SEQ
+				, A.MEM_SEQ
+				, A.MEM_ID
+				, A.TITLE
+				, A.RSV_YEAR
+				, A.RSV_MONTH
+				, A.RSV_DAY
+				, A.RSV_ST
+				, A.RSV_ET
+				, A.PROD_CNT
+				, A.PROD_1
+				, A.PROD_2
+				, A.PROD_SIZE_CD
+				, A.PROD_REF_CD
+				, A.FOD_CHR_CD
+				, A.PURPOSE_CD
+				, A.PWD
+				, A.ACCEPT_YN
+				, A.REG_DT
+				, A.REG_ID
+				, A.UPD_DT
+				, A.UPD_ID
+				, A.EMAIL
+				, A.SM_BIZ_FILE_SEQ
+				, A.READ_CNT
+				, A.RSV_SEQ
+				, B.MEM_NM
+				, B.COM_NM
+				, C.FILE_NM
+				, C.FILE_SEQ
+			FROM tb_sisul_rsv A
+			LEFT JOIN tb_mem B
+			ON A.MEM_ID = B.MEM_ID
+			LEFT JOIN tb_att_file C
+			ON A.SM_BIZ_FILE_SEQ = C.FILE_SEQ
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="title">
+				TITLE LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				RSV_SEQ = #searchKeyword#
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				SISUL_SEQ LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+				ORDER BY RSV_SEQ desc
+				limit #firstIndex#, #recordCountPerPage#
+	</select>
+	
+	<select id="frontDsnStdDAO.selectTbSisulRsvList_M" parameterClass="FrontTbSisulRsvVO" resultMap="tbSisulRsv">
+			SELECT
+				A.RSV_SEQ
+				, A.SISUL_SEQ
+				, A.MEM_SEQ
+				, A.MEM_ID
+				, A.TITLE
+				, A.RSV_YEAR
+				, A.RSV_MONTH
+				, A.RSV_DAY
+				, A.RSV_ST
+				, A.RSV_ET
+				, A.PROD_CNT
+				, A.PROD_1
+				, A.PROD_2
+				, A.PROD_SIZE_CD
+				, A.PROD_REF_CD
+				, A.FOD_CHR_CD
+				, A.PURPOSE_CD
+				, A.PWD
+				, A.ACCEPT_YN
+				, A.REG_DT
+				, A.REG_ID
+				, A.UPD_DT
+				, A.UPD_ID
+				, A.EMAIL
+				, A.SM_BIZ_FILE_SEQ
+				, A.READ_CNT
+				, A.RSV_SEQ
+				, B.MEM_NM
+				, B.COM_NM
+				, C.FILE_NM
+				, C.FILE_SEQ
+			FROM tb_sisul_rsv A
+			LEFT JOIN tb_mem B
+			ON A.MEM_ID = B.MEM_ID
+			LEFT JOIN tb_att_file C
+			ON A.SM_BIZ_FILE_SEQ = C.FILE_SEQ
+			WHERE 1=1
+			<isNotEmpty property="memId">
+				AND A.MEM_ID = #memId#
+			</isNotEmpty>
+			<isEqual prepend="AND" property="searchCondition" compareValue="title">
+				TITLE LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				RSV_SEQ = #searchKeyword#
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				SISUL_SEQ LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+				ORDER BY RSV_SEQ desc
+				limit #firstIndex#, #recordCountPerPage#	
+	</select>
+	
+	<select id="frontDsnStdDAO.selectTbSisulRsvListTotCnt_S" parameterClass="FrontTbSisulRsvVO" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM tb_sisul_rsv
+			WHERE 1=1
+<!-- 			<isNotEmpty property="memId">
+				AND MEM_ID = #memId#
+			</isNotEmpty> -->
+			<isEqual prepend="AND" property="searchCondition" compareValue="title">
+				TITLE LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				RSV_SEQ = #searchKeyword#
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				SISUL_SEQ LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+	</select>
+		<select id="frontDsnStdDAO.selectTbSisulRsvListTotCnt_M" parameterClass="FrontTbSisulRsvVO" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM tb_sisul_rsv
+			WHERE 1=1
+			<isNotEmpty property="memId">
+				AND MEM_ID = #memId#
+			</isNotEmpty>
+			<isEqual prepend="AND" property="searchCondition" compareValue="title">
+				TITLE LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				RSV_SEQ = #searchKeyword#
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				SISUL_SEQ LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+	</select>
+	
+		<select id="frontDsnStdDAO.selectTbSisulRsvReply"  parameterClass="FrontTbSisulRsvVO" resultClass="egovMap">
+		<![CDATA[
+			SELECT
+				CMT_SEQ
+				, MEM_SEQ
+				, MEM_ID
+				, CONT
+				, DATE_FORMAT(REG_DT,'%Y-%m-%d %H:%i:%S') AS REG_DT
+			FROM tb_sisul_rsv_cmt
+			WHERE 1=1
+				AND RSV_SEQ = #rsvSeq#
+			ORDER BY CMT_SEQ DESC
+			]]>
+	</select>
+	<update id="frontDsnStdDAO.sisulRsvCancle">
+	<!-- <![CDATA[ -->
+		UPDATE tb_sisul_rsv
+		SET 
+		ACCEPT_YN = 'C'
+		WHERE 1=1
+			AND RSV_SEQ = #rsvSeq#
+		<!-- ]]> -->
+	</update>
+
+</sqlMap>

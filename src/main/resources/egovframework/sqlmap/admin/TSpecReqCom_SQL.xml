@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TSpecReqCom">
+	
+	<typeAlias  alias="egovMap" type="org.egovframe.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="SearchVo" type="dlink.admin.vo.SearchVO"/>
+	<typeAlias  alias="TSpecReqComVO" type="dlink.admin.vo.TSpecReqComVO"/>
+	<typeAlias  alias="bigDecimal" type="java.math.BigDecimal"/>
+	
+	
+	
+	<resultMap id="TSpecReqCom" class="dlink.admin.vo.TSpecReqComVO">
+		<result property="loginId" column="LOGIN_ID" columnIndex="1"/>
+		<result property="reqNo" column="REQ_NO" columnIndex="2"/>
+		<result property="salesAmt" column="SALES_AMT" columnIndex="3"/>
+		<result property="keyCustomer" column="KEY_CUSTOMER" columnIndex="4"/>
+		<result property="employ" column="EMPLOY" columnIndex="5"/>
+		<result property="acceptYn" column="ACCEPT_YN" columnIndex="6"/>
+		<result property="acceptCont" column="ACCEPT_CONT" columnIndex="7"/>
+		<result property="reqDt" column="REQ_DT" columnIndex="8"/>
+		<result property="requester" column="REQUESTER" columnIndex="9"/>
+	</resultMap>
+	
+	<insert id="TSpecReqComDAO.insertTSpecReqCom_S">
+		<![CDATA[
+			INSERT INTO t_spec_req_com 
+				( LOGIN_ID
+				  , REQ_NO
+				  , SALES_AMT
+				  , KEY_CUSTOMER
+				  , EMPLOY
+				  , ACCEPT_YN
+				  , ACCEPT_CONT
+				  , REQ_DT
+				  , cont
+				  , REQUESTER )
+			VALUES ( #loginId#
+				  , #reqNo#
+				  , #salesAmt#
+				  , #keyCustomer#
+				  , #employ#
+				  , #acceptYn#
+				  , #acceptCont#
+				  , now()
+				  , #cont#
+				  , #requester# )
+		]]>
+	</insert>
+	
+	<select id="TSpecReqComDAO.selectTSpecReqComReqNo"  resultClass="bigDecimal">
+	       SELECT   IFNULL(MAX(a.REQ_NO)+1,1)
+	       FROM   t_spec_req_com   a
+	</select> 
+	
+	<insert id="TSpecReqComDAO.insertTSpecReqMem" >
+		<![CDATA[
+			INSERT INTO t_spec_req_mem 
+				( LOGIN_ID
+				  , REQ_NO
+				  , SEQ
+				  , STAFF_NM
+				  , POSITION
+				  , BIRTHDAY
+				  , LST_HAKWI
+				  , JUNGONG
+				  , JUNGONG_PART
+				  , sex
+				  , school
+				  , acquisition_year
+				  , CAREER )
+			VALUES ( #loginId#
+				  , #reqNo#
+				  , (SELECT T2 FROM (SELECT IFNULL(MAX(SEQ),0)+1 AS T2 FROM  t_spec_req_mem ) B)
+				  , #staffNm#
+				  , #position#
+				  , #birthday#
+				  , #lstHakwi#
+				  , #jungong#
+				  , #jungongPart#
+				  , #mSex#
+				  , #school#
+				  , #acquisitionYear#
+				  , #career# )
+		]]>
+	</insert>
+	
+	<!-- <select id="TSpecReqComDAO.selectTSpecReqMemSeq"  resultClass="bigDecimal">
+	       SELECT   IFNULL(MAX(a.SEQ)+1,1)
+	       FROM   t_spec_req_mem    a
+	</select> 	
+	 -->
+	
+	<update id="TSpecReqComDAO.updateTSpecReqCom_S">
+		<![CDATA[
+			UPDATE 
+				t_spec_req_com
+			SET 
+				LOGIN_ID=#loginId#
+				, REQ_NO=#reqNo#
+				, SALES_AMT=#salesAmt#
+				, KEY_CUSTOMER=#keyCustomer#
+				, EMPLOY=#employ#
+				, ACCEPT_YN=#acceptYn#
+				, ACCEPT_CONT=#acceptCont#
+				, REQUESTER=#requester#
+			WHERE 
+				LOGIN_ID = #loginId#
+			]]>
+	</update>
+	
+	<delete id="TSpecReqComDAO.deleteTSpecReqCom_S">
+		<![CDATA[
+			DELETE 
+				FROM t_spec_req_com 
+			WHERE
+				LOGIN_ID = #loginId#
+			]]>
+	</delete>
+	
+	<select id="TSpecReqComDAO.selectTSpecReqCom_S"  resultMap="TSpecReqCom">
+		<![CDATA[
+			SELECT
+				LOGIN_ID
+				, REQ_NO
+				, SALES_AMT
+				, KEY_CUSTOMER
+				, EMPLOY
+				, ACCEPT_YN
+				, ACCEPT_CONT
+				, REQ_DT
+				, REQUESTER
+			FROM 
+				t_spec_req_com
+			WHERE 
+					LOGIN_ID = #loginId#
+				AND	
+					REQ_NO=#reqNo#
+				
+			]]>
+	</select>
+	
+	<select id="TSpecReqComDAO.selectTSpecReqComList_D" parameterClass="SearchVo" resultClass="egovMap">
+			SELECT
+				A.LOGIN_ID
+				, A.REQ_NO
+				, A.SALES_AMT
+				, A.KEY_CUSTOMER
+				, A.EMPLOY
+				, A.ACCEPT_YN
+				, A.ACCEPT_CONT
+				, A.REQ_DT
+				, A.REQUESTER
+				, B.COM_NM				
+			FROM 
+				t_spec_req_com A
+			LEFT JOIN 
+				t_mem_com B
+			ON A.LOGIN_ID = B.LOGIN_ID
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				<isNotEmpty property="searchKeyword">
+					LOGIN_ID = #searchKeyword#
+				</isNotEmpty>
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				<isNotEmpty property="searchKeyword">
+					REQ_NO LIKE CONCAT('%',#searchKeyword#,'%')
+				</isNotEmpty>
+			</isEqual>
+				ORDER BY A.REQ_DT DESC
+				limit #firstIndex#, #recordCountPerPage#	
+	</select>	
+	<select id="TSpecReqComDAO.selectTSpecReqComListTotCnt_S" parameterClass="SearchVO" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM 
+				t_spec_req_com A
+			LEFT JOIN 
+				t_mem_com B
+			ON A.LOGIN_ID = B.LOGIN_ID
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				<isNotEmpty property="searchKeyword">
+					LOGIN_ID = #searchKeyword#
+				</isNotEmpty>
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				<isNotEmpty property="searchKeyword">
+					REQ_NO LIKE CONCAT('%',#searchKeyword#,'%')
+				</isNotEmpty>
+			</isEqual>
+	</select>
+	
+	
+	<update id="TSpecReqComDAO.updateAcceptTSpecReqCom">
+		<![CDATA[
+			UPDATE 
+				t_spec_req_com
+			SET 
+				 ACCEPT_YN=#acceptYn#
+				, ACCEPT_CONT=#acceptCont#
+				, REQUESTER=#requester#
+			WHERE 
+					LOGIN_ID = #loginId#
+				AND
+					 REQ_NO=#reqNo#
+			]]>
+	</update>
+	
+	
+		
+	<select id="TSpecReqComDAO.selectAdminTSpecReqMem" parameterClass="dlink.admin.vo.TSpecReqComVO" resultClass="egovMap">
+		SELECT
+			LOGIN_ID
+			, REQ_NO
+			, SEQ
+			, STAFF_NM
+			, POSITION
+			, BIRTHDAY
+			, LST_HAKWI
+			, JUNGONG
+			, JUNGONG_PART
+			, CAREER
+		FROM t_spec_req_mem
+		WHERE 
+				1=1
+			AND
+				 LOGIN_ID=#loginId#
+			AND
+				 REQ_NO=#reqNo#
+	</select>	
+	
+	
+	
+	
+		<delete id="TSpecReqComDAO.deleteTSpecReqMem">
+		<![CDATA[
+			DELETE 
+				FROM t_spec_req_mem 
+			WHERE
+					LOGIN_ID = #loginId#
+				AND
+					 REQ_NO=#reqNo#
+					
+			]]>
+	</delete>
+</sqlMap>

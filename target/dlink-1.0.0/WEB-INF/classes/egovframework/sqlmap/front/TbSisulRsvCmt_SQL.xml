@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TbSisulRsvCmt">
+	
+	<!-- <typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/> -->
+	<typeAlias  alias="tbSisulRsvCmtSerarchVO" type="dlink_new.front.vo.TbSisulRsvCmtDefaultVO"/>
+	<typeAlias  alias="tbSisulRsvCmtVO" type="dlink_new.front.vo.TbSisulRsvCmtVO"/>
+	
+	<resultMap id="tbSisulRsvCmt" class="dlink_new.front.vo.TbSisulRsvCmtVO">
+		<result property="cmtSeq" column="CMT_SEQ" columnIndex="1"/>
+		<result property="rsvSeq" column="RSV_SEQ" columnIndex="2"/>
+		<result property="memSeq" column="MEM_SEQ" columnIndex="3"/>
+		<result property="memId" column="MEM_ID" columnIndex="4"/>
+		<result property="cont" column="CONT" columnIndex="5"/>
+		<result property="regDt" column="REG_DT" columnIndex="6"/>
+		<result property="regId" column="REG_ID" columnIndex="7"/>
+		<result property="updDt" column="UPD_DT" columnIndex="8"/>
+		<result property="updId" column="UPD_ID" columnIndex="9"/>
+	</resultMap>
+	
+	<insert id="tbSisulRsvCmtDAO.insertTbSisulRsvCmt_S">
+		<![CDATA[
+			INSERT INTO tb_sisul_rsv_cmt 
+				( CMT_SEQ
+				  , RSV_SEQ
+				  , MEM_SEQ
+				  , MEM_ID
+				  , CONT
+				  , REG_DT
+				  , REG_ID
+				  , UPD_DT
+				  , UPD_ID )
+			VALUES ( #cmtSeq#
+				  , #rsvSeq#
+				  , #memSeq#
+				  , #memId#
+				  , #cont#
+				  , #regDt#
+				  , #regId#
+				  , #updDt#
+				  , #updId# )
+		]]>
+	</insert>
+	
+	<update id="tbSisulRsvCmtDAO.updateTbSisulRsvCmt_S">
+		<![CDATA[
+			UPDATE tb_sisul_rsv_cmt
+			SET CMT_SEQ=#cmtSeq#
+				, RSV_SEQ=#rsvSeq#
+				, MEM_SEQ=#memSeq#
+				, MEM_ID=#memId#
+				, CONT=#cont#
+				, REG_DT=#regDt#
+				, REG_ID=#regId#
+				, UPD_DT=#updDt#
+				, UPD_ID=#updId#
+			]]>
+	</update>
+	
+	<delete id="tbSisulRsvCmtDAO.deleteTbSisulRsvCmt_S">
+		<![CDATA[
+			DELETE FROM tb_sisul_rsv_cmt 
+			]]>
+	</delete>
+	
+	<select id="tbSisulRsvCmtDAO.selectTbSisulRsvCmt_S" resultMap="tbSisulRsvCmt">
+		<![CDATA[
+			SELECT
+				CMT_SEQ
+				, RSV_SEQ
+				, MEM_SEQ
+				, MEM_ID
+				, CONT
+				, REG_DT
+				, REG_ID
+				, UPD_DT
+				, UPD_ID
+			FROM tb_sisul_rsv_cmt
+			]]>
+	</select>
+	
+	<select id="tbSisulRsvCmtDAO.selectTbSisulRsvCmtList_D" parameterClass="tbSisulRsvCmtSerarchVO" resultClass="egovMap">
+			SELECT
+								CMT_SEQ
+								, RSV_SEQ
+								, MEM_SEQ
+								, MEM_ID
+								, CONT
+								, REG_DT
+								, REG_ID
+								, UPD_DT
+								, UPD_ID
+					FROM tb_sisul_rsv_cmt
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				CMT_SEQ = #searchKeyword#
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				RSV_SEQ LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+				ORDER BY 
+				limit #firstIndex#, #recordCountPerPage#	
+	</select>	
+	<select id="tbSisulRsvCmtDAO.selectTbSisulRsvCmtListTotCnt_S" parameterClass="tbSisulRsvCmtVO" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM tb_sisul_rsv_cmt
+			WHERE 1=1
+			AND RSV_SEQ = #rsvSeq#
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				CMT_SEQ = #searchKeyword#
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				RSV_SEQ LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+	</select>
+
+</sqlMap>

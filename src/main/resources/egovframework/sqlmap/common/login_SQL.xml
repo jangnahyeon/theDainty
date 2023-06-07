@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="login">
+	
+	<typeAlias  alias="egovMap" type="org.egovframe.rte.psl.dataaccess.util.EgovMap"/>
+	
+	<resultMap id="loginMap" class="dlink.common.vo.LoginVO">
+		<result property="loginId" column="LOGIN_ID" columnIndex="1"/>
+		<result property="userType" column="USER_TYPE" columnIndex="2"/>
+		<result property="emailAddr" column="EMAIL_ADDR" columnIndex="3"/>
+		<result property="userNm" column="USER_NM" columnIndex="4"/>
+		<result property="damdangEmail" column="DAMDANG_EMAIL" columnIndex="5"/>
+		<result property="comNm" column="COM_NM" columnIndex="6"/>
+	</resultMap>
+	
+	<select id="LoginDAO.selectUserInfo" resultMap="loginMap">
+		WITH T1(LOGIN_ID, USER_TYPE, EMAIL_ADDR, USER_NM, DAMDANG_EMAIL, COM_NM) AS 
+		(
+			SELECT 
+				A.LOGIN_ID, 
+				A.USER_TYPE,
+				B.EMAIL_ADDR, 
+				B.USER_NM, 
+				C.DAMDANG_EMAIL,
+				C.COM_NM  
+			FROM
+				T_MEM_ACCPT A
+			LEFT OUTER JOIN T_MEM_USER B
+				ON A.LOGIN_ID = B.LOGIN_ID
+			LEFT OUTER JOIN T_MEM_COM C
+				ON A.LOGIN_ID = C.LOGIN_ID
+		)
+		SELECT 
+			LOGIN_ID, 
+			USER_TYPE,
+			EMAIL_ADDR, 
+			USER_NM, 
+			DAMDANG_EMAIL, 
+			COM_NM 
+		FROM 
+			T1
+		WHERE 
+			IF(
+				T1.USER_TYPE = 'MG0001' , 
+				T1.EMAIL_ADDR = #email# AND T1.USER_NM = #name# ,
+				T1.DAMDANG_EMAIL = #email# AND T1.COM_NM = #name#
+			)
+		<isNotEmpty property="loginId" prepend="AND">
+			LOGIN_ID = #loginId#
+		</isNotEmpty>
+	</select>
+	
+</sqlMap>

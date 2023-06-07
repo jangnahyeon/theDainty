@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TPopup">
+	
+	<typeAlias  alias="egovMap" type="org.egovframe.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="TPopupInfoSearchVO" type="dlink_new.admin.vo.TbPopupVO"/>
+	
+	<resultMap id="TbPopupVO" class="dlink_new.admin.vo.TbPopupVO">
+		<result property="popSeq" column="POP_SEQ" columnIndex="1"/>
+		<result property="popGubun" column="POP_GUBUN" columnIndex="2"/>
+		<result property="title" column="TITLE" columnIndex="3"/>
+		<result property="contents" column="CONTENTS" columnIndex="4"/>
+		<result property="fileSeq" column="FILE_sEQ" columnIndex="5"/>
+		<result property="linkUrl" column="LINK_URL" columnIndex="6"/>
+		<result property="useYn" column="USE_YN" columnIndex="7"/>
+		<result property="startDate" column="START_DATE" columnIndex="8"/>
+		<result property="endDate" column="END_DATE" columnIndex="9"/>
+		<result property="target" column="TARGET" columnIndex="10"/>		
+		<result property="orderNo" column="ORDER_NO" columnIndex="11"/>
+		<result property="popupWidth" column="POPUP_WIDTH" columnIndex="12"/>
+		<result property="popupHeight" column="POPUP_HEIGHT" columnIndex="13"/>
+		<result property="regDate" column="REG_DATE" columnIndex="14"/>
+	</resultMap>
+
+	
+	<insert id="AdminPopupDAO.insertPopup">
+		<![CDATA[
+			INSERT INTO tb_popup 
+				( POP_GUBUN
+				  , TITLE
+				  , CONTENTS
+				  , FILE_SEQ
+				  , USE_YN
+				  , START_DATE
+				  , END_DATE
+				  , POPUP_WIDTH
+				  , POPUP_HEIGHT
+				  , REG_ID
+				  , REG_DATE
+				   )
+			VALUES ( 
+				  'P'
+				  , #title#
+				  , #contents#
+				  , #fileSeq#
+				  , #useYn#
+				  , #startDate#
+				  , #endDate#
+				  , #popupWidth#
+				  , #popupHeight#
+				  , #register#
+				  , NOW()
+				   )
+		]]>
+	</insert>
+	
+	<update id="AdminPopupDAO.updatePopup">
+		<![CDATA[
+			UPDATE tb_popup
+			SET 
+				TITLE=#title#
+				, CONTENTS=#contents#
+				, START_DATE=#startDate#
+				, END_DATE=#endDate#
+				, USE_YN=#useYn#			
+			WHERE 1=1
+				AND POP_SEQ = #popSeq#
+			]]>
+	</update>
+	
+	<delete id="AdminPopupDAO.popupDelete">
+		<![CDATA[
+			DELETE FROM tb_popup 
+			WHERE 1=1
+				AND POP_SEQ = #popSeq#
+			]]>
+	</delete>
+	
+	<select id="AdminPopupDAO.selectPopupList" parameterClass="TPopupInfoSearchVO" resultClass="egovMap">
+           SELECT *
+		   	FROM (
+		           SELECT @ROWNUM := @ROWNUM + 1 AS RN
+		                , POP_SEQ
+		                , POP_GUBUN
+		                , TITLE
+		                , CONTENTS
+		                , FILE_SEQ
+		                , USE_YN
+		                , DATE_FORMAT(START_DATE, '%Y-%m-%d') AS START_DATE
+		                , DATE_FORMAT(END_DATE, '%Y-%m-%d') AS END_DATE
+		                , POPUP_WIDTH
+		                , POPUP_HEIGHT
+		                , REG_ID
+		                , DATE_FORMAT(REG_DATE, '%Y-%m-%d') AS REG_DATE
+					FROM tb_popup B, (SELECT @ROWNUM:=0) RN_TB 
+					WHERE 1=1
+					AND POP_GUBUN = 'P'
+					<isNotEmpty property="searchKeyword" >
+						AND B.TITLE LIKE CONCAT('%',#searchKeyword#,'%')
+					</isNotEmpty>
+					ORDER BY REG_DATE ASC
+					  ) A
+		ORDER BY RN DESC
+			limit #firstIndex#, #recordCountPerPage#
+	</select>
+	
+	<select id="AdminPopupDAO.selectPopupListTotCnt" parameterClass="TPopupInfoSearchVO" resultClass="int">
+		 SELECT COUNT(*)
+			FROM tb_popup
+			WHERE 1=1
+			AND POP_GUBUN = 'P'
+		<isNotEmpty property="searchKeyword" >
+			AND TITLE LIKE CONCAT('%',#searchKeyword#,'%')
+		</isNotEmpty>
+	</select>
+	
+	<select id="AdminPopupDAO.selectShowPopupList" parameterClass="TPopupInfoSearchVO" resultMap="TbPopupVO">
+           SELECT
+                POP_SEQ
+                , POP_GUBUN
+                , TITLE
+                , CONTENTS
+                , FILE_SEQ
+                , LINK_URL
+                , USE_YN
+                , DATE_FORMAT(START_DATE, '%Y-%m-%d') AS START_DATE
+                , DATE_FORMAT(END_DATE, '%Y-%m-%d') AS END_DATE
+                , TARGET
+                , ORDER_NO
+                , POPUP_WIDTH
+                , POPUP_HEIGHT
+                , DATE_FORMAT(REG_DATE, '%Y-%m-%d') AS REG_DATE
+			FROM tb_popup 
+			WHERE 1=1
+			AND POP_GUBUN = 'P'
+			AND USE_YN = 'Y'
+			AND NOW() BETWEEN START_DATE AND DATE_ADD(END_DATE,INTERVAL 1 DAY) 
+	</select>
+	
+	<select id="AdminPopupDAO.selectPopup" resultMap="TbPopupVO">
+		SELECT
+                POP_SEQ
+                , POP_GUBUN
+                , TITLE
+                , CONTENTS
+                , FILE_SEQ
+                , LINK_URL
+                , USE_YN
+                , DATE_FORMAT(START_DATE, '%Y-%m-%d') AS START_DATE
+                , DATE_FORMAT(END_DATE, '%Y-%m-%d') AS END_DATE
+                , TARGET
+                , ORDER_NO
+                , POPUP_WIDTH
+                , POPUP_HEIGHT
+                , DATE_FORMAT(REG_DATE, '%Y-%m-%d') AS REG_DATE
+			FROM tb_popup 
+			WHERE 1=1
+			AND POP_GUBUN = 'P'
+			AND POP_SEQ = #popSeq#
+	</select>
+</sqlMap>

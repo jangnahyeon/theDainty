@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TbMenuAdmin">
+	
+	<typeAlias  alias="egovMap" type="org.egovframe.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="TbMenuAdminVO" type="dlink_new.admin.vo.TbMenuAdminVO"/>
+	
+	<resultMap id="TbMenuAdmin" class="dlink_new.admin.vo.TbMenuAdminVO">
+		<result property="menuSeq" column="MENU_SEQ" columnIndex="1"/>
+		<result property="upMenuSeq" column="UP_MENU_SEQ" columnIndex="2"/>
+		<result property="menuNm" column="MENU_NM" columnIndex="3"/>
+		<result property="menuUrl" column="MENU_URL" columnIndex="4"/>
+		<result property="menuDepth" column="MENU_DEPTH" columnIndex="5"/>
+		<result property="menuOrder" column="MENU_ORDER" columnIndex="6"/>
+		<result property="useYn" column="USE_YN" columnIndex="7"/>
+		<result property="regDt" column="REG_DT" columnIndex="8"/>
+		<result property="regId" column="REG_ID" columnIndex="9"/>
+		<result property="updDt" column="UPD_DT" columnIndex="10"/>
+		<result property="updId" column="UPD_ID" columnIndex="11"/>
+	</resultMap>
+	
+	<insert id="TbMenuAdminDAO.insertTbMenuAdmin_S">
+		<![CDATA[
+			INSERT INTO t_menu_admin 
+				( MENU_SEQ
+				  , UP_MENU_SEQ
+				  , MENU_NM
+				  , MENU_URL
+				  , MENU_DEPTH
+				  , MENU_ORDER
+				  , USE_YN
+				  , REG_DT
+				  , REG_ID
+				  , UPD_DT
+				  , UPD_ID )
+			VALUES ( #menuSeq#
+				  , #upMenuSeq#
+				  , #menuNm#
+				  , #menuUrl#
+				  , #menuDepth#
+				  , #menuOrder#
+				  , #useYn#
+				  , #regDt#
+				  , #regId#
+				  , #updDt#
+				  , #updId# )
+		]]>
+	</insert>
+	
+	<update id="TbMenuAdminDAO.updateTbMenuAdmin_S">
+		<![CDATA[
+			UPDATE t_menu_admin
+			SET MENU_SEQ=#menuSeq#
+				, UP_MENU_SEQ=#upMenuSeq#
+				, MENU_NM=#menuNm#
+				, MENU_URL=#menuUrl#
+				, MENU_DEPTH=#menuDepth#
+				, MENU_ORDER=#menuOrder#
+				, USE_YN=#useYn#
+				, REG_DT=#regDt#
+				, REG_ID=#regId#
+				, UPD_DT=#updDt#
+				, UPD_ID=#updId#
+			]]>
+	</update>
+	
+	<delete id="TbMenuAdminDAO.deleteTbMenuAdmin_S">
+		<![CDATA[
+			DELETE FROM tb_menu_admin 
+			]]>
+	</delete>
+	
+	<select id="TbMenuAdminDAO.selectTbMenuAdmin_S" resultMap="TbMenuAdmin">
+		<![CDATA[
+			SELECT
+				MENU_SEQ
+				, UP_MENU_SEQ
+				, MENU_NM
+				, MENU_URL
+				, MENU_DEPTH
+				, MENU_ORDER
+				, USE_YN
+				, REG_DT
+				, REG_ID
+				, UPD_DT
+				, UPD_ID
+			FROM tb_menu_admin
+			]]>
+	</select>
+	
+	<select id="TbMenuAdminDAO.selectTbMenuAdminList_D" parameterClass="TbMenuAdminVO" resultMap="TbMenuAdmin">
+			SELECT
+				MENU_SEQ
+				, UP_MENU_SEQ
+				, MENU_NM
+				, MENU_URL
+				, MENU_DEPTH
+				, MENU_ORDER
+				, USE_YN
+				, REG_DT
+				, REG_ID
+				, UPD_DT
+				, UPD_ID
+			FROM tb_menu_admin
+			WHERE 1=1
+			<isNotEmpty property="menuDepth">
+				AND MENU_DEPTH = #menuDepth#
+			</isNotEmpty>
+			<isNotEmpty property="useYn">
+				AND USE_YN = #useYn#
+			</isNotEmpty>
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				MENU_SEQ = #searchKeyword#
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				UP_MENU_SEQ LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>			
+				ORDER BY MENU_SEQ
+				limit #firstIndex#, #recordCountPerPage#	
+	</select>	
+	<select id="TbMenuAdminDAO.selectTbMenuAdminListTotCnt_S" parameterClass="TbMenuAdminVO" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM tb_menu_admin
+			WHERE 1=1
+			<isNotEmpty property="menuDepth">
+				AND MENU_DEPTH = #menuDepth#
+			</isNotEmpty>
+			<isNotEmpty property="useYn">
+				AND USE_YN = #useYn#
+			</isNotEmpty>
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				MENU_SEQ = #searchKeyword#
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				UP_MENU_SEQ LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>			
+	</select>
+
+</sqlMap>

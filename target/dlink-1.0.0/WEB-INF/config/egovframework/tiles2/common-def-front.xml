@@ -1,0 +1,105 @@
+<!DOCTYPE tiles-definitions PUBLIC
+"-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+"http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+
+<tiles-definitions>  
+  
+    <definition name="frontLayout" template="/WEB-INF/jsp/dlink_new/tiles/front/layout.jsp">
+    	<put-attribute name="script" 		value="/WEB-INF/jsp/dlink_new/tiles/front/script.jsp" />
+		<put-attribute name="header" 		value="/WEB-INF/jsp/dlink_new/tiles/front/header.jsp" />
+		<put-attribute name="subTabmenu" 	value="/WEB-INF/jsp/dlink_new/tiles/front/subTabmenu.jsp" />
+		<put-attribute name="title" 		value="/WEB-INF/jsp/dlink_new/tiles/front/title.jsp" />
+		<put-attribute name="login_pop" 	value="/WEB-INF/jsp/dlink_new/tiles/front/login_pop.jsp" />
+		<put-attribute name="login_pop_bg" 	value="/WEB-INF/jsp/dlink_new/tiles/front/login_pop_bg.jsp" />
+		<put-attribute name="footer" 		value="/WEB-INF/jsp/dlink_new/tiles/front/footer.jsp" />
+	</definition>
+	
+	<definition name="/front/dlink/*" extends="frontLayout">
+	    <put-attribute name="content"
+	        value="/WEB-INF/jsp/dlink_new/front/dlink/{1}.jsp" />
+	</definition>
+	
+	<definition name="/front/dsnStd/*" extends="frontLayout">
+		<put-attribute name="content"
+			value="/WEB-INF/jsp/dlink_new/front/dsnStd/{1}.jsp" />
+	</definition>
+	
+	<definition name="/front/dsnStd/sisulIntro" extends="frontLayout">
+		<put-attribute name="login_pop_bg" value=""/>
+		<put-attribute name="content"
+			value="/WEB-INF/jsp/dlink_new/front/dsnStd/sisulIntro.jsp" />
+	</definition>
+	
+	<definition name="/front/dsnStd/sisulRsvBoardForm" extends="frontLayout">
+	    <put-attribute name="login_pop_bg" value=""/>
+	    <put-attribute name="content"
+			value="/WEB-INF/jsp/dlink_new/front/dsnStd/sisulRsvBoardForm.jsp" />
+	</definition>
+	
+	<definition name="/front/dBankMag/*" extends="frontLayout">
+		<put-attribute name="login_pop_bg" 	value="" />
+	    <put-attribute name="content"
+	        value="/WEB-INF/jsp/dlink_new/front/dBankMag/{1}.jsp" />
+	</definition>
+	
+	<definition name="/front/tbBrd/*" extends="frontLayout">
+	    <put-attribute name="content"
+	        value="/WEB-INF/jsp/dlink_new/front/tbBrd/{1}.jsp" />
+	</definition>
+	
+	<definition name="/front/menuFooter/*" extends="frontLayout">
+	    <put-attribute name="content"
+	        value="/WEB-INF/jsp/dlink_new/front/menuFooter/{1}.jsp" />
+	</definition>
+
+	<definition name="/front/dBank/*" extends="frontLayout">
+	    <put-attribute name="content"
+	        value="/WEB-INF/jsp/dlink_new/front/dBank/{1}.jsp" />
+	</definition>
+	
+	<definition name="/front/tbPortf/*" extends="frontLayout">
+		<put-attribute name="login_pop_bg" 	value="" />
+	    <put-attribute name="content"
+	        value="/WEB-INF/jsp/dlink_new/front/tbPortf/{1}.jsp" />
+	</definition>	
+	
+	<definition name="frontJoinLayout" template="/WEB-INF/jsp/dlink_new/tiles/front/layout.jsp">
+		<put-attribute name="script" 		value="/WEB-INF/jsp/dlink_new/tiles/front/script.jsp" />
+		<put-attribute name="header" 		value="/WEB-INF/jsp/dlink_new/tiles/front/header.jsp" />
+		<put-attribute name="subTabmenu" 	value="" />
+		<put-attribute name="title" 		value="" />
+		<put-attribute name="login_pop" 	value="/WEB-INF/jsp/dlink_new/tiles/front/login_pop.jsp" />
+		<put-attribute name="login_pop_bg" 	value="/WEB-INF/jsp/dlink_new/tiles/front/login_pop_bg.jsp" />
+		<put-attribute name="footer" 		value="/WEB-INF/jsp/dlink_new/tiles/front/footer.jsp" />
+	</definition>
+	
+	<definition name="/front/join/*" extends="frontJoinLayout">
+	    <put-attribute name="content"
+	        value="/WEB-INF/jsp/dlink_new/front/join/{1}.jsp" />
+	</definition>
+	
+	<definition name="/front/main" extends="frontLayout">
+		<put-attribute name="subTabmenu" 	value="" />
+		<put-attribute name="title" 		value="" />
+	    <put-attribute name="content"
+	        value="/WEB-INF/jsp/dlink_new/front/main.jsp" />
+	</definition>
+	
+	<definition name="frontMypageLayout" template="/WEB-INF/jsp/dlink_new/tiles/front/layout.jsp">
+    	<put-attribute name="script" 		value="/WEB-INF/jsp/dlink_new/tiles/front/script.jsp" />
+		<put-attribute name="header" 		value="/WEB-INF/jsp/dlink_new/tiles/front/header.jsp" />
+		<put-attribute name="subTabmenu" 	value="/WEB-INF/jsp/dlink_new/tiles/front/mypage.jsp" />
+		<put-attribute name="title" 		value="/WEB-INF/jsp/dlink_new/tiles/front/mypageTitle.jsp" />
+		<put-attribute name="login_pop" 	value="/WEB-INF/jsp/dlink_new/tiles/front/login_pop.jsp" />
+		<put-attribute name="login_pop_bg" 	value="/WEB-INF/jsp/dlink_new/tiles/front/login_pop_bg.jsp" />
+		<put-attribute name="footer" 		value="/WEB-INF/jsp/dlink_new/tiles/front/footer.jsp" />
+	</definition>
+	
+	
+	<definition name="/front/mypage/*" extends="frontMypageLayout">
+		<put-attribute name="login_pop_bg" 	value="" />
+	    <put-attribute name="content"
+	        value="/WEB-INF/jsp/dlink_new/front/mypage/{1}.jsp" />
+	</definition>
+	
+</tiles-definitions>

@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="TSpecCom" >
+
+	<typeAlias  alias="egovMap" type="org.egovframe.rte.psl.dataaccess.util.EgovMap"/>
+	
+	<resultMap id="TSpecCom" class="dlink.admin.vo.TSpecComVO">	
+		<result property="loginId" column="LOGIN_ID" columnIndex="1"/>
+		<result property="comNm" column="COM_NM" columnIndex="2"/>
+		<result property="comType" column="COM_TYPE" columnIndex="3"/>
+		<result property="ceoNm" column="CEO_NM" columnIndex="4"/>
+		<result property="sex" column="SEX" columnIndex="5"/>
+		<result property="comNo" column="COM_NO" columnIndex="6"/>
+		<result property="comAddr" column="COM_ADDR" columnIndex="7"/>
+		<result property="comDtlAddr" column="COM_DTL_ADDR" columnIndex="8"/>
+		<result property="comZip" column="COM_ZIP" columnIndex="9"/>
+		<result property="comUrl" column="COM_URL" columnIndex="10"/>
+		<result property="ceoMobileNo" column="CEO_MOBILE_NO" columnIndex="11"/>
+		<result property="damdangNm" column="DAMDANG_NM" columnIndex="12"/>
+		<result property="damdangDept" column="DAMDANG_DEPT" columnIndex="13"/>
+		<result property="damdangPos" column="DAMDANG_POS" columnIndex="14"/>
+		<result property="damdangMobileNo" column="DAMDANG_MOBILE_NO" columnIndex="15"/>
+		<result property="damdangEmail" column="DAMDANG_EMAIL" columnIndex="16"/>
+		<result property="regDt" column="REG_DT" columnIndex="17"/>
+		<result property="imgPath" column="IMG_PATH" columnIndex="18"/>
+		<result property="reqPart" column="REQ_PART" columnIndex="19"/>
+		<result property="specYn" column="SPEC_YN" columnIndex="20"/>
+		<result property="specNo" column="SPEC_NO" columnIndex="21"/>
+		<result property="salesAmt" column="SALES_AMT" columnIndex="22"/>
+		<result property="keyCustomer" column="KEY_CUSTOMER" columnIndex="23"/>
+		<result property="employ" column="EMPLOY" columnIndex="24"/>
+		<result property="acceptDt" column="ACCEPT_DT" columnIndex="25"/>
+		<result property="accepter" column="ACCEPTER" columnIndex="26"/>
+	</resultMap>
+	
+	<select id="TSpecComDAO.selectSpecNoInsertCd" parameterClass="dlink.admin.vo.TSpecComVO" resultClass="int" >
+		SELECT 
+				IFNULL(MAX(SPEC_NO),0)+1
+		FROM 
+			t_spec_com
+	</select>
+	
+	<select id="TSpecComDAO.selectSeqInsertCd" parameterClass="dlink.admin.vo.TSpecComVO" resultClass="int" >
+		SELECT 
+				IFNULL(MAX(SEQ),0)+1
+		FROM 
+			t_spec_mem
+		WHERE
+			SPEC_NO= #specNo#
+	</select>
+	
+	
+	<insert id="TSpecComDAO.insertTSpecCom">
+		<![CDATA[
+			INSERT INTO t_spec_com 
+				(	SPEC_NO
+					, LOGIN_ID
+				   , SALES_AMT
+				  , KEY_CUSTOMER
+				  , EMPLOY
+				  , ACCEPT_DT
+				  , ACCEPTER
+				  )
+			VALUES ( 
+				  #specNo#
+				  ,#loginId#
+				  , #salesAmt#
+				  , #keyCustomer#
+				  , #employ#
+				  , NOW()
+				  , #accepter# 
+				 )
+		]]>
+	</insert>
+	
+	
+	<insert id="TSpecComDAO.insertTSpecMem">
+		<![CDATA[
+			INSERT INTO t_spec_mem 
+				( SEQ
+				  , STAFF_NM
+				  , POSITION
+				  , BIRTHDAY
+				  , LST_HAKWI
+				  , JUNGONG
+				  , JUNGONG_PART
+				  , CAREER
+				  , SPEC_NO 
+				 )
+			SELECT	
+				    SEQ
+				  , STAFF_NM
+				  , POSITION
+				  , BIRTHDAY
+				  , LST_HAKWI
+				  , JUNGONG
+				  , JUNGONG_PART
+				  , CAREER
+				  , #specNo# 
+			FROM
+				t_spec_req_mem
+			WHERE
+				LOGIN_ID = #loginId#
+		]]>
+	</insert>
+	
+	<select id="TSpecComDAO.selectTSpecList" parameterClass="SearchVo" resultClass="egovMap">
+			SELECT
+				A.LOGIN_ID
+				, A.COM_NM
+				, A.COM_TYPE
+				, A.CEO_NM
+				, A.SEX
+				, A.COM_NO
+				, A.COM_ADDR
+				, A.COM_DTL_ADDR
+				, A.COM_ZIP
+				, A.COM_URL
+				, A.CEO_MOBILE_NO
+				, A.DAMDANG_NM
+				, A.DAMDANG_DEPT
+				, A.DAMDANG_POS
+				, A.DAMDANG_MOBILE_NO
+				, A.DAMDANG_EMAIL
+				, A.REG_DT
+				, A.IMG_PATH
+				, A.REQ_PART
+				, A.SPEC_YN	
+				, B.SPEC_NO
+				, B.SALES_AMT
+				, B.KEY_CUSTOMER
+				, B.EMPLOY
+				, B.ACCEPT_DT
+				, B.ACCEPTER
+			FROM t_spec_com B
+			LEFT join T_MEM_COM A
+			on A.LOGIN_ID = B.LOGIN_ID
+			WHERE 
+				1=1		
+			
+				<isEqual prepend="AND" property="searchCondition" compareValue="0">
+					(
+							A.COM_NM LIKE CONCAT('%',#searchKeyword#,'%')
+						OR
+							A.LOGIN_ID LIKE CONCAT('%',#searchKeyword#,'%')
+					)
+				</isEqual>
+				<isEqual prepend="AND" property="searchCondition" compareValue="1">
+					A.COM_NM LIKE CONCAT('%',#searchKeyword#,'%')
+				</isEqual>
+				<isEqual prepend="AND" property="searchCondition" compareValue="2">
+					A.LOGIN_ID LIKE CONCAT('%',#searchKeyword#,'%')
+				</isEqual>
+			
+			
+			 ORDER BY A.REG_DT DESC 
+					limit #firstIndex#, #recordCountPerPage#			
+	</select>	
+	<select id="TSpecComDAO.selectTSpecListTotCnt" parameterClass="SearchVo" resultClass="int">
+			SELECT 
+				COUNT(*) totcnt
+			FROM t_spec_com B
+			LEFT join T_MEM_COM A
+				on 
+					A.LOGIN_ID = B.LOGIN_ID
+			
+			WHERE 1=1
+				<isEqual prepend="AND" property="searchCondition" compareValue="0">
+					(
+							A.COM_NM LIKE CONCAT('%',#searchKeyword#,'%')
+						OR
+							A.LOGIN_ID LIKE CONCAT('%',#searchKeyword#,'%')
+					)
+				</isEqual>
+				<isEqual prepend="AND" property="searchCondition" compareValue="1">
+					A.COM_NM LIKE CONCAT('%',#searchKeyword#,'%')
+				</isEqual>
+				<isEqual prepend="AND" property="searchCondition" compareValue="2">
+					A.LOGIN_ID LIKE CONCAT('%',#searchKeyword#,'%')
+				</isEqual>
+	</select>
+	
+	
+	
+		<select id="TSpecComDAO.selectTSpecCom"  resultMap="TSpecCom">
+		<![CDATA[
+			SELECT
+				A.LOGIN_ID
+				, A.COM_NM
+				, A.COM_TYPE
+				, A.CEO_NM
+				, A.SEX
+				, A.COM_NO
+				, A.COM_ADDR
+				, A.COM_DTL_ADDR
+				, A.COM_ZIP
+				, A.COM_URL
+				, A.CEO_MOBILE_NO
+				, A.DAMDANG_NM
+				, A.DAMDANG_DEPT
+				, A.DAMDANG_POS
+				, A.DAMDANG_MOBILE_NO
+				, A.DAMDANG_EMAIL
+				, A.REG_DT
+				, A.IMG_PATH
+				, A.REQ_PART
+				, A.SPEC_YN	
+				, B.SPEC_NO
+				, B.SALES_AMT
+				, B.KEY_CUSTOMER
+				, B.EMPLOY
+				, B.ACCEPT_DT
+				, B.ACCEPTER
+			FROM t_spec_com AS B
+			LEFT join T_MEM_COM AS A
+			on B.LOGIN_ID = A.LOGIN_ID
+			WHERE 
+					1=1		
+				
+				AND
+					B.SPEC_NO = #specNo#
+			
+			
+			]]>
+			
+		
+	</select>
+	
+	
+		<select id="TSpecComDAO.selectTSpecMemList" parameterClass="dlink.admin.vo.TSpecComVO" resultClass="egovMap">
+		<![CDATA[
+			SELECT
+				SEQ
+				  , STAFF_NM
+				  , POSITION
+				  , BIRTHDAY
+				  , LST_HAKWI
+				  , JUNGONG
+				  , JUNGONG_PART
+				  , CAREER
+				  , SPEC_NO 
+			FROM
+				t_spec_mem
+			WHERE
+				SPEC_NO  = #specNo# 		
+			]]>
+	</select>
+	
+	
+	<delete id="TSpecComDAO.deleteTSpecMem">
+		<![CDATA[
+			DELETE 
+				FROM t_spec_mem 
+			WHERE
+				SPEC_NO  = #specNo# 	
+			]]>
+	</delete>
+	
+	<delete id="TSpecComDAO.deleteTSpecCom">
+		<![CDATA[
+			DELETE 
+				FROM t_spec_com 
+			WHERE
+				SPEC_NO  = #specNo# 	
+			]]>
+	</delete>
+	
+	
+	<select id="TSpecComDAO.selectTMemComList_D" parameterClass="dlink.admin.vo.TSpecComVO" resultClass="egovMap">
+			SELECT
+				FORMAT(@rownum := @rownum + 1, 0) AS seq,
+				C.*
+			FROM 
+				(SELECT			
+						 LOGIN_ID
+						, FILE_SEQ
+						, (SELECT code_nm FROM t_code D WHERE D.CODE = A.FILE_KIND) AS FILE_KIND
+						, (SELECT FILE_NM FROM t_attfile B WHERE B.FILE_SEQ = A.FILE_SEQ) AS FILE_NM
+					FROM 
+						T_MEM_COM_FILE A
+					WHERE
+						A.LOGIN_ID = #loginId#
+					) C
+				, (SELECT @ROWNUM := 0) TMP
+	</select>
+	
+	
+	
+</sqlMap>

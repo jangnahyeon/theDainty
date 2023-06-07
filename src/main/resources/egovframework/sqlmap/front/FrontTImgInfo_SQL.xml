@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="FrontTImgInfo">
+	
+	<typeAlias  alias="egovMap" type="org.egovframe.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="TImgInfoSearchVO" type="dlink_new.admin.vo.TImgInfo"/>
+	
+	<resultMap id="TImgInfo" class="dlink_new.admin.vo.TImgInfo">
+		<result property="dsnSeq" column="DSN_SEQ" columnIndex="1"/>
+		<result property="dsnNm" column="DSN_NM" columnIndex="2"/>
+		<result property="detail" column="DETAIL" columnIndex="3"/>
+		<result property="useYn" column="USE_YN" columnIndex="4"/>
+		<result property="regDt" column="REG_DT" columnIndex="5"/>
+		<result property="regId" column="REG_ID" columnIndex="6"/>
+		<result property="updDt" column="UPD_DT" columnIndex="7"/>
+		<result property="updId" column="UPD_ID" columnIndex="8"/>
+		<result property="fileSeq" column="FILE_SEQ" columnIndex="9"/>
+		<result property="thumFileNm" column="THUM_FILE_NM" columnIndex="10"/>
+		<result property="thumFileSeq" column="THUM_FILE_SEQ" columnIndex="11"/>
+		<result property="fileSize" column="FILE_SIZE" columnIndex="12"/>
+		<result property="code" column="CODE" columnIndex="13"/>
+		<result property="fileNm" column="FILE_NM" columnIndex="14"/>
+		<result property="srcTrm" column="SRC_TRM" columnIndex="15"/>
+	</resultMap>
+	
+	
+	<select id="FrontDsnBankDAO.selectImgInfoList" parameterClass="TImgInfoSearchVO" resultClass="egovMap">
+			SELECT
+				a.DSN_SEQ
+				, a.CODE
+				, a.DSN_NM
+				, a.DETAIL
+  				, a.USE_YN
+  				, a.REG_DT
+  				, a.SRC_TRM
+  				, a.ORDER_NO
+  				, b.FILE_SEQ
+  				, b.TITLE_YN
+					FROM tb_dsn_bank a INNER JOIN tb_dsn_bank_file b ON a.DSN_SEQ = b.DSN_SEQ 
+			WHERE 1=1
+			AND b.TITLE_YN = 'N'
+			AND a.USE_YN = 'Y'
+			<isNotEmpty property="searchKeyword" >
+				<isEqual prepend="AND" property="searchCondition" compareValue="">
+					(a.DSN_NM LIKE CONCAT('%',#searchKeyword#,'%') || a.DETAIL LIKE CONCAT('%',#searchKeyword#,'%') || a.SRC_TRM LIKE CONCAT('%',#searchKeyword#,'%'))
+				</isEqual>
+				<isEqual prepend="AND" property="searchCondition" compareValue="1">
+					a.DETAIL LIKE CONCAT('%',#searchKeyword#,'%')
+				</isEqual>
+				<isEqual prepend="AND" property="searchCondition" compareValue="2">
+					a.DSN_NM LIKE CONCAT('%',#searchKeyword#,'%')
+				</isEqual>
+			</isNotEmpty>
+			<isNotEmpty property="code" >
+				<isEqual prepend="AND" property="code" compareValue="0001">
+					code = '0001'
+				</isEqual>
+				<isEqual prepend="AND" property="code" compareValue="0002">
+					code = '0002'
+				</isEqual>
+				<isEqual prepend="AND" property="code" compareValue="0003">
+					code = '0003'
+				</isEqual>
+			</isNotEmpty>
+				ORDER BY  CAST(a.ORDER_NO AS UNSIGNED) ASC
+				limit #firstIndex#, #lastIndex#	
+	</select>	
+	<select id="FrontDsnBankDAO.selectImgInfoListTotCnt" parameterClass="TImgInfoSearchVO" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM tb_dsn_bank
+			WHERE 1=1
+			AND USE_YN = 'Y'
+			<isNotEmpty property="searchKeyword" >
+				<isEqual prepend="AND" property="searchCondition" compareValue="">
+					(DSN_NM LIKE CONCAT('%',#searchKeyword#,'%') || DETAIL LIKE CONCAT('%',#searchKeyword#,'%') || SRC_TRM LIKE CONCAT('%',#searchKeyword#,'%'))
+				</isEqual>
+				<isEqual prepend="AND" property="searchCondition" compareValue="1">
+					DETAIL LIKE CONCAT('%',#searchKeyword#,'%')
+				</isEqual>
+				<isEqual prepend="AND" property="searchCondition" compareValue="2">
+					DSN_NM LIKE CONCAT('%',#searchKeyword#,'%')
+				</isEqual>
+			</isNotEmpty>
+			<isNotEmpty property="code" >
+				<isEqual prepend="AND" property="code" compareValue="0001">
+					code = '0001'
+				</isEqual>
+				<isEqual prepend="AND" property="code" compareValue="0002">
+					code = '0002'
+				</isEqual>
+				<isEqual prepend="AND" property="code" compareValue="0003">
+					code = '0003'
+				</isEqual>
+			</isNotEmpty>
+			<!-- <isNotEmpty prepend="AND" property="regDtStrt">
+				<isNotEmpty property="regDtEnd">
+					REG_DT BETWEEN #regDtStrt# and #regDtEnd#
+				</isNotEmpty>
+			</isNotEmpty> -->
+	</select>
+	
+	<select id="FrontDsnBankDAO.selectImgInfo" parameterClass="TImgInfoSearchVO"  resultMap="TImgInfo">
+		<![CDATA[
+			SELECT
+				a.DSN_SEQ
+				, a.CODE
+				, a.DSN_NM
+				, a.DETAIL
+  				, a.USE_YN
+  				, a.REG_DT
+  				, a.REG_ID
+				, a.UPD_DT
+				, a.UPD_ID
+  				, (SELECT FILE_NM FROM tb_att_file b INNER JOIN tb_dsn_bank_file c ON b.FILE_SEQ = c.FILE_SEQ WHERE c.TITLE_YN = 'N' AND c.DSN_SEQ = a.DSN_SEQ) THUM_FILE_NM
+				, (SELECT FILE_NM FROM tb_att_file b INNER JOIN tb_dsn_bank_file c ON b.FILE_SEQ = c.FILE_SEQ WHERE c.TITLE_YN = 'Y'AND c.DSN_SEQ = a.DSN_SEQ) FILE_NM
+				, (SELECT FILE_SEQ FROM tb_dsn_bank_file WHERE DSN_SEQ = a.DSN_SEQ AND TITLE_YN = 'N') THUM_FILE_SEQ
+				, (SELECT FILE_SEQ FROM tb_dsn_bank_file WHERE DSN_SEQ = a.DSN_SEQ AND TITLE_YN = 'Y') FILE_SEQ
+				, (SELECT FILE_SIZE FROM `tb_att_file` c INNER JOIN tb_dsn_bank_file d ON c.FILE_SEQ = d.FILE_SEQ WHERE d.TITLE_YN = 'Y' AND d.DSN_SEQ = #dsnSeq#) FILE_SIZE
+				, a.SRC_TRM
+					FROM tb_dsn_bank a  
+			WHERE 1=1
+			]]>
+			AND a.DSN_SEQ = #dsnSeq#
+	</select>
+	
+	<insert id="FrontDsnBankDAO.insertDownInfo">
+	<selectKey keyProperty="downSeq" resultClass="decimal" >
+    	SELECT	IFNULL(MAX(a.DOWN_SEQ)+1,1)
+    	FROM	tb_dsn_down a
+    </selectKey>
+		<![CDATA[
+			INSERT INTO tb_dsn_down 
+				( DOWN_SEQ
+				  , DSN_SEQ
+				  , MEM_SEQ
+				  , MEM_ID
+				  , REG_DT
+				  , REG_ID
+				   )
+			VALUES ( 
+				  #downSeq#
+				  , #dsnSeq#
+				  , #memSeq#
+				  , #memId#
+				  , now()
+				  , #regId#
+				   )
+		]]>
+	</insert>
+	
+	<insert id="FrontDsnBankDAO.insertLikeInfo">
+	<selectKey keyProperty="downSeq" resultClass="decimal" >
+    	SELECT	IFNULL(MAX(a.SEL_SEQ)+1,1)
+    	FROM	tb_dsn_sel a
+    </selectKey>
+		<![CDATA[
+			INSERT INTO tb_dsn_sel 
+				( SEL_SEQ
+				  , DSN_SEQ
+				  , MEM_SEQ
+				  , MEM_ID
+				  , REG_DT
+				  , REG_ID
+				   )
+			VALUES ( 
+				  #downSeq#
+				  , #dsnSeq#
+				  , #memSeq#
+				  , #memId#
+				  , now()
+				  , #regId#
+				   )
+		]]>
+	</insert>
+	
+	<select id="FrontDsnBankDAO.selectLikeCnt" parameterClass="TImgInfoSearchVO" resultClass="int">
+		SELECT COUNT(*) FROM tb_dsn_sel 
+		WHERE DSN_SEQ = #dsnSeq# 
+		AND MEM_SEQ = #memSeq#
+		AND MEM_ID = #memId#
+	</select>
+	
+</sqlMap>

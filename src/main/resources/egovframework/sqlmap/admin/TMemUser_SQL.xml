@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TMemUser">
+	
+	<typeAlias  alias="egovMap" type="org.egovframe.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="SearchVo" type="dlink.admin.vo.SearchVO"/>
+	<typeAlias  alias="TMemUserVO" type="dlink.admin.vo.TMemUserVO"/>
+	
+	<resultMap id="TMemUser" class="dlink.admin.vo.TMemUserVO">
+		<result property="loginId" column="LOGIN_ID" columnIndex="1"/>
+		<result property="userNm" column="USER_NM" columnIndex="2"/>
+		<result property="sex" column="SEX" columnIndex="3"/>
+		<result property="birthday" column="BIRTHDAY" columnIndex="4"/>
+		<result property="mobileNo" column="MOBILE_NO" columnIndex="5"/>
+		<result property="emailAddr" column="EMAIL_ADDR" columnIndex="6"/>
+		<result property="zipCd" column="ZIP_CD" columnIndex="7"/>
+		<result property="addr" column="ADDR" columnIndex="8"/>
+		<result property="dtlAddr" column="DTL_ADDR" columnIndex="9"/>
+		<result property="regDt" column="REG_DT" columnIndex="10"/>
+		<result property="register" column="REGISTER" columnIndex="11"/>
+		<result property="updDt" column="UPD_DT" columnIndex="12"/>
+		<result property="updater" column="UPDATER" columnIndex="13"/>
+	</resultMap>
+	
+	<insert id="TMemUserDAO.insertTMemUser_S">
+		<![CDATA[
+			INSERT INTO t_mem_user 
+				( LOGIN_ID
+				  , USER_NM
+				  , SEX
+				  , BIRTHDAY
+				  , MOBILE_NO
+				  , EMAIL_ADDR
+				  , ZIP_CD
+				  , ADDR
+				  , DTL_ADDR
+				  , REG_DT
+				  , REGISTER
+				  , UPD_DT
+				  , UPDATER )
+			VALUES ( #loginId#
+				  , #userNm#
+				  , #sex#
+				  , #birthday#
+				  , #mobileNo#
+				  , #emailAddr#
+				  , #zipCd#
+				  , #addr#
+				  , #dtlAddr#
+				  , CURDATE()
+				  , #register#
+				  , CURDATE()
+				  , #updater# )
+		]]>
+	</insert>
+	
+	<update id="TMemUserDAO.updateTMemUser_S">
+		<![CDATA[
+			UPDATE 
+				t_mem_user
+			SET 
+				MOBILE_NO=#mobileNo#
+				, EMAIL_ADDR=#emailAddr#
+				, ZIP_CD=#zipCd#
+				, ADDR=#addr#
+				, BIRTHDAY=#birthday#
+				, DTL_ADDR=#dtlAddr#
+				, UPD_DT=now()
+				, UPDATER=#updater#
+			WHERE 
+				LOGIN_ID = #loginId#
+			]]>
+	</update>
+	
+	<delete id="TMemUserDAO.deleteTMemUser_S">
+		<![CDATA[
+			DELETE FROM 
+				t_mem_user 
+			WHERE
+				LOGIN_ID = #loginId#
+			]]>
+	</delete>
+	
+	<select id="TMemUserDAO.selectTMemUser_S" resultMap="TMemUser">
+		<![CDATA[
+			SELECT
+				LOGIN_ID
+				, USER_NM
+				, SEX
+				, BIRTHDAY
+				, MOBILE_NO
+				, EMAIL_ADDR
+				, ZIP_CD
+				, ADDR
+				, DTL_ADDR
+				, REG_DT
+				, REGISTER
+				, UPD_DT
+				, UPDATER
+			FROM t_mem_user
+			WHERE LOGIN_ID = #loginId#
+			]]>
+	</select>
+	
+	<select id="TMemUserDAO.selectTMemUserList_D" parameterClass="SearchVo" resultClass="egovMap">
+			SELECT
+				LOGIN_ID
+				, USER_NM
+				, SEX
+				, BIRTHDAY
+				, MOBILE_NO
+				, EMAIL_ADDR
+				, ZIP_CD
+				, ADDR
+				, DTL_ADDR
+				, REG_DT
+				, REGISTER
+				, UPD_DT
+				, UPDATER
+			FROM t_mem_user
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				<isNotEmpty property="searchKeyword">
+					LOGIN_ID = #searchKeyword#
+				</isNotEmpty>
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				<isNotEmpty property="searchKeyword">
+					USER_NM LIKE CONCAT('%',#searchKeyword#,'%')
+				</isNotEmpty>
+			</isEqual>
+				ORDER BY LOGIN_ID
+				limit #firstIndex#, #recordCountPerPage#	
+	</select>	
+	
+	<select id="TMemUserDAO.selectTMemUserListTotCnt_S" parameterClass="SearchVo" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM t_mem_user
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				<isNotEmpty property="searchKeyword">
+					LOGIN_ID = #searchKeyword#
+				</isNotEmpty>
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				<isNotEmpty property="searchKeyword">
+					USER_NM LIKE CONCAT('%',#searchKeyword#,'%')
+				</isNotEmpty>
+			</isEqual>
+	</select>
+	
+
+	<insert id="TMemUserDAO.insertReqMemToTMemUser" >
+		<![CDATA[
+			INSERT INTO t_mem_user
+				(LOGIN_ID	,USER_NM	,SEX	,BIRTHDAY	,MOBILE_NO	
+					,EMAIL_ADDR	,ZIP_CD	,ADDR	,DTL_ADDR	,REG_DT	
+					,REGISTER	,UPD_DT	,UPDATER)
+			SELECT 
+				LOGIN_ID ,USER_NM	,SEX	,BIRTHDAY	,MOBILE_NO
+				,EMAIL_ADDR	,ZIP_CD	,ADDR	,DTL_ADDR	,now()
+				,#register#	,null	,null
+			FROM 
+				t_req_user
+			WHERE LOGIN_ID=#loginId# AND DATE_FORMAT(REQ_DT, '%Y%m%d%H%i%S') =  #reqDt#
+		]]>
+	</insert>
+	
+	<insert id="TMemUserDAO.insertMemAccpt" >
+		<![CDATA[
+			INSERT INTO t_mem_accpt(LOGIN_ID	,LOGIN_PWD	,USER_TYPE	,MEM_DT	,PWD_CHG_DT	,NEXT_CHG_DT	,SMS_YN	,MAIL_YN	,OUT_DT	,REG_DT	,UPD_DT	,UPDATER	,REGISTER)
+			SELECT 
+				LOGIN_ID	,LOGIN_PWD	,'MG0001' , now(), now(), DATE_ADD(NOW(), INTERVAL 90 DAY), SMS_YN, MAIL_YN, null, now(), now(),null, null
+			FROM 
+				t_req_user
+			WHERE LOGIN_ID=#loginId# AND DATE_FORMAT(REQ_DT, '%Y%m%d%H%i%S') =  #reqDt#
+		]]>
+	</insert>
+
+
+	
+</sqlMap>

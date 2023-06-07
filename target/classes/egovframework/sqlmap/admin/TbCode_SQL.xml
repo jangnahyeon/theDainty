@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TbCode">
+	
+	<typeAlias  alias="egovMap" type="org.egovframe.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="tbCodeSerarchVO" type="dlink_new.admin.vo.TbCodeVO"/>
+	
+	<resultMap id="tbCode" class="dlink_new.admin.vo.TbCodeVO">
+		<result property="code" column="CODE" columnIndex="1"/>
+		<result property="gbCd" column="GB_CD" columnIndex="2"/>
+		<result property="codeNm" column="CODE_NM" columnIndex="3"/>
+		<result property="useYn" column="USE_YN" columnIndex="4"/>
+		<result property="regDt" column="REG_DT" columnIndex="5"/>
+		<result property="regId" column="REG_ID" columnIndex="6"/>
+		<result property="updDt" column="UPD_DT" columnIndex="7"/>
+		<result property="updId" column="UPD_ID" columnIndex="8"/>
+		
+		<result property="codeGbVO" resultMap="TbCodeGb.tbCodeGb" />
+	</resultMap>	
+	
+	<insert id="tbCodeDAO.insertTbCode_S">
+		<![CDATA[
+			INSERT INTO tb_code 
+				( 
+				  CODE
+				  , GB_CD
+				  , CODE_NM
+				  , USE_YN
+				  , REG_DT
+				  , REG_ID
+				  , UPD_DT
+				  , UPD_ID )
+			VALUES ( 
+				  ( SELECT CODE FROM (SELECT LPAD( IFNULL( MAX(CODE), 0 ) + 1, 4, '0') CODE FROM tb_code WHERE GB_CD = #gbCd# ) AS CODE)
+				  , #gbCd#
+				  , #codeNm#
+				  , #useYn#
+				  , NOW()
+				  , #regId#
+				  , NOW()
+				  , #updId# )
+		]]>
+	</insert>
+	
+	<update id="tbCodeDAO.updateTbCode_S">
+		<![CDATA[
+			UPDATE tb_code
+			SET 
+				CODE_NM=#codeNm#
+				, USE_YN=#useYn#				
+				, UPD_DT=NOW()
+				, UPD_ID=#updId#
+			WHERE 1=1
+				AND CODE = #code#
+				AND GB_CD = #gbCd#				
+			]]>
+	</update>
+	
+	<delete id="tbCodeDAO.deleteTbCode_S">
+		<![CDATA[
+			DELETE FROM tb_code 
+			WHERE 1=1
+				AND CODE = #code#
+				AND GB_CD = #gbCd#
+			]]>
+	</delete>
+	
+	<select id="tbCodeDAO.selectTbCode_S" resultMap="tbCode">
+		<![CDATA[
+			SELECT
+				CODE
+				, GB_CD
+				, CODE_NM
+				, USE_YN
+				, REG_DT
+				, REG_ID
+				, UPD_DT
+				, UPD_ID
+				, ( SELECT GB_NM FROM tb_code_gb A WHERE A.GB_CD = #gbCd# ) AS GB_NM
+			FROM tb_code
+			WHERE 1=1
+				AND CODE = #code#
+				AND GB_CD = #gbCd#
+			]]>
+	</select>
+	
+	<select id="tbCodeDAO.selectTbCodeList_D" parameterClass="tbCodeSerarchVO" resultMap="tbCode">
+			SELECT
+				A.CODE
+				, A.GB_CD
+				, A.CODE_NM
+				, A.USE_YN
+				, A.REG_DT
+				, A.REG_ID
+				, A.UPD_DT
+				, A.UPD_ID
+				, B.GB_NM
+			FROM tb_code A
+				LEFT OUTER JOIN 
+					tb_code_gb B 
+						ON A.GB_CD = B.GB_CD
+			WHERE 1=1
+			<!-- <isNotEmpty property="gbCd">		
+				AND A.GB_CD = #gbCd#
+			</isNotEmpty> -->
+			<isEqual prepend="AND" property="searchCondition" compareValue="all">
+				(
+					(
+						#searchKeyword# LIKE CONCAT( '%', A.GB_CD, '%' )
+						OR
+						A.GB_CD LIKE CONCAT('%',#searchKeyword#,'%')
+					)
+					OR
+					(
+						#searchKeyword# LIKE CONCAT( '%', B.GB_NM, '%' )
+						OR
+						B.GB_NM LIKE CONCAT('%',#searchKeyword#,'%')
+					)
+					OR
+					(
+						A.CODE_NM LIKE CONCAT('%',#searchKeyword#,'%')
+					)
+				)
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="gbCd">
+				(
+					#searchKeyword# LIKE CONCAT( '%', A.GB_CD, '%' )
+					OR
+					A.GB_CD LIKE CONCAT('%',#searchKeyword#,'%')
+				)
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="gbNm">
+				(
+					#searchKeyword# LIKE CONCAT( '%', B.GB_NM, '%' )
+					OR
+					B.GB_NM LIKE CONCAT('%',#searchKeyword#,'%')
+				)
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="codeNm">
+				A.CODE_NM LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+			<!-- <isEqual prepend="AND" property="searchCondition" compareValue="0">
+				CODE = #searchKeyword#
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				GB_CD LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual> -->
+				ORDER BY 
+					A.GB_CD DESC, A.REG_DT DESC
+				limit #firstIndex#, #recordCountPerPage#
+	</select>
+	
+	<select id="tbCodeDAO.selectTbCodeListFront" parameterClass="tbCodeSerarchVO" resultMap="tbCode">
+			SELECT
+				A.CODE
+				, A.GB_CD
+				, A.CODE_NM
+				, A.USE_YN
+				, A.REG_DT
+				, A.REG_ID
+				, A.UPD_DT
+				, A.UPD_ID
+				, B.GB_NM
+			FROM tb_code A
+				LEFT OUTER JOIN 
+					tb_code_gb B 
+						ON A.GB_CD = B.GB_CD
+			WHERE 1=1
+			<isNotEmpty property="gbCd">		
+				AND A.GB_CD = #gbCd#
+			</isNotEmpty>
+			<isEqual prepend="AND" property="searchCondition" compareValue="all">
+				(
+					(
+						#searchKeyword# LIKE CONCAT( '%', A.GB_CD, '%' )
+						OR
+						A.GB_CD LIKE CONCAT('%',#searchKeyword#,'%')
+					)
+					OR
+					(
+						#searchKeyword# LIKE CONCAT( '%', B.GB_NM, '%' )
+						OR
+						B.GB_NM LIKE CONCAT('%',#searchKeyword#,'%')
+					)
+					OR
+					(
+						A.CODE_NM LIKE CONCAT('%',#searchKeyword#,'%')
+					)
+				)
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="gbCd">
+				(
+					#searchKeyword# LIKE CONCAT( '%', A.GB_CD, '%' )
+					OR
+					A.GB_CD LIKE CONCAT('%',#searchKeyword#,'%')
+				)
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="gbNm">
+				(
+					#searchKeyword# LIKE CONCAT( '%', B.GB_NM, '%' )
+					OR
+					B.GB_NM LIKE CONCAT('%',#searchKeyword#,'%')
+				)
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="codeNm">
+				A.CODE_NM LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+			<!-- <isEqual prepend="AND" property="searchCondition" compareValue="0">
+				CODE = #searchKeyword#
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				GB_CD LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual> -->
+				ORDER BY 
+					A.GB_CD ASC, A.CODE ASC
+				
+	</select>
+	
+		
+<!-- 				 -->
+	
+	<select id="tbCodeDAO.selectTbCodeListTotCnt_S" parameterClass="tbCodeSerarchVO" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM tb_code A
+				LEFT OUTER JOIN 
+					tb_code_gb B 
+						ON A.GB_CD = B.GB_CD
+			WHERE 1=1			
+			<!-- <isNotEmpty property="gbCd">		
+				AND A.GB_CD = #gbCd#
+			</isNotEmpty> -->
+			<isEqual prepend="AND" property="searchCondition" compareValue="all">
+				(
+					(
+						#searchKeyword# LIKE CONCAT( '%', A.GB_CD, '%' )
+						OR
+						A.GB_CD LIKE CONCAT('%',#searchKeyword#,'%')
+					)
+					OR
+					(
+						#searchKeyword# LIKE CONCAT( '%', B.GB_NM, '%' )
+						OR
+						B.GB_NM LIKE CONCAT('%',#searchKeyword#,'%')
+					)
+					OR
+					(
+						A.CODE_NM LIKE CONCAT('%',#searchKeyword#,'%')
+					)
+				)
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="gbCd">
+				(
+					#searchKeyword# LIKE CONCAT( '%', A.GB_CD, '%' )
+					OR
+					A.GB_CD LIKE CONCAT('%',#searchKeyword#,'%')
+				)
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="gbNm">
+				(
+					#searchKeyword# LIKE CONCAT( '%', B.GB_NM, '%' )
+					OR
+					B.GB_NM LIKE CONCAT('%',#searchKeyword#,'%')
+				)
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="codeNm">
+				A.CODE_NM LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+			<!-- <isEqual prepend="AND" property="searchCondition" compareValue="0">
+				CODE = #searchKeyword#
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				GB_CD LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual> -->
+	</select>
+
+</sqlMap>

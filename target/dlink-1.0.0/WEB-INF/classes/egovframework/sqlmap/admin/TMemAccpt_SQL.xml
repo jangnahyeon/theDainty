@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TMemAccpt">
+	
+	<typeAlias  alias="egovMap" type="org.egovframe.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="SearchVo" type="dlink.admin.vo.SearchVO"/>
+	<typeAlias  alias="tMemAccptVO" type="dlink.admin.vo.TMemAccptVO"/>
+	
+	<resultMap id="TMemAccpt" class="dlink.admin.vo.TMemAccptVO">
+		<result property="loginId" column="LOGIN_ID" columnIndex="1"/>
+		<result property="loginPwd" column="LOGIN_PWD" columnIndex="2"/>
+		<result property="userType" column="USER_TYPE" columnIndex="3"/>
+		<result property="memDt" column="MEM_DT" columnIndex="4"/>
+		<result property="pwdChgDt" column="PWD_CHG_DT" columnIndex="5"/>
+		<result property="nextChgDt" column="NEXT_CHG_DT" columnIndex="6"/>
+		<result property="smsYn" column="SMS_YN" columnIndex="7"/>
+		<result property="mailYn" column="MAIL_YN" columnIndex="8"/>
+		<result property="outDt" column="OUT_DT" columnIndex="9"/>
+		<result property="regDt" column="REG_DT" columnIndex="10"/>
+		<result property="updDt" column="UPD_DT" columnIndex="11"/>
+		<result property="updater" column="UPDATER" columnIndex="12"/>
+		<result property="register" column="REGISTER" columnIndex="13"/>
+	</resultMap>
+	
+	<insert id="TMemAccptDAO.insertTMemAccpt_S" >
+		<![CDATA[
+			INSERT INTO t_mem_accpt 
+				( LOGIN_ID
+				  , LOGIN_PWD
+				  , USER_TYPE
+				  , MEM_DT
+				  , PWD_CHG_DT
+				  , NEXT_CHG_DT
+				  , SMS_YN
+				  , MAIL_YN
+				  , OUT_DT
+				  , REG_DT
+				  , UPD_DT
+				  , UPDATER
+				  , REGISTER )
+			VALUES ( #loginId#
+				  , #loginPwd#
+				  , #userType#
+				  , now()
+				  , #pwdChgDt#
+				  , DATE_ADD(NOW(), INTERVAL 90 DAY)
+				  , IFNULL(SMS_YN,'N')
+				  , IFNULL(MAIL_YN,'N')
+				  , null
+				  , now()
+				  , null
+				  , null
+				  , #loginId# )
+		]]>
+	</insert>
+	
+	
+	
+	<update id="TMemAccptDAO.updateTMemAccpt_S">
+			UPDATE 
+				t_mem_accpt
+			SET 
+				
+				SMS_YN=#smsYn#
+				, MAIL_YN=#mailYn#
+				, PWD_CHG_DT=now()
+				<!-- , NEXT_CHG_DT = DATE_ADD(now(), INTERVAL 90 DAY) -->
+				, OUT_DT=#outDt#
+				, UPD_DT=now()
+				, UPDATER=#updater#
+				, REGISTER=#register#
+				<isNotEmpty property="loginPwdAfter" prepend=",">
+				  LOGIN_PWD=#loginPwdAfter#
+				</isNotEmpty>
+			WHERE 
+				LOGIN_ID = #loginId#
+				<isNotEmpty property="loginPwd" prepend="and">
+					LOGIN_PWD=#loginPwd#
+				</isNotEmpty>
+				
+	</update>
+	
+	
+	<delete id="TMemAccptDAO.deleteTMemAccpt_S">
+		<![CDATA[
+			DELETE FROM t_mem_accpt 
+			]]>
+	</delete>
+	
+	<select id="TMemAccptDAO.selectTMemAccpt_S" resultMap="TMemAccpt">
+		<![CDATA[
+			SELECT
+				LOGIN_ID
+				, LOGIN_PWD
+				, USER_TYPE
+				, MEM_DT
+				, PWD_CHG_DT
+				, NEXT_CHG_DT
+				, SMS_YN
+				, MAIL_YN
+				, OUT_DT
+				, REG_DT
+				, UPD_DT
+				, UPDATER
+				, REGISTER
+			FROM 
+				t_mem_accpt
+			WHERE 
+				LOGIN_ID = #loginId#
+			]]>
+	</select>
+	
+	<select id="TMemAccptDAO.selectTMemAccptList_D" parameterClass="SearchVo" resultClass="egovMap">
+			SELECT
+				LOGIN_ID
+				, LOGIN_PWD
+				, USER_TYPE
+				, MEM_DT
+				, PWD_CHG_DT
+				, NEXT_CHG_DT
+				, SMS_YN
+				, MAIL_YN
+				, OUT_DT
+				, REG_DT
+				, UPD_DT
+				, UPDATER
+				, REGISTER
+			FROM t_mem_accpt
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				LOGIN_ID = #searchKeyword#
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				LOGIN_PWD LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+				limit #firstIndex#, #recordCountPerPage#	
+	</select>	
+	<select id="TMemAccptDAO.selectTMemAccptListTotCnt_S" parameterClass="SearchVo" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM t_mem_accpt
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				LOGIN_ID = #searchKeyword#
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				LOGIN_PWD LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+	</select>
+	
+	<select id="TMemAccptDAO.selectLogin" resultMap="TMemAccpt" parameterClass="tMemAccptVO" >
+		<![CDATA[
+			SELECT
+				LOGIN_ID
+				, LOGIN_PWD
+				, USER_TYPE
+				, MEM_DT
+				, PWD_CHG_DT
+				, NEXT_CHG_DT
+				, SMS_YN
+				, MAIL_YN
+				, OUT_DT
+				, REG_DT
+				, UPD_DT
+				, UPDATER 
+				, REGISTER
+			FROM t_mem_accpt
+			WHERE 
+			LOGIN_ID	= #loginId# AND
+			LOGIN_PWD	= #loginPwd#
+			]]>
+			<isNotEmpty property="userType" prepend="AND">
+				USER_TYPE = #userType#
+			</isNotEmpty>
+	</select>
+	
+	<update id="TMemAccptDAO.updateUserPsw">
+		<![CDATA[
+			UPDATE t_mem_accpt
+			SET 
+				LOGIN_PWD = #loginPwd#
+				, PWD_CHG_DT = now()
+				, NEXT_CHG_DT = DATE_ADD(NOW(), INTERVAL 90 DAY)
+			WHERE LOGIN_ID = #loginId#
+			]]>
+	</update>
+	
+	<!-- 현재비밀번호확인 --> 
+    <select id="TMemAccptDAO.pwCheck" parameterClass="TMemAccptVO" resultClass="int">
+        SELECT COUNT(LOGIN_PWD) 
+        FROM 
+        	t_mem_accpt
+        WHERE 
+        	LOGIN_PWD = #loginPwd#
+        	and LOGIN_ID = #loginId#
+    </select>
+    
+</sqlMap>

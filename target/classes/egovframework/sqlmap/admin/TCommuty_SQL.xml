@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TCommuty">
+	
+	<typeAlias  alias="egovMap" type="org.egovframe.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="SearchVo" type="dlink.admin.vo.SearchVO"/>
+	<typeAlias  alias="TCommutyVO" type="dlink.admin.vo.TCommutyVO"/>
+	
+	<resultMap id="TCommutyVO" class="dlink.admin.vo.TCommutyVO">
+		<result property="menuId" column="MENU_ID" columnIndex="1"/>
+		<result property="postNo" column="POST_NO" columnIndex="2"/>
+		<result property="seq" column="SEQ" columnIndex="3"/>
+		<result property="title" column="TITLE" columnIndex="4"/>
+		<result property="cont" column="CONT" columnIndex="5"/>
+		<result property="register" column="REGISTER" columnIndex="6"/>
+		<result property="regDt" column="REG_DT" columnIndex="7"/>
+		<result property="openYn" column="OPEN_YN" columnIndex="8"/>
+		<result property="pwd" column="PWD" columnIndex="9"/>
+		<result property="fileSeq" column="FILE_SEQ" columnIndex = "10"/>
+	</resultMap>
+	
+	<select id="TCommutyDAO.selectForInsertPostNo" parameterClass="TCommutyVO" resultClass="int" >
+		SELECT 
+				LPAD(IFNULL(MAX(POST_NO+1),1),5,'0')
+		FROM 
+			t_commuty
+		WHERE
+			MENU_ID = #menuId#
+	</select>
+	
+	<select id="TCommutyDAO.selectForInsertSeq" parameterClass="TCommutyVO" resultClass="int" >
+		SELECT 
+			IFNULL(MAX(SEQ),0)+1
+		FROM 
+			t_commuty
+		WHERE
+				MENU_ID = #menuId#
+			AND
+				POST_NO = #postNo#
+	</select>
+	
+	
+	<insert id="TCommutyDAO.insertTCommuty_S">
+		<![CDATA[
+			INSERT INTO t_commuty 
+				( 
+					MENU_ID
+				  , POST_NO
+				  , SEQ
+				  , TITLE
+				  , CONT
+				  , REGISTER
+				  , REG_DT
+				  , OPEN_YN
+				  , PWD )
+			VALUES ( 
+					#menuId#
+				  , #postNo#
+				  , #seq#
+				  , #title#
+				  , #cont#
+				  , #register#
+				  , NOW()
+				  , #openYn#
+				  , #pwd# )
+		]]>
+	</insert>
+	
+	<update id="TCommutyDAO.updateTCommuty_S">
+		<![CDATA[
+			UPDATE t_commuty
+			SET 
+				 SEQ = #seq#
+				, TITLE = #title#
+				, CONT = #cont#
+				, REGISTER = #register#
+				, REG_DT = NOW()
+				, OPEN_YN = #openYn#
+				, PWD = #pwd#
+			WHERE
+					MENU_ID = #menuId#
+				AND
+					POST_NO = #postNo#
+			]]>
+	</update>
+	
+	<delete id="TCommutyDAO.deleteTCommuty_S">
+		<![CDATA[
+			DELETE FROM t_commuty 
+			WHERE
+				MENU_ID = #menuId#
+			AND
+				POST_NO = #postNo#
+			AND
+				SEQ = #seq#
+			]]>
+	</delete>
+	
+	<select id="TCommutyDAO.selectTCommuty_S" resultMap="TCommutyVO">
+		<![CDATA[
+			SELECT
+				MENU_ID
+				, POST_NO
+				, SEQ
+				, TITLE
+				, CONT
+				, REGISTER
+				, REG_DT
+				, OPEN_YN
+				, PWD
+				,(SELECT
+							 COUNT(FILE_SEQ)
+					   FROM
+							t_commuty_file as B
+					   WHERE
+								B.MENU_ID = A.MENU_ID
+							AND
+								B.POST_NO =  A.POST_NO
+							AND
+								B.SEQ = A.SEQ
+						) as FILE_SEQ
+			FROM t_commuty as A
+			WHERE
+				A.MENU_ID = #menuId#
+			AND
+				A.POST_NO = #postNo#
+			AND
+				A.SEQ = #seq#
+			]]>
+	</select>
+	
+	<select id="TCommutyDAO.selectTCommutyList_D" parameterClass="SearchVo" resultClass="egovMap">
+			SELECT
+						MENU_ID
+						, POST_NO
+						, SEQ
+						, TITLE
+						, CONT
+						, REGISTER
+						, REG_DT
+						, OPEN_YN
+						, PWD
+						,(SELECT
+								 COUNT(FILE_SEQ)
+						   FROM
+								t_commuty_file as B
+						   WHERE
+									B.MENU_ID = A.MENU_ID
+								AND
+									B.POST_NO =  A.POST_NO
+								AND
+									B.SEQ = A.seq		
+							)AS FILE_SEQ
+			FROM t_commuty as A
+			WHERE 
+					1=1	
+				AND
+					A.MENU_ID = #menuId#	
+				<!-- AND 
+					A.SEQ = ( 
+							SELECT 
+									MIN(A.SEQ)
+							FROM 
+									t_commuty 
+						)	 -->
+				<isEqual prepend="AND" property="searchCondition" compareValue="0">
+					TITLE LIKE CONCAT('%',#searchKeyword#,'%')
+				</isEqual>
+				<isEqual prepend="AND" property="searchCondition" compareValue="1">
+					TITLE LIKE CONCAT('%',#searchKeyword#,'%')
+				</isEqual>
+				
+			
+			
+			ORDER BY CAST(POST_NO AS UNSIGNED) DESC
+				limit #firstIndex#, #recordCountPerPage#	
+	</select>	
+	<select id="TCommutyDAO.selectTCommutyListTotCnt_S" parameterClass="SearchVo" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM t_commuty
+			WHERE 1=1
+				AND
+						MENU_ID = #menuId#	
+			<!-- 	AND 
+						SEQ = ( 
+								SELECT 
+										MIN(SEQ)
+								FROM 
+										t_commuty 
+							)	 -->
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">					
+				TITLE LIKE CONCAT('%',#searchKeyword#,'%')					
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				TITLE LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>			
+	</select>
+	
+	<insert id="TCommutyDAO.insertCommentsTCommuty">
+		<![CDATA[
+			INSERT INTO t_commuty 
+				( 
+					MENU_ID
+				  , POST_NO
+				  , SEQ
+				  , TITLE
+				  , CONT
+				  , REGISTER
+				  , REG_DT
+				  , OPEN_YN
+				  , PWD )
+			VALUES ( 
+					#menuId#
+				  , #postNo#
+				  , #seq#
+				  , #title#
+				  , #cont#
+				  , #register#
+				  , NOW()
+				  , #openYn#
+				  , #pwd# )
+		]]>
+	</insert>
+	
+	
+	<update id="TCommutyDAO.updateCommentsTCommuty">
+		<![CDATA[
+			UPDATE 
+					t_commuty
+			SET 
+				TITLE = #title#
+				, CONT = #cont#
+				, REGISTER = #register#
+				, REG_DT = NOW()
+				, OPEN_YN = #openYn#
+				, PWD = #pwd#
+			WHERE
+					MENU_ID = #menuId#
+				AND
+					POST_NO = #postNo#
+				AND
+					SEQ = #seq#
+			]]>
+	</update>
+	
+	
+	<select id="TCommutyDAO.selectCommentsTCommutyList" parameterClass="TCommutyVO" resultClass="egovMap">
+		<![CDATA[
+			SELECT
+				MENU_ID
+				, POST_NO
+				, SEQ
+				, TITLE
+				, CONT
+				, REGISTER
+				, REG_DT
+				, OPEN_YN
+				, PWD
+			FROM t_commuty
+			WHERE
+				MENU_ID = #menuId#
+			AND
+				POST_NO = #postNo#			
+			]]>
+	</select>
+
+	<select id="TCommutyDAO.selectMainTCommutyList" resultClass="egovMap">
+			 SELECT
+				MENU_ID
+				, POST_NO
+				, SEQ
+				, TITLE
+				, CONT
+				, REGISTER
+				, REG_DT
+				, YEAR(REG_DT) AS reg_dt_year
+				, MONTH(REG_DT) AS reg_dt_month
+				, DAY(REG_DT) AS reg_dt_day
+				, OPEN_YN
+				, PWD
+			FROM t_commuty
+			WHERE
+					1=1
+				AND
+					MENU_ID = #menuId#
+				AND
+					OPEN_YN = "Y"
+			ORDER BY REG_DT DESC
+			LIMIT 4
+	</select>	
+	
+	
+		<select id="TCommutyDAO.selectTCommutyFileList" parameterClass="TCommutyVO" resultClass="egovMap">
+		<![CDATA[
+			SELECT
+				MENU_ID
+				  , POST_NO
+				  , SEQ
+				  , FILE_SEQ
+				  , (SELECT 
+				  		FILE_NM
+				  	FROM 
+				  		t_attfile B
+				  	WHERE 
+				  		B.FILE_SEQ = A.FILE_SEQ
+				  	) AS fileNm
+			FROM
+				 t_commuty_file A
+			WHERE
+					A.MENU_ID = #menuId#
+				AND
+					A.POST_NO = #postNo#
+				AND
+					A.SEQ = #seq#		
+			]]>
+	</select>
+		
+	<insert id="TCommutyDAO.insertTCommutyFile_S">
+		<![CDATA[
+			INSERT INTO t_commuty_file 
+				( 
+					MENU_ID
+				  , POST_NO
+				  , SEQ
+				  , FILE_SEQ
+				 )
+			VALUES ( 
+					#menuId#
+				  , #postNo#
+				  , #seq#
+				  , #fileSeq# )
+		]]>
+	</insert>
+	
+	<update id="TCommutyDAO.updateTCommutyFile_S">
+		<![CDATA[
+			UPDATE t_commuty_file
+			SET 
+				 FILE_SEQ = #fileSeq#
+			WHERE
+					MENU_ID = #menuId#
+				AND
+					POST_NO = #postNo#
+				AND
+					SEQ = #seq#
+			]]>
+	</update>
+	
+	<delete id="TCommutyDAO.deleteTCommutyFile_S">
+		<![CDATA[
+			DELETE FROM t_commuty_file 
+			WHERE
+					 FILE_SEQ = #fileSeq#
+				AND
+					MENU_ID = #menuId#
+				AND
+					POST_NO = #postNo#
+				AND
+					SEQ = #seq#
+			]]>
+	</delete>
+
+</sqlMap>

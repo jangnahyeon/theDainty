@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN"
+    "http://www.ibatis.com/dtd/sql-map-config-2.dtd">
+
+<sqlMapConfig>
+	<sqlMap resource="egovframework/sqlmap/admin/admin_test_Mysql.xml"/>
+	<sqlMap resource="egovframework/sqlmap/admin/TBanner_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/admin/TCode_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/admin/TCommuty_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/admin/TFaq_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/admin/TMemAccpt_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/admin/TMemCom_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/admin/TMemUser_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/admin/TSpecReqCom_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/admin/TMenu_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/admin/TPtplInfo_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/admin/TWord_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/admin/TreqMake_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/admin/TDsnBank_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/admin/TSpecCom_SQL.xml"/>
+	
+	<!-- dlink_new SQL파일 생성 -->
+	<sqlMap resource="egovframework/sqlmap/admin/TImgInfo_SQL.xml"/>
+	
+	<sqlMap resource="egovframework/sqlmap/admin/TbCode_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/admin/TbCodeGb_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/admin/TbMem_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/admin/TbMenuAdmin_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/admin/tbBrd/TbBrd_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/admin/tbBrdCmt/TbBrdCmt_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/admin/tbBrdFile/TbBrdFile_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/admin/tbPortf/TbPortf_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/admin/tbSisul/TbSisul_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/admin/tbSisulRsv/TbSisulRsv_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/admin/tbSisulHld/TbSisulHld_SQL.xml"/>
+</sqlMapConfig>

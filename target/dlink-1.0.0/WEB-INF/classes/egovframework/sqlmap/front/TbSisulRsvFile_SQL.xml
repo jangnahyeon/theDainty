@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TbSisulRsvFile">
+	
+ 	<!-- <typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/> -->
+	<typeAlias  alias="TbSisulRsvFileVO" type="dlink_new.front.vo.TbSisulRsvFileVO"/>
+	
+	<resultMap id="TbSisulRsvFile" class="dlink_new.front.vo.TbSisulRsvFileVO">
+		<result property="rsvFileSeq" column="RSV_FILE_SEQ" columnIndex="1"/>
+		<result property="rsvSeq" column="RSV_SEQ" columnIndex="2"/>
+		<result property="fileSeq" column="FILE_SEQ" columnIndex="3"/>
+		<result property="regDt" column="REG_DT" columnIndex="4"/>
+		<result property="regId" column="REG_ID" columnIndex="5"/>
+		<result property="updDt" column="UPD_DT" columnIndex="6"/>
+		<result property="updId" column="UPD_ID" columnIndex="7"/>
+		<result property="fileNm" column="FILE_NM" columnIndex="8"/>
+	</resultMap>
+	
+	  	<insert id="frontDsnStdDAO.insertTbSisulRsvImgInfo">
+	    <![CDATA[
+	    	INSERT INTO tb_sisul_rsv_file
+	    	( RSV_FILE_SEQ
+	    	, RSV_SEQ
+	    	, FILE_SEQ
+	    	, REG_DT
+	    	, REG_ID
+	    	, UPD_DT
+	    	, UPD_ID )
+	    	VALUES ( #rsvFileSeq#
+	    	, #rsvSeq#
+	    	, #fileSeq#
+	    	, #regDt#
+	    	, #regId#
+	    	, #updDt#
+	    	, #updId# )
+	    ]]>
+	</insert>
+	
+ 	 <insert id="frontDsnStdDAO.insertTbSisulRsvMultImg">
+	    <![CDATA[
+	    	INSERT INTO tb_sisul_rsv_file
+	    	( RSV_FILE_SEQ
+	    	, RSV_SEQ
+	    	, FILE_SEQ
+	    	, REG_DT
+	    	, REG_ID
+	    	, UPD_DT
+	    	, UPD_ID )
+	    	VALUES ( #rsvFileSeq#
+	    	, #rsvSeq#
+	    	, #fileSeq#
+	    	, NOW()
+	    	, #regId#
+	    	, NOW()
+	    	, #updId# )
+	    ]]>
+	</insert>
+	
+	<select id="frontDsnStdDAO.selectTbSisulRsvSeqList" parameterClass="TbSisulRsvFileVO" resultMap="TbSisulRsvFile">
+	    <![CDATA[
+	    	SELECT
+	    		A.RSV_FILE_SEQ
+	    		, A.RSV_SEQ
+	    		, A.FILE_SEQ
+	    		, A.REG_DT
+	    		, A.REG_ID
+	    		, A.UPD_DT
+	    		, A.UPD_ID
+	    		, B.FILE_NM
+	    		, B.FILE_SEQ
+	    	FROM tb_sisul_rsv_file A
+	    	LEFT OUTER JOIN tb_att_file B
+	    	ON A.FILE_SEQ = B.FILE_SEQ
+	    	WHERE 1+1
+	    	AND A.RSV_SEQ = #rsvSeq#
+	    ]]>
+	</select>
+</sqlMap>

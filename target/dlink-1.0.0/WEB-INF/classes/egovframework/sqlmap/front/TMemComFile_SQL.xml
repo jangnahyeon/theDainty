@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TMemComFile">
+	
+	<typeAlias  alias="egovMap" type="org.egovframe.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="TMemComFileVO" type="dlink.admin.vo.TMemComFileVO"/>
+	
+	
+	<resultMap id="TMemComFile" class="dlink.admin.vo.TMemComFileVO">
+		<result property="loginId" column="LOGIN_ID" columnIndex="1"/>
+		<result property="fileSeq" column="FILE_SEQ" columnIndex="2"/>
+		<result property="fileKind" column="FILE_KIND" columnIndex="3"/>
+		<result property="fileNm" column="fileNm" columnIndex="4"/>
+		<result property="fileKindNm" column="fileKindNm" columnIndex="4"/>
+	</resultMap>
+
+	<update id="TMemComFileDAO.updateTMemComFile_S">
+		<![CDATA[
+			UPDATE t_mem_com_file
+			SET LOGIN_ID=#loginId#
+				, FILE_SEQ=#fileSeq#
+				, FILE_KIND=#fileKind#
+			]]>
+	</update>
+	
+	<delete id="TMemComFileDAO.deleteTMemComFile_S">
+	
+			DELETE 
+				FROM 
+					t_mem_com_file 
+				WHERE
+					LOGIN_ID = #loginId#					
+				<isNotEmpty property="fileSeq" prepend="AND">
+					 FILE_SEQ = #fileSeq#
+				</isNotEmpty>
+		
+	</delete>
+	
+		
+	<select id="TMemComFileDAO.selectTMemComFile" resultMap="TMemComFile">
+		
+			SELECT
+				A.LOGIN_ID
+				, A.FILE_SEQ
+				, A.FILE_KIND
+				, (SELECT 
+				  		FILE_NM
+				  	FROM 
+				  		t_attfile B
+				  	WHERE 
+				  		B.FILE_SEQ = A.FILE_SEQ
+				  	) AS fileNm
+			FROM t_mem_com_file A
+			WHERE
+				1=1
+				<isNotEmpty property="loginId" prepend="AND">
+					A.LOGIN_ID = #loginId#
+				</isNotEmpty>
+		
+	</select>
+	
+	<select id="TMemComFileDAO.selectTMemComFileList_D" parameterClass="TMemComFileVO" resultClass="egovMap">
+			SELECT
+				 A.LOGIN_ID
+				,  A.FILE_SEQ
+				,  A.FILE_KIND
+				, (SELECT 
+				  		FILE_NM
+				  	FROM 
+				  		t_attfile B
+				  	WHERE 
+				  		B.FILE_SEQ = A.FILE_SEQ
+				  	) AS fileNm
+				  , (SELECT
+							CODE_NM
+				      FROM
+							t_code C
+					   WHERE
+							C.CODE = A.FILE_KIND
+				 ) AS fileKindNm
+			FROM t_mem_com_file  A
+			WHERE 
+				1=1
+			<isNotEmpty property="loginId" prepend="AND">
+				 A.LOGIN_ID = #loginId#
+			</isNotEmpty>
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				<isNotEmpty property="searchKeyword">
+					 A.LOGIN_ID = #searchKeyword#
+				</isNotEmpty>
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				<isNotEmpty property="searchKeyword">
+				 A.FILE_KIND LIKE CONCAT('%',#searchKeyword#,'%')
+				</isNotEmpty>
+			</isEqual>
+				ORDER BY LOGIN_ID 
+				limit #firstIndex#, #recordCountPerPage#	
+	</select>	
+	<select id="TMemComFileDAO.selectTMemComFileListTotCnt_S" parameterClass="SearchVO" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM t_mem_com_file
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				<isNotEmpty property="searchKeyword">
+					LOGIN_ID = #searchKeyword#
+				</isNotEmpty>
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+			<isNotEmpty property="searchKeyword">
+				FILE_KIND LIKE CONCAT('%',#searchKeyword#,'%')
+				</isNotEmpty>
+			</isEqual>
+	</select>
+
+</sqlMap>

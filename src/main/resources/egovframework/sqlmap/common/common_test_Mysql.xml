@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="common" >
+	<typeAlias alias="LoginVO" type="dlink.front.vo.LoginVO" />
+	
+	<select id="common.test" parameterClass="LoginVO" resultClass="LoginVO">
+		select 'test' as user_id from dual
+	</select>
+</sqlMap>

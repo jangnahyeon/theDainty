@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TDsnBank">
+	
+	<typeAlias  alias="TDsnBankSerarchVO" type="dlink.admin.vo.TDsnBankVO"/>
+	
+	<resultMap id="TDsnBank" class="dlink.admin.vo.TDsnBankVO">
+		<result property="dsnNo" column="DSN_NO" columnIndex="1"/>
+		<result property="dsnNm" column="DSN_NM" columnIndex="2"/>
+		<result property="dsnPart" column="DSN_PART" columnIndex="3"/>
+		<result property="dsnPartNm" column="DSN_PART_NM" columnIndex="4"/>
+		<result property="refWord" column="REF_WORD" columnIndex="5"/>
+		<result property="concept" column="CONCEPT" columnIndex="6"/>
+		<result property="fileSeq" column="FILE_SEQ" columnIndex="7"/>
+		<result property="fileNm" column="FILE_NM" columnIndex="8"/>
+		<result property="regDt" column="REG_DT" columnIndex="9"/>
+		<result property="register" column="REGISTER" columnIndex="10"/>
+	</resultMap>
+	
+	<insert id="TDsnBankDAO.insertTDsnBank_S">
+		<![CDATA[
+			INSERT INTO t_dsn_bank 
+				( DSN_NO
+				  , DSN_NM
+				  , DSN_PART
+				  , REF_WORD
+				  , CONCEPT
+				  , FILE_SEQ
+				  , REG_DT
+				  , REGISTER )
+			VALUES ( (SELECT T2 FROM (SELECT IFNULL(MAX(CAST(DSN_NO AS UNSIGNED)),0)+1 AS T2 FROM t_dsn_bank) B)
+				  , #dsnNm#
+				  , #dsnPart#
+				  , #refWord#
+				  , #concept#
+				  , #fileSeq#
+				  , now()
+				  , #register# )
+		]]>
+	</insert>
+	
+	<update id="TDsnBankDAO.updateTDsnBank_S">
+		<![CDATA[
+			UPDATE t_dsn_bank
+			SET DSN_NM=#dsnNm#
+				, DSN_PART=#dsnPart#
+				, REF_WORD=#refWord#
+				, CONCEPT=#concept#
+				, FILE_SEQ=#fileSeq#
+				, REG_DT = now()
+				, REGISTER = #register#
+			WHERE DSN_NO=#dsnNo#
+			]]>
+	</update>
+	
+	<delete id="TDsnBankDAO.deleteTDsnBank_S">
+		<![CDATA[
+			DELETE FROM t_dsn_bank WHERE DSN_NO=#dsnNo#
+			]]>
+	</delete>
+	
+	<select id="TDsnBankDAO.selectTDsnBank_S" resultMap="TDsnBank">
+		<![CDATA[
+			SELECT
+				DSN_NO
+				, DSN_NM
+				, DSN_PART
+				, (SELECT CODE_NM FROM T_CODE CODE WHERE CODE.CODE = t_dsn_bank.DSN_PART )AS DSN_PART_NM
+				, REF_WORD
+				, CONCEPT
+				, FILE_SEQ
+				, (SELECT FILE_NM FROM t_attfile WHERE t_attfile.FILE_SEQ = t_dsn_bank.FILE_SEQ) AS FILE_NM
+				, REG_DT
+				, REGISTER
+			FROM t_dsn_bank
+				WHERE DSN_NO=#dsnNo#
+			]]>
+	</select>
+	
+	<select id="TDsnBankDAO.selectTDsnBankList_D" parameterClass="TDsnBankSerarchVO" resultClass="egovMap">
+			SELECT
+								DSN_NO
+								, DSN_NM
+								, DSN_PART
+								, REF_WORD
+								, CONCEPT
+								, FILE_SEQ
+								, (SELECT FILE_NM FROM t_attfile WHERE t_attfile.FILE_SEQ = t_dsn_bank.FILE_SEQ) AS FILE_NM
+								, DATE_FORMAT(REG_DT, '%Y-%m-%d') AS REG_DT 
+								, REGISTER
+					FROM t_dsn_bank
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				DSN_NM LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				REF_WORD LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+				ORDER BY CAST(DSN_NO AS UNSIGNED) DESC
+				limit #firstIndex#, #recordCountPerPage#	
+	</select>	
+	<select id="TDsnBankDAO.selectTDsnBankListTotCnt_S" parameterClass="TDsnBankSerarchVO" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM t_dsn_bank
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				DSN_NM LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				REF_WORD LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+	</select>
+
+</sqlMap>

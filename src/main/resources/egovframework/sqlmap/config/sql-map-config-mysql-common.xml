@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN"
+    "http://www.ibatis.com/dtd/sql-map-config-2.dtd">
+
+<sqlMapConfig>
+	<!-- <sqlMap resource="egovframework/sqlmap/common/common_test_Mysql.xml"/>
+	<sqlMap resource="egovframework/sqlmap/common/login_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/common/TAttfile_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/common/TptplImg_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/common/MtsAtalkAuth_SQL.xml"/> -->
+	
+	
+	<!-- dlink_new폴더의 SQL파일생성 -->
+	<sqlMap resource="egovframework/sqlmap/common/File_SQL.xml"/>	
+	<sqlMap resource="egovframework/sqlmap/common/tbAtalkTmpl/TbAtalkTmpl_SQL.xml"/>
+	
+</sqlMapConfig>

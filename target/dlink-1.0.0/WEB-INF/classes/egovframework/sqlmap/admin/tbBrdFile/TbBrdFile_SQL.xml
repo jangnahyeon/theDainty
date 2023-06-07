@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TbBrdFile">
+	
+	<typeAlias  alias="egovMap" type="org.egovframe.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="tbBrdFileSerarchVO" type="dlink_new.admin.vo.TbBrdFileDefaultVO"/>
+	<typeAlias  alias="tbBrdFileVO" type="dlink_new.admin.vo.TbBrdFileVO"/>
+	
+	<resultMap id="tbBrdFile" class="dlink_new.admin.vo.TbBrdFileVO">
+		<result property="brdFileSeq" column="BRD_FILE_SEQ" columnIndex="1"/>
+		<result property="brdSeq" column="BRD_SEQ" columnIndex="2"/>
+		<result property="fileSeq" column="FILE_SEQ" columnIndex="3"/>
+		<result property="regDt" column="REG_DT" columnIndex="4"/>
+		<result property="regId" column="REG_ID" columnIndex="5"/>
+		<result property="updDt" column="UPD_DT" columnIndex="6"/>
+		<result property="updId" column="UPD_ID" columnIndex="7"/>		
+		
+		<result property="fileVO" column="{fileSeq=FILE_SEQ}" select="FileDAO.selectTAttfile_S" />
+	</resultMap>
+	
+	<insert id="tbBrdFileDAO.insertTbBrdFile_S">
+		<selectKey keyProperty="brdFileSeq" resultClass="int">
+			SELECT IFNULL( MAX( BRD_FILE_SEQ ), 0 ) + 1 FROM tb_brd_file bf
+		</selectKey>
+		<![CDATA[
+			INSERT INTO tb_brd_file 
+				( BRD_FILE_SEQ
+				  , BRD_SEQ
+				  , FILE_SEQ
+				  , REG_DT
+				  , REG_ID
+				  , UPD_DT
+				  , UPD_ID )
+			VALUES ( #brdFileSeq#
+				  , #brdSeq#
+				  , #fileSeq#
+				  , NOW()
+				  , #regId#
+				  , NOW()
+				  , #updId# )
+		]]>
+	</insert>
+	
+	<update id="tbBrdFileDAO.updateTbBrdFile_S">
+		<![CDATA[
+			UPDATE tb_brd_file
+			SET 
+				BRD_SEQ=#brdSeq#
+				, FILE_SEQ=#fileSeq#				
+				, UPD_DT=NOW()
+				, UPD_ID=#updId#
+			WHERE 1=1
+				AND BRD_FILE_SEQ = #brdFileSeq#
+			]]>
+	</update>
+	
+	<delete id="tbBrdFileDAO.deleteTbBrdFile_S">
+		<![CDATA[
+			DELETE FROM tb_brd_file
+			WHERE 1=1
+				AND BRD_SEQ = #brdSeq# 
+			]]>
+	</delete>
+	
+	<select id="tbBrdFileDAO.selectTbBrdFile_S" resultMap="tbBrdFile">
+		<![CDATA[
+			SELECT
+				BRD_FILE_SEQ
+				, BRD_SEQ
+				, FILE_SEQ
+				, REG_DT
+				, REG_ID
+				, UPD_DT
+				, UPD_ID
+			FROM tb_brd_file
+			WHERE 1=1
+				AND BRD_FILE_SEQ = #brdFileSeq#
+			]]>
+	</select>
+	
+	<select id="tbBrdFileDAO.selectTbBrdFileList_D" parameterClass="tbBrdFileVO" resultMap="tbBrdFile">
+			SELECT
+				A.BRD_FILE_SEQ
+				, A.BRD_SEQ
+				, A.FILE_SEQ
+				, A.REG_DT
+				, A.REG_ID
+				, A.UPD_DT
+				, A.UPD_ID				
+			FROM tb_brd_file A
+			WHERE 1=1			
+				AND A.BRD_SEQ = #brdSeq#
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				BRD_A.FILE_SEQ = #searchKeyword#
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				A.BRD_SEQ LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+				ORDER BY A.BRD_SEQ ASC
+				limit #firstIndex#, #recordCountPerPage#	
+	</select>	
+	<select id="tbBrdFileDAO.selectTbBrdFileListTotCnt_S" parameterClass="tbBrdFileVO" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM tb_brd_file
+			WHERE 1=1				
+				AND BRD_SEQ = #brdSeq#
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				BRD_FILE_SEQ = #searchKeyword#
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				BRD_SEQ LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+	</select>
+
+</sqlMap>

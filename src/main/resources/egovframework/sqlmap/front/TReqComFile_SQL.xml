@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TReqComFile">
+	
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="TReqComFileSerarchVO" type="dlink.front.vo.TReqComFileDefaultVO"/>
+	
+	<resultMap id="TReqComFile" class="dlink.front.vo.TReqComFileVO">
+		<result property="reqDt" column="REQ_DT" columnIndex="1"/>
+		<result property="comId" column="COM_ID" columnIndex="2"/>
+		<result property="fileSeq" column="FILE_SEQ" columnIndex="3"/>
+		<result property="fileKind" column="FILE_KIND" columnIndex="4"/>
+	</resultMap>
+	
+	<insert id="TReqComFileDAO.insertTReqComFile_S">
+		<![CDATA[
+			INSERT INTO t_req_com_file 
+				( REQ_DT
+				  , COM_ID
+				  , FILE_SEQ
+				  , FILE_KIND )
+			VALUES ( #reqDt#
+				  , #comId#
+				  , #fileSeq#
+				  , #fileKind# )
+		]]>
+	</insert>
+	
+	<update id="TReqComFileDAO.updateTReqComFile_S">
+		<![CDATA[
+			UPDATE t_req_com_file
+			SET REQ_DT=#reqDt#
+				, COM_ID=#comId#
+				, FILE_SEQ=#fileSeq#
+				, FILE_KIND=#fileKind#
+			]]>
+	</update>
+	
+	<delete id="TReqComFileDAO.deleteTReqComFile_S">
+		<![CDATA[
+			DELETE FROM t_req_com_file 
+			]]>
+	</delete>
+	
+	<select id="TReqComFileDAO.selectTReqComFile_S" resultMap="TReqComFile">
+		<![CDATA[
+			SELECT
+				REQ_DT
+				, COM_ID
+				, FILE_SEQ
+				, FILE_KIND
+			FROM t_req_com_file
+			]]>
+	</select>
+	
+	<select id="TReqComFileDAO.selectTReqComFileList_D" parameterClass="TReqComFileSerarchVO" resultClass="egovMap">
+			SELECT
+								REQ_DT
+								, COM_ID
+								, FILE_SEQ
+								, FILE_KIND
+					FROM t_req_com_file
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				REQ_DT = #searchKeyword#
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				COM_ID LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+				limit #firstIndex#, #recordCountPerPage#	
+	</select>	
+	<select id="TReqComFileDAO.selectTReqComFileListTotCnt_S" parameterClass="TReqComFileSerarchVO" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM t_req_com_file
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				REQ_DT = #searchKeyword#
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				COM_ID LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+	</select>
+
+</sqlMap>

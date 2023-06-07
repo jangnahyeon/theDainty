@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN"
+    "http://www.ibatis.com/dtd/sql-map-config-2.dtd">
+
+<sqlMapConfig>
+	<!-- <sqlMap resource="egovframework/sqlmap/front/front_test_Mysql.xml"/>
+	<sqlMap resource="egovframework/sqlmap/front/FrontTPtplInfo_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/front/FrontBusiness_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/front/FrontMtsAtalkMsg_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/front/TReqUser_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/front/TReqCom_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/front/TSelImg_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/front/FrontDsnBank.xml"/>
+	<sqlMap resource="egovframework/sqlmap/front/TMemComFile_SQL.xml"/> -->
+	
+	<!-- dlink_new SQL파일 생성 -->
+	<sqlMap resource="egovframework/sqlmap/front/FrontTImgInfo_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/front/TbSisulRsv_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/front/TbMenu_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/front/tbMenuFooter/TbMenuFooter_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/front/FrontMypage_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/front/TbSisulRsvFile_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/front/TbSisulRsvCmt_SQL.xml"/>
+</sqlMapConfig>

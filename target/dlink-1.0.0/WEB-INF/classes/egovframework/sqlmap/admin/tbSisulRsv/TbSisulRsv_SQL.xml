@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TbSisulRsv">
+	
+	<typeAlias  alias="egovMap" type="org.egovframe.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="tbSisulRsvSerarchVO" type="dlink_new.admin.vo.TbSisulRsvDefaultVO"/>
+	<typeAlias  alias="TbSisulRsv" type="dlink_new.admin.vo.TbSisulRsvVO"/>
+	
+	<resultMap id="tbSisulRsv" class="dlink_new.admin.vo.TbSisulRsvVO">
+		<result property="rsvSeq" column="RSV_SEQ" columnIndex="1"/>
+		<result property="sisulSeq" column="SISUL_SEQ" columnIndex="2"/>
+		<result property="memSeq" column="MEM_SEQ" columnIndex="3"/>
+		<result property="memId" column="MEM_ID" columnIndex="4"/>
+		<result property="title" column="TITLE" columnIndex="5"/>
+		<result property="rsvYear" column="RSV_YEAR" columnIndex="6"/>
+		<result property="rsvMonth" column="RSV_MONTH" columnIndex="7"/>
+		<result property="rsvDay" column="RSV_DAY" columnIndex="8"/>
+		<result property="rsvSt" column="RSV_ST" columnIndex="9"/>
+		<result property="rsvEt" column="RSV_ET" columnIndex="10"/>
+		<result property="prodCnt" column="PROD_CNT" columnIndex="11"/>
+		<result property="prod1" column="PROD_1" columnIndex="12"/>
+		<result property="prod2" column="PROD_2" columnIndex="13"/>
+		<result property="prodSizeCd" column="PROD_SIZE_CD" columnIndex="14"/>
+		<result property="prodRefCd" column="PROD_REF_CD" columnIndex="15"/>
+		<result property="purposeCd" column="PURPOSE_CD" columnIndex="16"/>
+		<result property="pwd" column="PWD" columnIndex="17"/>
+		<result property="acceptYn" column="ACCEPT_YN" columnIndex="18"/>
+		<result property="regDt" column="REG_DT" columnIndex="19"/>
+		<result property="regId" column="REG_ID" columnIndex="20"/>
+		<result property="updDt" column="UPD_DT" columnIndex="21"/>
+		<result property="updId" column="UPD_ID" columnIndex="22"/>
+		<result property="smBizFileSeq" column="SM_BIZ_FILE_SEQ" columnIndex="23"/>
+		<result property="fileNm" column="FILE_NM" columnIndex="24"/>
+		<result property="rejectMsg" column="REJECT_MSG" columnIndex="25"/>
+		<result property="comNm" column="COM_NM" columnIndex="26"/>
+	</resultMap>
+	
+	<resultMap id="tbSisulRsvReply" class="dlink_new.admin.vo.TbSisulRsvVO">
+		<result property="cmtSeq" column="CMT_SEQ" columnIndex="1"/>
+		<result property="memSeq" column="MEM_SEQ" columnIndex="2"/>
+		<result property="memId" column="MEM_ID" columnIndex="3"/>
+		<result property="cont" column="CONT" columnIndex="4"/>
+		<result property="regDt" column="REG_DT" columnIndex="5"/>
+	</resultMap>
+	
+	<insert id="tbSisulRsvDAO.insertTbSisulRsv_S">
+		<![CDATA[
+			INSERT INTO tb_sisul_rsv 
+				( RSV_SEQ
+				  , SISUL_SEQ
+				  , MEM_SEQ
+				  , MEM_ID
+				  , TITLE
+				  , RSV_YEAR
+				  , RSV_MONTH
+				  , RSV_DAY
+				  , RSV_ST
+				  , RSV_ET
+				  , PROD_CNT
+				  , PROD_1
+				  , PROD_2
+				  , PROD_SIZE_CD
+				  , PROD_REF_CD
+				  , PURPOSE_CD
+				  , PWD
+				  , FILE_SEQ
+				  , ACCEPT_YN
+				  , REG_DT
+				  , REG_ID
+				  , UPD_DT
+				  , UPD_ID )
+			VALUES ( ( SELECT IFNULL( MAX( RSV_SEQ ), 0 ) + 1 FROM tb_sisul_rsv sr )
+				  , #sisulSeq#
+				  , #memSeq#
+				  , #memId#
+				  , #title#
+				  , #rsvYear#
+				  , #rsvMonth#
+				  , #rsvDay#
+				  , #rsvSt#
+				  , #rsvEt#
+				  , #prodCnt#
+				  , #prod1#
+				  , #prod2#
+				  , #prodSizeCd#
+				  , #prodRefCd#
+				  , #purposeCd#
+				  , #pwd#
+				  , #fileSeq#
+				  , #acceptYn#
+				  , NOW()
+				  , #regId#
+				  , NOW()
+				  , #updId# )
+		]]>
+	</insert>
+	
+	<update id="tbSisulRsvDAO.updateTbSisulRsv_S">
+		<!-- <![CDATA[ -->
+			UPDATE tb_sisul_rsv
+			SET 
+				<!-- SISUL_SEQ=#sisulSeq#
+				, MEM_SEQ=#memSeq#
+				, MEM_ID=#memId#
+				, TITLE=#title#
+				, RSV_YEAR=#rsvYear#
+				, RSV_MONTH=#rsvMonth#
+				, RSV_DAY=#rsvDay#
+				, RSV_ST=#rsvSt#
+				, RSV_ET=#rsvEt#
+				, PROD_CNT=#prodCnt#
+				, PROD_1=#prod1#
+				, PROD_2=#prod2#
+				, PROD_SIZE_CD=#prodSizeCd#
+				, PROD_REF_CD=#prodRefCd#
+				, PURPOSE_CD=#purposeCd#
+				, PWD=#pwd#
+				, FILE_SEQ=#fileSeq#
+				,  -->				
+				ACCEPT_YN=#acceptYn#				
+				, UPD_DT=NOW()
+				, UPD_ID=#updId#
+			WHERE 1=1
+				AND RSV_SEQ = #rsvSeq#
+			<!-- ]]> -->
+	</update>
+	
+	<delete id="tbSisulRsvDAO.deleteTbSisulRsv_S">
+		<![CDATA[
+			DELETE FROM tb_sisul_rsv 
+			WHERE 1=1
+				AND RSV_SEQ = #rsvSeq#
+			]]>
+	</delete>
+	
+	<select id="tbSisulRsvDAO.selectTbSisulRsv_S"  parameterClass="TbSisulRsv" resultMap="tbSisulRsv">
+		<![CDATA[
+			SELECT
+				RSV_SEQ
+				, SISUL_SEQ
+				, MEM_SEQ
+				, MEM_ID
+				, TITLE
+				, RSV_YEAR
+				, RSV_MONTH
+				, RSV_DAY
+				, RSV_ST
+				, RSV_ET
+				, PROD_CNT
+				, PROD_1
+				, PROD_2
+				, PROD_SIZE_CD
+				, PROD_REF_CD
+				, PURPOSE_CD
+				, PWD
+				, ACCEPT_YN
+				, SM_BIZ_FILE_SEQ
+				, (SELECT File_NM FROM tb_att_file B WHERE A.SM_BIZ_FILE_SEQ = B.FILE_SEQ) FILE_NM
+				, REG_DT
+				, REG_ID
+				, UPD_DT
+				, UPD_ID
+				, REJECT_MSG
+				, (SELECT COM_NM FROM tb_mem C WHERE A.REG_ID = C.MEM_ID) COM_NM
+			FROM tb_sisul_rsv A
+			WHERE 1=1
+				AND RSV_SEQ = #rsvSeq#
+			]]>
+	</select>
+	
+	<select id="tbSisulRsvDAO.selectTbSisulRsvList_D" parameterClass="tbSisulRsvSerarchVO" resultClass="egovMap">
+			SELECT
+				RSV_SEQ
+				, SISUL_SEQ
+				, MEM_SEQ
+				, MEM_ID
+				, TITLE
+				, RSV_YEAR
+				, RSV_MONTH
+				, RSV_DAY
+				, RSV_ST
+				, RSV_ET
+				, PROD_CNT
+				, PROD_1
+				, PROD_2
+				, PROD_SIZE_CD
+				, PROD_REF_CD
+				, PURPOSE_CD
+				, PWD
+				, ACCEPT_YN
+				, REG_DT
+				, REG_ID
+				, UPD_DT
+				, UPD_ID
+				, (SELECT COM_NM FROM tb_mem B WHERE B.MEM_SEQ = A.MEM_SEQ) COM_NM
+			FROM tb_sisul_rsv A
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">			
+				((SELECT MEM_NM FROM tb_mem B WHERE B.MEM_SEQ = A.MEM_SEQ)  LIKE CONCAT('%',#searchKeyword# ,'%')
+				|| TITLE LIKE CONCAT('%',#searchKeyword# ,'%') )
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				(SELECT MEM_NM FROM tb_mem B WHERE B.MEM_SEQ = A.MEM_SEQ)  LIKE CONCAT('%',#searchKeyword# ,'%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="2">
+				TITLE LIKE CONCAT('%',#searchKeyword# ,'%')
+			</isEqual>
+				ORDER BY RSV_SEQ DESC
+				limit #firstIndex#, #recordCountPerPage#	
+	</select>	
+	<select id="tbSisulRsvDAO.selectTbSisulRsvListTotCnt_S" parameterClass="tbSisulRsvSerarchVO" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM tb_sisul_rsv A
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">			
+				((SELECT MEM_NM FROM tb_mem B WHERE B.MEM_SEQ = A.MEM_SEQ)  LIKE CONCAT('%',#searchKeyword# ,'%')
+				|| TITLE LIKE CONCAT('%',#searchKeyword# ,'%') )
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				(SELECT MEM_NM FROM tb_mem B WHERE B.MEM_SEQ = A.MEM_SEQ)  LIKE CONCAT('%',#searchKeyword# ,'%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="2">
+				TITLE LIKE CONCAT('%',#searchKeyword# ,'%')
+			</isEqual>
+	</select>
+
+
+	<select id="tbSisulRsvDAO.selectTbSisulRsvReply"  parameterClass="TbSisulRsv" resultClass="egovMap">
+		<![CDATA[
+			SELECT
+				CMT_SEQ
+				, MEM_SEQ
+				, MEM_ID
+				, CONT
+				, DATE_FORMAT(REG_DT,'%Y-%m-%d %H:%i:%S') AS REG_DT
+			FROM tb_sisul_rsv_cmt
+			WHERE 1=1
+				AND RSV_SEQ = #rsvSeq#
+			ORDER BY CMT_SEQ DESC
+			]]>
+	</select>
+	
+	<insert id="tbSisulRsvDAO.insertRsvReply">
+	<selectKey keyProperty="cmtSeq" resultClass="decimal" >
+    	SELECT	IFNULL(MAX(a.CMT_SEQ)+1,1)
+    	FROM	tb_sisul_rsv_cmt a
+    </selectKey>
+		<![CDATA[
+			INSERT INTO tb_sisul_rsv_cmt 
+				( CMT_SEQ
+				  , RSV_SEQ
+				  , MEM_SEQ
+				  , MEM_ID
+				  , CONT
+				  , REG_DT
+				  , REG_ID
+				   )
+			VALUES ( 
+				  #cmtSeq#
+				  , #rsvSeq#
+				  , #memSeq#
+				  , #memId#
+				  , #cont#
+				  , now()
+				  , #regId#
+				   )
+		]]>
+	</insert>
+	
+	<update id="tbSisulRsvDAO.updateRsvReply">
+		<![CDATA[
+			UPDATE tb_sisul_rsv_cmt
+			SET CONT=#contUpdate#
+				, UPD_DT=NOW()
+				, UPD_ID=#updId#
+			WHERE CMT_SEQ=#cmtSeq#
+			]]>
+			
+	</update>
+	
+	<delete id="tbSisulRsvDAO.deleteRsvReply">
+		<![CDATA[
+			DELETE FROM tb_sisul_rsv_cmt
+			]]>
+			WHERE 1=1
+			AND CMT_SEQ = #cmtSeq#
+			
+	</delete>
+	
+	<update id="tbSisulRsvDAO.updateTbSisulRsvAccept">
+		<![CDATA[
+			UPDATE tb_sisul_rsv
+			SET ACCEPT_YN=#acceptYn#
+				, UPD_DT=NOW()
+				, UPD_ID=#updId#
+				, REJECT_MSG=#rejectMsg#
+			WHERE RSV_SEQ=#rsvSeq#
+			]]>
+	</update>
+	
+	<select id="tbSisulRsvDAO.selectTbSisulRsvFileList" parameterClass="TbSisulRsv" resultClass="egovMap">
+			SELECT
+				RSV_FILE_SEQ
+				, FILE_SEQ
+				, REG_DT
+				, (SELECT FILE_NM FROM tb_att_file B WHERE A.FILE_SEQ = B.FILE_SEQ) FILE_NM
+			FROM tb_sisul_rsv_file A
+			WHERE 1=1
+			AND RSV_SEQ = #rsvSeq#
+	</select>	
+	
+	<update id="tbSisulRsvDAO.updateRsvDt">
+			UPDATE tb_sisul_rsv
+			SET 
+				RSV_YEAR=#rsvYear#
+				, RSV_MONTH=#rsvMonth#
+				, RSV_DAY=#rsvDay#
+				, RSV_ST=#rsvSt#
+				, RSV_ET=#rsvEt#
+			WHERE 1=1
+				AND RSV_SEQ = #rsvSeq#
+	</update>
+</sqlMap>

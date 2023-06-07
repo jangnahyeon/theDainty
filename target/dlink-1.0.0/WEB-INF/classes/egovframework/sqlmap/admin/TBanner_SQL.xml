@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TBanner">
+	
+	<typeAlias  alias="egovMap" type="org.egovframe.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="SearchVo" type="dlink.admin.vo.SearchVO"/>
+	
+	<resultMap id="TBanner" class="dlink.admin.vo.TBannerVO">
+		<result property="bannerNo" column="BANNER_NO" columnIndex="1"/>
+		<result property="bannerArea" column="BANNER_AREA" columnIndex="2"/>
+		<result property="bannerNm" column="BANNER_NM" columnIndex="3"/>
+		<result property="bannerCont" column="BANNER_CONT" columnIndex="4"/>
+		<result property="ordSeq" column="ORD_SEQ" columnIndex="5"/>
+		<result property="fileSeq" column="FILE_SEQ" columnIndex="6"/>
+		<result property="disYn" column="DIS_YN" columnIndex="7"/>
+		<result property="regDt" column="REG_DT" columnIndex="8"/>
+		<result property="register" column="REGISTER" columnIndex="9"/>
+	</resultMap>
+	
+	<insert id="TBannerDAO.insertTBanner_S">
+		<![CDATA[
+			INSERT INTO t_banner 
+				( BANNER_NO
+				  , BANNER_AREA
+				  , BANNER_NM
+				  , BANNER_CONT
+				  , FILE_SEQ
+				  , ORD_SEQ
+				  , DIS_YN
+				  , REG_DT
+				  , REGISTER )
+			VALUES ( (SELECT T2 FROM (SELECT IFNULL(MAX(CAST(BANNER_NO AS UNSIGNED)),0)+1 AS T2 FROM t_banner) B)
+				  , #bannerArea#
+				  , #bannerNm#
+				  , #bannerCont#
+				  , #fileSeq#
+				  , #ordSeq#
+				  , #disYn#
+				  , now()
+				  , #register# )
+		]]>
+	</insert>
+	
+	<update id="TBannerDAO.updateTBanner_S">
+		<![CDATA[
+			UPDATE t_banner
+			SET BANNER_AREA=#bannerArea#
+				, BANNER_NM=#bannerNm#
+				, BANNER_CONT=#bannerCont#
+				, FILE_SEQ=#fileSeq#
+				, ORD_SEQ=#ordSeq#
+				, DIS_YN=#disYn#
+				, REG_DT=now()
+				, REGISTER=#register#
+				WHERE BANNER_NO=#bannerNo# 
+			]]>
+	</update>
+	
+	<delete id="TBannerDAO.deleteTBanner_S">
+		<![CDATA[
+			DELETE FROM t_banner WHERE BANNER_NO=#bannerNo# 
+			]]>
+	</delete>
+	
+	<select id="TBannerDAO.selectTBanner_S" resultMap="TBanner">
+		<![CDATA[
+			SELECT
+				BANNER_NO
+				, BANNER_AREA
+				, BANNER_NM
+				, BANNER_CONT
+				, FILE_SEQ
+				, ORD_SEQ
+				, DIS_YN
+				, REG_DT
+				, REGISTER
+			FROM t_banner
+			WHERE BANNER_NO=#bannerNo# 
+			ORDER BY CAST(ORD_SEQ AS UNSIGNED)
+			]]>
+	</select>
+	
+	<select id="TBannerDAO.selectTBannerList_D" parameterClass="SearchVo" resultClass="egovMap">
+			SELECT
+								BANNER_NO
+								, BANNER_AREA
+								, BANNER_NM
+								, BANNER_CONT
+								, FILE_SEQ
+								, (SELECT FILE_NM FROM t_attfile WHERE t_attfile.FILE_SEQ = t_banner.FILE_SEQ) AS FILE_NM
+								, ORD_SEQ
+								, DIS_YN
+								, DATE_FORMAT(REG_DT, '%Y-%m-%d') AS REG_DT 
+								, REGISTER
+					FROM t_banner
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				BANNER_NM = #searchKeyword#
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				BANNER_AREA LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+			<isNotEmpty prepend="AND" property="disYn">
+				DIS_YN = #disYn#
+			</isNotEmpty>
+				ORDER BY CAST(BANNER_NO AS UNSIGNED) DESC
+			<isNotEqual property="pagingYn" compareValue="N">
+				limit #firstIndex#, #recordCountPerPage#
+			</isNotEqual>
+	</select>	
+	<select id="TBannerDAO.selectTBannerListTotCnt_S" parameterClass="SearchVo" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM t_banner
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				BANNER_NM = #searchKeyword#
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				BANNER_AREA LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+			<isNotEmpty prepend="AND" >
+				DIS_YN = #disYn#
+			</isNotEmpty>
+	</select>
+
+</sqlMap>

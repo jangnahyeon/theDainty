@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TCode">
+	
+	<typeAlias  alias="egovMap" type="org.egovframe.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="SearchVo" type="dlink.admin.vo.SearchVO"/>
+	<typeAlias  alias="TCode" type="dlink.admin.vo.TCodeVO"/>
+	
+	<resultMap id="TCode" class="dlink.admin.vo.TCodeVO">
+		<result property="code" column="CODE" columnIndex="1"/>
+		<result property="codeNm" column="CODE_NM" columnIndex="2"/>
+		<result property="useYn" column="USE_YN" columnIndex="3"/>
+		<result property="refCode" column="REF_CODE" columnIndex="4"/>
+		<result property="userDefine" column="USER_DEFINE" columnIndex="5"/>
+		<result property="cont" column="CONT" columnIndex="6"/>
+		<result property="regDt" column="REG_DT" columnIndex="7"/>
+		<result property="register" column="REGISTER" columnIndex="8"/>
+		<result property="updDt" column="UPD_DT" columnIndex="9"/>
+		<result property="updater" column="UPDATER" columnIndex="10"/>
+	</resultMap>
+	
+	<insert id="TCodeDAO.insertTCode_S">
+		<![CDATA[
+			INSERT INTO t_code 
+				( CODE
+				  , CODE_NM
+				  , USE_YN
+				  , REF_CODE
+				  , USER_DEFINE
+				  , CONT
+				  , REG_DT
+				  , REGISTER
+				  , UPD_DT
+				  , UPDATER )
+			VALUES ( #code#
+				  , #codeNm#
+				  , #useYn#
+				  , #refCode#
+				  , #userDefine#
+				  , #cont#
+				  , now()
+				  , #register#
+				  , now()
+				  , #updater# )
+		]]>
+	</insert>
+	
+	<update id="TCodeDAO.updateTCode_S">
+		<![CDATA[
+			UPDATE t_code
+			SET CODE=#code#
+				, CODE_NM=#codeNm#
+				, USE_YN=#useYn#
+				, REF_CODE=#refCode#
+				, USER_DEFINE=#userDefine#
+				, CONT=#cont#
+				, UPD_DT=now()
+				, UPDATER=#updater#
+			WHERE CODE=#beforCode#
+			]]>
+	</update>
+	
+	<delete id="TCodeDAO.deleteTCode_S">
+		<![CDATA[
+			DELETE FROM t_code where CODE = #code#
+			]]>
+	</delete>
+	
+	<select id="TCodeDAO.selectTCode_S" resultMap="TCode">
+		<![CDATA[
+			SELECT
+				CODE
+				, CODE_NM
+				, USE_YN
+				, REF_CODE
+				, USER_DEFINE
+				, CONT
+				, REG_DT
+				, REGISTER
+				, UPD_DT
+				, UPDATER
+			FROM t_code
+			]]>
+			WHERE 1=1
+			<isNotEmpty property="code" prepend="AND">
+				CODE = #code#
+			</isNotEmpty>
+			
+	</select>
+	
+	<select id="TCodeDAO.selectTCodeList_D" parameterClass="TCode" resultMap="TCode">
+			SELECT
+								CODE
+								, CODE_NM
+								, USE_YN
+								, REF_CODE
+								, USER_DEFINE
+								, CONT
+								, DATE_FORMAT(REG_DT, '%Y-%m-%d') AS REG_DT 
+								, REGISTER
+								, DATE_FORMAT(UPD_DT, '%Y-%m-%d') AS UPD_DT 
+								, UPDATER
+					FROM t_code
+			WHERE 1=1
+			<isNotEmpty property="useYn" prepend="AND">
+				USE_YN = #useYn#
+			</isNotEmpty>
+			<isNotEmpty property="gubun" prepend="AND">
+				CODE LIKE CONCAT(#gubun#,'%')
+			</isNotEmpty>
+			<isNotEmpty property="code" prepend="AND">
+				CODE = #code#
+			</isNotEmpty>
+			<isNotEmpty property="refCode" prepend="AND">
+				REF_CODE = #refCode#
+			</isNotEmpty>
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				<isNotEmpty property="searchKeyword">
+					CODE LIKE CONCAT('%',#searchKeyword#,'%')
+				</isNotEmpty>
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				<isNotEmpty property="searchKeyword">
+					CODE_NM LIKE CONCAT('%',#searchKeyword#,'%')
+				</isNotEmpty>
+			</isEqual>
+				ORDER BY CAST(CODE AS UNSIGNED) DESC, CODE
+			<isNotEqual property="pagingYn" compareValue="N">
+				limit #firstIndex#, #recordCountPerPage#
+			</isNotEqual>
+	</select>	
+	<select id="TCodeDAO.selectTCodeListTotCnt_S" parameterClass="SearchVo" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM t_code
+			WHERE 1=1
+			<isNotEmpty property="useYn" prepend="AND">
+				USE_YN = #useYn#
+			</isNotEmpty>
+			<isNotEmpty property="gubun" prepend="AND">
+				CODE LIKE CONCAT(#gubun#,'%')
+			</isNotEmpty>
+			<isNotEmpty property="code" prepend="AND">
+				CODE = #code#
+			</isNotEmpty>
+			<isNotEmpty property="refCode" prepend="AND">
+				REF_CODE = #refCode#
+			</isNotEmpty>
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				<isNotEmpty property="searchKeyword">
+					CODE = #searchKeyword#
+				</isNotEmpty>
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				<isNotEmpty property="searchKeyword">
+					CODE_NM LIKE CONCAT('%',#searchKeyword#,'%')
+				</isNotEmpty>
+			</isEqual>
+	</select>
+
+</sqlMap>

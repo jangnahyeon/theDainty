@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="FrontBusiness">
+	
+	<typeAlias  alias="egovMap" type="org.egovframe.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="BusinessVO" type="dlink.front.vo.BusinessVO"/>
+	
+	<resultMap id="BusinessVO" class="dlink.front.vo.BusinessVO">
+		<result property="faqNo" column="FAQ_NO" columnIndex="1"/>
+		<result property="question" column="QUESTION" columnIndex="2"/>
+		<result property="answer" column="ANSWER" columnIndex="3"/>
+		<result property="openYn" column="OPEN_YN" columnIndex="4"/>
+		<result property="register" column="REGISTER" columnIndex="5"/>
+		<result property="regDt" column="REG_DT" columnIndex="6"/>
+		<result property="wordNo" column="WORD_NO" columnIndex="7"/>
+		<result property="wordNm" column="WORD_NM" columnIndex="8"/>
+		<result property="cont" column="CONT" columnIndex="9"/>
+		<result property="menuId" column="MENU_ID" columnIndex="10"/>
+		<result property="postNo" column="POST_NO" columnIndex="11"/>
+		<result property="seq" column="SEQ" columnIndex="12"/>
+		<result property="title" column="TITLE" columnIndex="13"/>
+		<result property="pwd" column="PWD" columnIndex="14"/>	
+	</resultMap>
+	
+	<select id="FrontBusinessDAO.selectTWordList_D" resultClass="egovMap">
+			SELECT
+								WORD_NO
+								, WORD_NM
+								, CONT
+								, OPEN_YN
+								, REGISTER
+								, REG_DT
+					FROM t_word
+			WHERE 
+				1=1		
+			AND
+				OPEN_YN = "Y"
+				<isEqual prepend="AND" property="searchCondition" compareValue="0">
+					(
+							WORD_NM LIKE CONCAT('%',#searchKeyword#,'%')
+						OR
+							CONT LIKE CONCAT('%',#searchKeyword#,'%')
+					)
+				</isEqual>
+				<isEqual prepend="AND" property="searchCondition" compareValue="1">
+					WORD_NM LIKE CONCAT('%',#searchKeyword#,'%')
+				</isEqual>
+				<isEqual prepend="AND" property="searchCondition" compareValue="2">
+					CONT LIKE CONCAT('%',#searchKeyword#,'%')
+				</isEqual>
+			
+			
+			 ORDER BY REG_DT DESC 
+					limit #firstIndex#, #recordCountPerPage#			
+	</select>	
+	
+	
+	
+	<select id="FrontBusinessDAO.selectTWordListTotCnt_S" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM t_word
+			WHERE 1=1
+				AND
+				OPEN_YN = "Y"
+				<isEqual prepend="AND" property="searchCondition" compareValue="0">
+					(
+							WORD_NM LIKE CONCAT('%',#searchKeyword#,'%')
+						OR
+							CONT LIKE CONCAT('%',#searchKeyword#,'%')
+					)
+				</isEqual>
+				<isEqual prepend="AND" property="searchCondition" compareValue="1">
+					WORD_NM LIKE CONCAT('%',#searchKeyword#,'%')
+				</isEqual>
+				<isEqual prepend="AND" property="searchCondition" compareValue="2">
+					CONT LIKE CONCAT('%',#searchKeyword#,'%')
+				</isEqual>
+	</select>
+	
+	<select id="FrontBusinessDAO.selectTFaqList_D" resultClass="egovMap">
+			SELECT
+					FAQ_NO
+					, QUESTION
+					, ANSWER
+					, OPEN_YN
+					, REGISTER
+					, REG_DT
+		FROM t_faq
+		WHERE 
+					1=1
+				AND
+					OPEN_YN = "Y"
+				<!-- <isEqual prepend="AND" property="searchCondition" compareValue="0">
+					(
+							QUESTION LIKE CONCAT('%',#searchKeyword#,'%')
+						OR
+							ANSWER LIKE CONCAT('%',#searchKeyword#,'%')
+					)
+				</isEqual>
+				<isEqual prepend="AND" property="searchCondition" compareValue="1">
+					QUESTION LIKE CONCAT('%',#searchKeyword#,'%')
+				</isEqual>
+						
+			ORDER BY REG_DT DESC
+				limit #firstIndex#, #recordCountPerPage#	 -->
+	</select>	
+	
+	<select id="FrontBusinessDAO.selectTFaqListTotCnt_S" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM t_faq
+			WHERE 1=1
+			AND
+					OPEN_YN = "Y"
+				<isEqual prepend="AND" property="searchCondition" compareValue="0">
+					(
+							QUESTION LIKE CONCAT('%',#searchKeyword#,'%')
+						OR
+							ANSWER LIKE CONCAT('%',#searchKeyword#,'%')
+					)
+				</isEqual>
+				<isEqual prepend="AND" property="searchCondition" compareValue="1">
+					QUESTION LIKE CONCAT('%',#searchKeyword#,'%')
+				</isEqual>
+	</select>
+	
+	
+		<select id="FrontBusinessDAO.selectTCommutyList_D" resultClass="egovMap">
+			SELECT
+						MENU_ID
+						, POST_NO
+						, SEQ
+						, TITLE
+						, CONT
+						, REGISTER
+						, REG_DT
+						, OPEN_YN
+						, PWD
+						,(SELECT
+								 COUNT(B.FILE_SEQ)
+						   FROM
+								t_commuty_file as B
+						   WHERE
+									B.MENU_ID = A.MENU_ID
+								AND
+									B.POST_NO =  A.POST_NO
+								AND
+									B.SEQ = A.seq		
+							)AS FILE_SEQ
+			FROM t_commuty as A
+			WHERE 
+					1=1		
+				AND
+					A.OPEN_YN = "Y"	
+				AND
+					A.MENU_ID = #menuId#
+				<isEqual prepend="AND" property="searchCondition" compareValue="0">
+					A.TITLE LIKE CONCAT('%',#searchKeyword#,'%')
+				</isEqual>
+				<isEqual prepend="AND" property="searchCondition" compareValue="1">
+					A.TITLE LIKE CONCAT('%',#searchKeyword#,'%')
+				</isEqual>
+			
+			ORDER BY CAST(A.POST_NO AS UNSIGNED) DESC
+				limit #firstIndex#, #recordCountPerPage#	
+	</select>	
+	
+	
+	<select id="FrontBusinessDAO.selectTCommutyListTotCnt_S" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM t_commuty
+			WHERE
+				 1=1
+				AND
+					OPEN_YN = "Y"	
+				AND
+					MENU_ID = #menuId#
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">					
+				TITLE LIKE CONCAT('%',#searchKeyword#,'%')					
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				TITLE LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>			
+	</select>
+	
+	
+		
+	
+</sqlMap>

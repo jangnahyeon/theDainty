@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TMemCom">
+
+	<typeAlias  alias="TMemComVO" type="dlink.admin.vo.TMemComVO"/>
+	<typeAlias  alias="TMemComFileVO" type="dlink.admin.vo.TMemComFileVO"/>
+	
+	<resultMap id="TMemCom" class="dlink.admin.vo.TMemComVO">
+		<result property="loginId" column="LOGIN_ID" columnIndex="1"/>
+		<result property="comNm" column="COM_NM" columnIndex="2"/>
+		<result property="comType" column="COM_TYPE" columnIndex="3"/>
+		<result property="ceoNm" column="CEO_NM" columnIndex="4"/>
+		<result property="sex" column="SEX" columnIndex="5"/>
+		<result property="comNo" column="COM_NO" columnIndex="6"/>
+		<result property="comAddr" column="COM_ADDR" columnIndex="7"/>
+		<result property="comDtlAddr" column="COM_DTL_ADDR" columnIndex="8"/>
+		<result property="comZip" column="COM_ZIP" columnIndex="9"/>
+		<result property="comUrl" column="COM_URL" columnIndex="10"/>
+		<result property="ceoMobileNo" column="CEO_MOBILE_NO" columnIndex="11"/>
+		<result property="damdangNm" column="DAMDANG_NM" columnIndex="12"/>
+		<result property="damdangDept" column="DAMDANG_DEPT" columnIndex="13"/>
+		<result property="damdangPos" column="DAMDANG_POS" columnIndex="14"/>
+		<result property="damdangMobileNo" column="DAMDANG_MOBILE_NO" columnIndex="15"/>
+		<result property="damdangEmail" column="DAMDANG_EMAIL" columnIndex="16"/>
+		<result property="regDt" column="REG_DT" columnIndex="17"/>
+		<result property="imgPath" column="IMG_PATH" columnIndex="18"/>
+		<result property="reqPart" column="REQ_PART" columnIndex="19"/>
+		<result property="specYn" column="SPEC_YN" columnIndex="20"/>
+	</resultMap>
+	
+	
+	<insert id="TMemComDAO.insertTMemCom_S">
+		<![CDATA[
+			INSERT INTO T_MEM_COM
+				( LOGIN_ID
+				  , COM_NM
+				  , COM_TYPE
+				  , CEO_NM
+				  , SEX
+				  , COM_NO
+				  , COM_ADDR
+				  , COM_DTL_ADDR
+				  , COM_ZIP
+				  , COM_URL
+				  , CEO_MOBILE_NO
+				  , DAMDANG_NM
+				  , DAMDANG_DEPT
+				  , DAMDANG_POS
+				  , DAMDANG_MOBILE_NO
+				  , DAMDANG_EMAIL
+				  , REG_DT
+				  , IMG_PATH
+				  , REQ_PART
+				  , SPEC_YN )
+			VALUES ( #loginId#
+				  , #comNm#
+				  , #comType#
+				  , #ceoNm#
+				  , #sex#
+				  , #comNo#
+				  , #comAddr#
+				  , #comDtlAddr#
+				  , #comZip#
+				  , #comUrl#
+				  , #ceoMobileNo#
+				  , #damdangNm#
+				  , #damdangDept#
+				  , #damdangPos#
+				  , #damdangMobileNo#
+				  , #damdangEmail#
+				  , now()
+				  , #imgPath#
+				  , #reqPart#
+				  , #specYn# )
+		]]>
+	</insert>
+
+	<!-- 파일첨부 -->
+	<insert id="TMemComDAO.insertTMemComFile" parameterClass="TMemComFileVO"  >
+		<![CDATA[
+			INSERT INTO t_mem_com_file 
+				( LOGIN_ID
+				  , FILE_SEQ
+				  , FILE_KIND)
+			VALUES ( #loginId#
+				  , #fileSeq#
+				  , #fileKind#
+				  )
+		]]>
+	</insert>
+	
+	
+	<update id="TMemComDAO.updateTMemCom_S">
+		<![CDATA[
+			UPDATE 
+				T_MEM_COM
+			SET 
+				  COM_TYPE=#comType#
+				  , COM_ADDR=#comAddr#
+				  , COM_DTL_ADDR=#comDtlAddr#
+				  , COM_ZIP=#comZip#
+				  , COM_URL=#comUrl#
+				  , CEO_MOBILE_NO=#ceoMobileNo#
+				  , DAMDANG_NM=#damdangNm#
+				  , DAMDANG_DEPT=#damdangDept#
+				  , DAMDANG_POS=#damdangPos#
+				  , DAMDANG_MOBILE_NO=#damdangMobileNo#
+				  , DAMDANG_EMAIL=#damdangEmail#
+				  , IMG_PATH=#imgPath#
+				  , REQ_PART=#reqPart#
+				  , SPEC_YN =#specYn#
+			WHERE 
+				LOGIN_ID = #loginId#
+			
+			]]>
+	</update>
+	
+	<delete id="TMemComDAO.deleteTMemCom_S">
+		<![CDATA[
+			DELETE 
+				FROM T_MEM_COM
+			WHERE
+				LOGIN_ID = #loginId#
+			]]>
+	</delete>
+		
+	<select id="TMemComDAO.selectTMemCom_S"  resultMap="TMemCom">
+		
+			SELECT
+				A.LOGIN_ID
+				, A.COM_NM
+				, A.COM_TYPE
+				, A.CEO_NM
+				, A.SEX
+				, A.COM_NO
+				, A.COM_ADDR
+				, A.COM_DTL_ADDR
+				, A.COM_ZIP
+				, A.COM_URL
+				, A.CEO_MOBILE_NO
+				, A.DAMDANG_NM
+				, A.DAMDANG_DEPT
+				, A.DAMDANG_POS
+				, A.DAMDANG_MOBILE_NO
+				, A.DAMDANG_EMAIL
+				, A.REG_DT
+				, A.IMG_PATH
+				, A.REQ_PART
+				, A.SPEC_YN		
+			FROM T_MEM_COM A
+			WHERE 
+				1 = 1
+				<isNotEmpty prepend="AND" property="loginId">
+					A.LOGIN_ID = #loginId#
+				</isNotEmpty>
+				<isNotEmpty prepend="AND" property="comNm">
+					A.COM_NM = #comNm#
+				</isNotEmpty>
+	</select>
+		
+	<select id="TMemComDAO.selectTMemComList_D" parameterClass="SearchVo" resultClass="egovMap">
+			SELECT
+				LOGIN_ID
+				, COM_NM
+				, COM_TYPE
+				, CEO_NM
+				, SEX
+				, COM_NO
+				, COM_ADDR
+				, COM_DTL_ADDR
+				, COM_ZIP
+				, COM_URL
+				, CEO_MOBILE_NO
+				, DAMDANG_NM
+				, DAMDANG_DEPT
+				, DAMDANG_POS
+				, DAMDANG_MOBILE_NO
+				, DAMDANG_EMAIL
+				, REG_DT
+				, IMG_PATH
+				, REQ_PART
+				, SPEC_YN
+				,  (SELECT
+					      C.FILE_SEQ
+				   FROM 
+					     t_mem_com_file C
+				  WHERE
+					       C.LOGIN_ID = A.LOGIN_ID
+					  AND
+					       C.FILE_KIND = "CF0001"
+					  AND
+						C.FILE_SEQ = (
+								SELECT 
+									MIN(D.FILE_SEQ)
+								FROM 
+									t_mem_com_file D
+								WHERE
+								        D.LOGIN_ID = C.LOGIN_ID
+								     AND
+									C.FILE_KIND = "CF0001"
+								)
+					 
+				     ) AS FILE_SEQ
+			FROM T_MEM_COM A
+			WHERE 1=1
+			<isNotEmpty prepend="AND" property="specYn">
+					SPEC_YN = #specYn#
+			</isNotEmpty>	
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				<isNotEmpty property="searchKeyword">
+					LOGIN_ID = #searchKeyword#
+				</isNotEmpty>
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				<isNotEmpty property="searchKeyword">
+					COM_NM LIKE CONCAT('%',#searchKeyword#,'%')
+				</isNotEmpty>
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="2">
+				<isNotEmpty property="searchKeyword">
+					COM_ADDR LIKE CONCAT('%',#searchKeyword#,'%')
+				</isNotEmpty>
+			</isEqual>
+				ORDER BY LOGIN_ID 
+				limit #firstIndex#, #recordCountPerPage#	
+	</select>
+		
+	<select id="TMemComDAO.selectTMemComListTotCnt_S" parameterClass="SearchVo" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM T_MEM_COM
+			WHERE 1=1
+			<isNotEmpty prepend="AND" property="specYn">
+					SPEC_YN = #specYn#
+			</isNotEmpty>	
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				<isNotEmpty property="searchKeyword">
+					LOGIN_ID = #searchKeyword#
+				</isNotEmpty>
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				<isNotEmpty property="searchKeyword">
+					COM_NM LIKE CONCAT('%',#searchKeyword#,'%')
+				</isNotEmpty>
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="2">
+				<isNotEmpty property="searchKeyword">
+					COM_ADDR LIKE CONCAT('%',#searchKeyword#,'%')
+				</isNotEmpty>
+			</isEqual>
+	</select>
+	
+	
+	
+	<select id="TMemComDAO.selectagSearchList" parameterClass="SearchVo" resultClass="egovMap">
+			SELECT
+				A.LOGIN_ID
+				, A.COM_NM
+				, A.COM_TYPE
+				, A.CEO_NM
+				, A.SEX
+				, A.COM_NO
+				, A.COM_ADDR
+				, A.COM_DTL_ADDR
+				, A.COM_ZIP
+				, A.COM_URL
+				, A.CEO_MOBILE_NO
+				, A.DAMDANG_NM
+				, A.DAMDANG_DEPT
+				, A.DAMDANG_POS
+				, A.DAMDANG_MOBILE_NO
+				, A.DAMDANG_EMAIL
+				, A.REG_DT
+				, A.IMG_PATH
+				, A.REQ_PART
+				, A.SPEC_YN
+				,  (SELECT
+					      C.FILE_SEQ
+				   FROM 
+					     t_mem_com_file C
+				  WHERE
+					       C.LOGIN_ID = A.LOGIN_ID
+					  AND
+					       C.FILE_KIND = "CF0001"
+					  AND
+						C.FILE_SEQ = (
+								SELECT 
+									MIN(D.FILE_SEQ)
+								FROM 
+									t_mem_com_file D
+								WHERE
+								        D.LOGIN_ID = C.LOGIN_ID
+								     AND
+									C.FILE_KIND = "CF0001"
+								)
+					 
+				     ) AS FILE_SEQ	
+				, B.PTPL_NO
+				, B.PTPL_NM
+				, B.PTPL_PART
+				, B.PTPL_YOUHAENG
+				, B.PTPL_TYPE
+				, B.PTPL_STYLE
+				, B.ADD_OPTION
+				, B.REF_WORD
+				, B.CONCEPT
+			FROM T_MEM_COM A
+			LEFT JOIN t_ptpl_info B
+			ON A.LOGIN_ID = B.LOGIN_ID
+			WHERE 
+					1=1
+			<isNotEmpty prepend="AND" property="specYn">
+					A.SPEC_YN = #specYn#
+			</isNotEmpty>				
+			<isNotEmpty prepend="AND" property="ptplPart">
+				B.PTPL_PART = #ptplPart#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="loginId">
+				A.LOGIN_ID = #loginId#
+			</isNotEmpty>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				A.COM_NM LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+			<!-- 
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				COM_DTL_ADDR LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="2">
+				COM_DTL_ADDR LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+			 -->
+			 	ORDER BY REG_DT DESC 
+				limit #firstIndex#, #recordCountPerPage#	
+	</select>
+	
+		<select id="TMemComDAO.selectagSearchListTotCnt_S" parameterClass="SearchVo" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM T_MEM_COM A
+			LEFT JOIN t_ptpl_info B
+			ON A.LOGIN_ID = B.LOGIN_ID
+			WHERE
+					1=1
+			<isNotEmpty prepend="AND" property="specYn">
+					A.SPEC_YN = #specYn#
+			</isNotEmpty>	
+			<isNotEmpty prepend="AND" property="ptplPart">
+				B.PTPL_PART = #ptplPart#
+			</isNotEmpty>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				A.COM_NM LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+			<!-- 
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				COM_DTL_ADDR LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="2">
+				COM_DTL_ADDR LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+			 -->
+	</select>
+	
+	
+	
+	<update id="TMemComDAO.updateSpecYnTMemCom">
+		<![CDATA[
+			UPDATE 
+				T_MEM_COM
+			SET 
+				   SPEC_YN =#specYn#
+			WHERE 
+				LOGIN_ID = #loginId#
+			
+			]]>
+	</update>
+</sqlMap>

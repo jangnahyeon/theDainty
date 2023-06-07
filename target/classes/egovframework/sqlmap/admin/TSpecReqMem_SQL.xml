@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TSpecReqMem">
+	
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="SearchVo" type="dlink.admin.vo.SearchVO"/>
+	<typeAlias  alias="TSpecReqComVO" type="dlink.admin.vo.TSpecReqComVO"/>
+	<typeAlias  alias="bigDecimal" type="java.math.BigDecimal"/>
+	
+	<resultMap id="TSpecReqMem" class="dlink.admin.vo.TSpecReqMemVO">
+		<result property="loginId" column="LOGIN_ID" columnIndex="1"/>
+		<result property="reqNo" column="REQ_NO" columnIndex="2"/>
+		<result property="seq" column="SEQ" columnIndex="3"/>
+		<result property="staffNm" column="STAFF_NM" columnIndex="4"/>
+		<result property="position" column="POSITION" columnIndex="5"/>
+		<result property="birthday" column="BIRTHDAY" columnIndex="6"/>
+		<result property="lstHakwi" column="LST_HAKWI" columnIndex="7"/>
+		<result property="jungong" column="JUNGONG" columnIndex="8"/>
+		<result property="jungongPart" column="JUNGONG_PART" columnIndex="9"/>
+		<result property="career" column="CAREER" columnIndex="10"/>
+	</resultMap>
+	
+	<!-- <insert id="TSpecReqComDAO.insertTSpecReqMem" >
+		<![CDATA[
+			INSERT INTO t_spec_req_mem 
+				( LOGIN_ID
+				  , REQ_NO
+				  , SEQ
+				  , STAFF_NM
+				  , POSITION
+				  , BIRTHDAY
+				  , LST_HAKWI
+				  , JUNGONG
+				  , JUNGONG_PART
+				  , CAREER )
+			VALUES ( #loginId#
+				  , #reqNo#
+				  , #seq#
+				  , #staffNm#
+				  , #position#
+				  , #birthday#
+				  , #lstHakwi#
+				  , #jungong#
+				  , #jungongPart#
+				  , #career# )
+		]]>
+	</insert>
+	
+	<select id="TSpecReqComDAO.selectTSpecReqMemSeq"  resultClass="bigDecimal">
+	       SELECT   IFNULL(MAX(a.SEQ)+1,1)
+	       FROM   t_spec_req_mem    a
+	</select> 
+	
+	
+	
+	<update id="TSpecReqMemDAO.updateTSpecReqMem_S">
+		<![CDATA[
+			UPDATE t_spec_req_mem
+			SET LOGIN_ID=#loginId#
+				, REQ_NO=#reqNo#
+				, SEQ=#seq#
+				, STAFF_NM=#staffNm#
+				, POSITION=#position#
+				, BIRTHDAY=#birthday#
+				, LST_HAKWI=#lstHakwi#
+				, JUNGONG=#jungong#
+				, JUNGONG_PART=#jungongPart#
+				, CAREER=#career#
+			]]>
+	</update>
+	
+	<delete id="TSpecReqMemDAO.deleteTSpecReqMem_S">
+		<![CDATA[
+			DELETE FROM t_spec_req_mem 
+			]]>
+	</delete>
+	
+	<select id="TSpecReqMemDAO.selectTSpecReqMem_S" resultMap="TSpecReqMem">
+		<![CDATA[
+			SELECT
+				LOGIN_ID
+				, REQ_NO
+				, SEQ
+				, STAFF_NM
+				, POSITION
+				, BIRTHDAY
+				, LST_HAKWI
+				, JUNGONG
+				, JUNGONG_PART
+				, CAREER
+			FROM t_spec_req_mem
+			]]>
+	</select>
+	
+	<select id="TSpecReqMemDAO.selectTSpecReqMemList_D" parameterClass="TSpecReqMemSerarchVO" resultClass="egovMap">
+			SELECT
+				LOGIN_ID
+				, REQ_NO
+				, SEQ
+				, STAFF_NM
+				, POSITION
+				, BIRTHDAY
+				, LST_HAKWI
+				, JUNGONG
+				, JUNGONG_PART
+				, CAREER
+			FROM t_spec_req_mem
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				LOGIN_ID = #searchKeyword#
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				REQ_NO LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+				limit #firstIndex#, #recordCountPerPage#	
+	</select>	
+	<select id="TSpecReqMemDAO.selectTSpecReqMemListTotCnt_S" parameterClass="TSpecReqMemSerarchVO" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM t_spec_req_mem
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				LOGIN_ID = #searchKeyword#
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				REQ_NO LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+	</select> -->
+
+</sqlMap>

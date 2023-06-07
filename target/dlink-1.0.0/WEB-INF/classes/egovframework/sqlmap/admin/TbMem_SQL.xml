@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TbMem">
+	
+	<typeAlias  alias="egovMap" type="org.egovframe.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="tbMemSerarchVO" type="dlink_new.admin.vo.TbMemVO"/>
+	
+	<resultMap id="tbMem" class="dlink_new.admin.vo.TbMemVO">
+		<result property="memSeq" column="MEM_SEQ" columnIndex="1"/>
+		<result property="code" column="CODE" columnIndex="2"/>
+		<result property="memId" column="MEM_ID" columnIndex="3"/>
+		<result property="memPw" column="MEM_PW" columnIndex="4"/>
+		<result property="memNm" column="MEM_NM" columnIndex="5"/>
+		<result property="birth" column="BIRTH" columnIndex="6" />
+		<result property="hp" column="HP" columnIndex="7"/>
+		<result property="email" column="EMAIL" columnIndex="8"/>
+		<result property="addr" column="ADDR" columnIndex="9"/>
+		<result property="addrDtl" column="ADDR_DTL" columnIndex="10"/>
+		<result property="comAddr" column="COM_ADDR" columnIndex="11"/>
+		<result property="comAddrDtl" column="COM_ADDR_DTL" columnIndex="12"/>
+		<result property="comFileSeq" column="COM_FILE_SEQ" columnIndex="13"/>
+		<result property="smBizFileSeq" column="SM_BIZ_FILE_SEQ" columnIndex="14"/>
+		<result property="smsYn" column="SMS_YN" columnIndex="15"/>
+		<result property="emailYn" column="EMAIL_YN" columnIndex="16"/>
+		<result property="outReason" column="OUT_REASON" columnIndex="17"/>
+		<result property="leaveMsg" column="LEAVE_MSG" columnIndex="18"/>
+		<result property="acceptYn" column="ACCEPT_YN" columnIndex="19"/>
+		<result property="regDt" column="REG_DT" columnIndex="20"/>
+		<result property="regId" column="REG_ID" columnIndex="21"/>
+		<result property="updDt" column="UPD_DT" columnIndex="22"/>
+		<result property="updId" column="UPD_ID" columnIndex="23"/>
+		<result property="fileNm" column="FILE_NM" columnIndex="24"/>
+		<result property="rejectMsg" column="REJECT_MSG" columnIndex="25"/>
+		<result property="comNm" column="COM_NM" columnIndex="26"/>
+		<result property="comNo" column="COM_NO" columnIndex="27"/>
+		<result property="damdangNm" column="DAMDANG_NM" columnIndex="28"/>
+		<result property="comType" column="COM_TYPE" columnIndex="29"/>
+		
+		<!-- <result property="rsvFileSeq" column="RSV_FILE_SEQ"/> -->
+	</resultMap>
+	
+	<insert id="tbMemDAO.insertTbMem_S">
+		<!-- <![CDATA[ -->
+			INSERT INTO tb_mem 
+				(
+					CODE
+				  , MEM_ID
+				  , MEM_PW
+				  , MEM_NM
+				  , COM_NM
+				  , COM_NO
+				  , DAMDANG_NM
+				  , COM_TYPE
+				  , BIRTH
+				  , HP
+				  , EMAIL
+				  , ADDR
+				  , ADDR_DTL
+				  , COM_ADDR
+				  , COM_ADDR_DTL
+				  , COM_FILE_SEQ
+				  , SM_BIZ_FILE_SEQ
+				  , SMS_YN
+				  , EMAIL_YN		
+				  , ACCEPT_YN		
+				  , REG_DT
+				  , REG_ID
+				  , UPD_DT
+				  , UPD_ID 
+				)
+			VALUES 
+				( 
+				  	#code#
+				  , #memId#
+				  , #memPw#
+				  , #memNm#
+				  , #comNm#
+				  , #comNo#
+				  , #damdangNm#
+				  , #comType#
+				  , #birth#
+				  , #hp#
+				  , #email#
+				  , #addr#
+				  , #addrDtl#
+				  , #comAddr#
+				  , #comAddrDtl#
+				  , #comFileSeq#
+				  , #smBizFileSeq#
+				  , #smsYn#
+				  , #emailYn#
+				  , 'Y'
+				  , NOW()
+				  , #regId#
+				  , NOW()
+				  , #updId# 
+				)
+		<!-- ]]> -->
+		
+		<selectKey keyProperty="memSeq" resultClass="java.lang.Integer">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+	
+	<update id="tbMemDAO.updateTbMem_S">
+		<!-- <![CDATA[ -->
+			UPDATE tb_mem
+			SET 
+			<isNotEmpty property="memId">
+				MEM_ID=#memId# ,
+			</isNotEmpty>
+			<isNotEmpty property="code">
+				CODE=#code# ,
+			</isNotEmpty>
+			<isNotEmpty property="memPw">
+				MEM_ID=#memId# ,
+			</isNotEmpty>
+			<isNotEmpty property="memPw">
+				MEM_PW=#memPw# ,
+			</isNotEmpty>
+			<isNotEmpty property="memNm">
+				MEM_NM=#memNm# ,
+			</isNotEmpty>
+			<isNotEmpty property="acceptYn">
+				ACCEPT_YN=#acceptYn# ,
+			</isNotEmpty>
+				BIRTH=#birth#
+				, COM_NM=#comNm#
+				, COM_NO=#comNo#
+				, COM_TYPE=#comType#
+				, DAMDANG_NM=#damdangNm#
+				, HP=#hp#
+				, EMAIL=#email#
+				, ADDR=#addr#
+				, ADDR_DTL=#addrDtl#
+				, COM_ADDR=#comAddr#
+				, COM_ADDR_DTL=#comAddrDtl#
+				, COM_FILE_SEQ=#comFileSeq#
+				, SM_BIZ_FILE_SEQ=#smBizFileSeq#
+				, SMS_YN=#smsYn#
+				, EMAIL_YN=#emailYn#
+				, OUT_REASON = #outReason#
+				, LEAVE_MSG = #leaveMsg#
+				, UPD_DT=NOW()
+				, UPD_ID=#updId#
+			WHERE 1=1
+				AND MEM_SEQ = #memSeq#
+			<!-- ]]> -->
+	</update>
+	
+	<delete id="tbMemDAO.deleteTbMem_S">
+		<![CDATA[
+			DELETE FROM tb_mem 
+			WHERE 1=1
+				AND MEM_SEQ = #memSeq#
+			]]>
+	</delete>
+	
+	<select id="tbMemDAO.selectTbMem_S" resultMap="tbMem">
+		<!-- <![CDATA[ -->
+			SELECT
+				MEM_SEQ
+				, CODE
+				, MEM_ID
+				, MEM_PW
+				, MEM_NM
+				, COM_NM
+				, COM_NO
+				, DAMDANG_NM
+				, COM_TYPE
+				, BIRTH
+			  	, HP
+			  	, EMAIL
+			  	, ADDR
+			  	, ADDR_DTL
+			  	, COM_ADDR
+			  	, COM_ADDR_DTL
+			  	, COM_FILE_SEQ
+			  	, SM_BIZ_FILE_SEQ
+			  	, SMS_YN
+			  	, EMAIL_YN
+			  	, OUT_REASON
+			  	, LEAVE_MSG
+			  	, ACCEPT_YN
+				, REG_DT
+				, REG_ID
+				, UPD_DT
+				, UPD_ID
+				, (SELECT FILE_NM FROM tb_att_file B WHERE A.COM_FILE_SEQ = B.FILE_SEQ) FILE_NM
+				, REJECT_MSG
+			FROM tb_mem A
+			WHERE 1=1
+				<isGreaterThan property="memSeq" compareValue="0">
+				AND A.MEM_SEQ = #memSeq#
+				</isGreaterThan>
+				<isNotEmpty property="memId">
+				AND A.MEM_ID = #memId#
+				</isNotEmpty>
+				
+				<isEqual prepend="AND" property="searchCondition" compareValue="email">
+					A.EMAIL = #email#
+				</isEqual>
+				
+				<isEqual prepend="AND" property="searchCondition" compareValue="findId">
+					(
+						A.MEM_NM = #memNm#
+						AND	A.EMAIL = #email#
+					)
+				</isEqual>
+				
+				<isEqual prepend="AND" property="searchCondition" compareValue="findPw">
+					(
+						A.MEM_NM = #memNm#
+						AND A.MEM_ID = #memId#
+						AND A.EMAIL = #email#
+						AND REPLACE( A.HP, '-', '' ) = REPLACE( #hp#, '-', '' )
+					)
+				</isEqual>
+				
+				<isEqual property="searchCondition" compareValue="email">
+					limit 1
+				</isEqual>
+			<!-- ]]> -->
+	</select>
+	
+	<select id="tbMemDAO.selectTbMemList_D" parameterClass="tbMemSerarchVO" resultClass="egovMap">
+			SELECT
+				MEM_SEQ
+				, CODE
+				, MEM_ID
+				, MEM_PW
+				, MEM_NM
+				, BIRTH
+			  	, HP
+			  	, EMAIL
+			  	, ADDR
+			  	, ADDR_DTL
+			  	, COM_ADDR
+			  	, COM_ADDR_DTL
+			  	, COM_FILE_SEQ
+			  	, SM_BIZ_FILE_SEQ
+			  	, SMS_YN
+			  	, EMAIL_YN
+			  	, OUT_REASON
+			  	, LEAVE_MSG
+			  	, ACCEPT_YN
+				, DATE_FORMAT(REG_DT,'%Y-%m-%d %H:%i:%S') AS REG_DT
+				, REG_ID
+				, UPD_DT
+				, UPD_ID
+			FROM tb_mem
+			WHERE 1=1		
+			<isNotEmpty property="code">
+				AND CODE = #code#
+			</isNotEmpty>
+			<isNotEmpty property="searchKeyword" >
+				<isEqual prepend="AND" property="searchCondition" compareValue="">
+					(MEM_ID LIKE CONCAT('%',#searchKeyword#,'%') || MEM_NM LIKE CONCAT('%',#searchKeyword#,'%'))
+				</isEqual>
+				<isEqual prepend="AND" property="searchCondition" compareValue="1">
+					MEM_ID LIKE CONCAT('%',#searchKeyword#,'%')
+				</isEqual>
+				<isEqual prepend="AND" property="searchCondition" compareValue="2">
+					MEM_NM LIKE CONCAT('%',#searchKeyword#,'%')
+				</isEqual>
+			</isNotEmpty>
+				ORDER BY MEM_SEQ DESC
+				limit #firstIndex#, #recordCountPerPage#	
+	</select>	
+	<select id="tbMemDAO.selectTbMemListTotCnt_S" parameterClass="tbMemSerarchVO" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM tb_mem
+			WHERE 1=1
+			<isNotEmpty property="code">
+				AND CODE = #code#
+			</isNotEmpty>
+			<isNotEmpty property="searchKeyword" >
+				<isEqual prepend="AND" property="searchCondition" compareValue="">
+					(MEM_ID LIKE CONCAT('%',#searchKeyword#,'%') || MEM_NM LIKE CONCAT('%',#searchKeyword#,'%'))
+				</isEqual>
+				<isEqual prepend="AND" property="searchCondition" compareValue="1">
+					MEM_ID LIKE CONCAT('%',#searchKeyword#,'%')
+				</isEqual>
+				<isEqual prepend="AND" property="searchCondition" compareValue="2">
+					MEM_NM LIKE CONCAT('%',#searchKeyword#,'%')
+				</isEqual>
+			</isNotEmpty>
+	</select>
+	
+	<update id="tbMemDAO.tbMemAcceotUpdate">
+		
+			UPDATE tb_mem
+			SET ACCEPT_YN=#acceptYn#
+				, UPD_DT=NOW()
+				, UPD_ID=#updId#
+				<isNotEmpty property="rejectMsg">
+				,REJECT_MSG=#rejectMsg#
+				</isNotEmpty>
+			WHERE MEM_SEQ=#memSeq#
+			
+	</update>
+
+</sqlMap>

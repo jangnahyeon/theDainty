@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TReqUser">
+	
+	<typeAlias  alias="egovMap" type="org.egovframe.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="TReqUserVO" type="dlink.front.vo.TReqUserVO"/>
+	
+	<resultMap id="TReqUser" class="dlink.front.vo.TReqUserVO">
+		<result property="loginId" column="LOGIN_ID" columnIndex="1"/>
+		<result property="userNm" column="USER_NM" columnIndex="2"/>
+		<result property="sex" column="SEX" columnIndex="3"/>
+		<result property="birthday" column="BIRTHDAY" columnIndex="4"/>
+		<result property="mobileNo" column="MOBILE_NO" columnIndex="5"/>
+		<result property="emailAddr" column="EMAIL_ADDR" columnIndex="6"/>
+		<result property="zipCd" column="ZIP_CD" columnIndex="7"/>
+		<result property="addr" column="ADDR" columnIndex="8"/>
+		<result property="dtlAddr" column="DTL_ADDR" columnIndex="9"/>
+		<result property="smsYn" column="SMS_YN" columnIndex="10"/>
+		<result property="mailYn" column="MAIL_YN" columnIndex="11"/>
+		<result property="reqDt" column="REQ_DT" columnIndex="12"/>
+		<result property="acceptYn" column="ACCEPT_YN" columnIndex="13"/>
+		<result property="acceptCont" column="ACCEPT_CONT" columnIndex="14"/>
+		<result property="regDt" column="REG_DT" columnIndex="15"/>
+		<result property="loginPwd" column="LOGIN_PWD" columnIndex="16"/>
+	</resultMap>
+	
+	<insert id="TReqUserDAO.insertTReqUser_S">
+		<![CDATA[
+			INSERT INTO t_req_user 
+				( LOGIN_ID
+				  , USER_NM
+				  , SEX
+				  , BIRTHDAY
+				  , LOGIN_PWD
+				  , MOBILE_NO
+				  , EMAIL_ADDR
+				  , ZIP_CD
+				  , ADDR
+				  , DTL_ADDR
+				  , SMS_YN
+				  , MAIL_YN
+				  , REQ_DT
+				  , ACCEPT_YN
+				  , ACCEPT_CONT
+				  , REG_DT )
+			VALUES ( #loginId#
+				  , #userNm#
+				  , #sex#
+				  , #birthday#
+				  , #loginPwd#
+				  , #mobileNo#
+				  , #emailAddr#
+				  , #zipCd#
+				  , #addr#
+				  , #dtlAddr#
+				  , #smsYn#
+				  , #mailYn#
+				  , now()
+				  , #acceptYn#
+				  , #acceptCont#
+				  , now() )
+		]]>
+	</insert>
+	
+	<insert id="TReqUserDAO.insertTMemUser_S">
+		<![CDATA[
+			INSERT INTO t_mem_user 
+				( LOGIN_ID
+				  , USER_NM
+				  , SEX
+				  , BIRTHDAY
+				  , MOBILE_NO
+				  , EMAIL_ADDR
+				  , ZIP_CD
+				  , ADDR
+				  , DTL_ADDR
+				  , REG_DT
+				  , UPD_DT
+				  , UPDATER
+				  , REGISTER
+				  )
+			VALUES ( #loginId#
+				  , #userNm#
+				  , #sex#
+				  , #birthday#
+				  , #mobileNo#
+				  , #emailAddr#
+				  , #zipCd#
+				  , #addr#
+				  , #dtlAddr#
+				  , NOW()
+				  , null
+				  , null
+				  , #loginId#
+				  )
+		]]>
+	</insert>
+	
+	<insert id="TReqUserDAO.insertTAccptUser_S">
+		<![CDATA[
+			INSERT INTO t_mem_accpt
+				( LOGIN_ID
+				  , LOGIN_PWD
+				  , USER_TYPE
+				  , MEM_DT
+				  , PWD_CHG_DT
+				  , NEXT_CHG_DT
+				  , SMS_YN
+				  , MAIL_YN
+				  , REG_DT )
+			VALUES ( #loginId#
+				  , #loginPwd#
+				  , 'MG0001'
+				  , NOW()
+				  , NOW()
+				  , DATE_ADD(NOW(), INTERVAL 90 DAY)
+				  , #smsYn#
+				  , #mailYn#
+				  , NOW() )
+				  
+		]]>
+	</insert>
+	
+	<update id="TReqUserDAO.updateTReqUser_S">
+		<![CDATA[
+			UPDATE t_req_user
+			SET LOGIN_ID=#loginId#
+				, USER_NM=#userNm#
+				, SEX=#sex#
+				, BIRTHDAY=#birthday#
+				, LOGIN_PWD=#loginPwd#
+				, MOBILE_NO=#mobileNo#
+				, EMAIL_ADDR=#emailAddr#
+				, ZIP_CD=#zipCd#
+				, ADDR=#addr#
+				, DTL_ADDR=#dtlAddr#
+				, SMS_YN=#smsYn#
+				, MAIL_YN=#mailYn#
+				, REQ_DT=#reqDt#
+				, ACCEPT_YN=#acceptYn#
+				, ACCEPT_CONT=#acceptCont#
+				, REG_DT=#regDt#
+			]]>
+	</update>
+	
+	<update id="TReqUserDAO.updateTReqMemAcceptYn">
+		<![CDATA[
+			UPDATE t_req_user
+			SET ACCEPT_YN=#acceptYn#
+				,ACCEPT_CONT=#acceptCont#
+				WHERE LOGIN_ID=#loginId#
+			]]>
+	</update>
+	
+	<delete id="TReqUserDAO.deleteTReqUser_S">
+		<![CDATA[
+			DELETE FROM t_req_user 
+			]]>
+	</delete>
+	
+	<select id="TReqUserDAO.selectTReqUser_S" resultMap="TReqUser">
+		
+			SELECT
+				LOGIN_ID
+				, USER_NM
+				, SEX
+				, BIRTHDAY
+				, MOBILE_NO
+				, EMAIL_ADDR
+				, ZIP_CD
+				, ADDR
+				, DTL_ADDR
+				, SMS_YN
+				, MAIL_YN
+				, DATE_FORMAT(REQ_DT, '%Y%m%d%H%i%S') as REQ_DT
+				, ACCEPT_YN
+				, ACCEPT_CONT
+				, REG_DT
+				, LOGIN_PWD
+			FROM 
+				t_req_user
+			WHERE 
+				1 = 1				
+				<isNotEmpty prepend="AND" property="loginId">
+					LOGIN_ID = #loginId#
+				</isNotEmpty>
+				
+			
+	</select>
+	
+	<select id="TReqUserDAO.selectTReqUserList_D"  resultClass="egovMap">
+			SELECT
+				LOGIN_ID
+				, USER_NM
+				, SEX
+				, BIRTHDAY
+				, MOBILE_NO
+				, EMAIL_ADDR
+				, ZIP_CD
+				, ADDR
+				, DTL_ADDR
+				, SMS_YN
+				, MAIL_YN
+				, DATE_FORMAT(REQ_DT, '%Y%m%d%H%i%S') as REQ_DT
+				, ACCEPT_YN
+				, ACCEPT_CONT
+				, REG_DT
+			FROM t_req_user
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				<isNotEmpty property="searchKeyword">
+					LOGIN_ID = #searchKeyword#
+				</isNotEmpty>
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				<isNotEmpty property="searchKeyword">
+					USER_NM LIKE CONCAT('%',#searchKeyword#,'%')
+				</isNotEmpty>
+			</isEqual>
+				ORDER BY LOGIN_ID
+				limit #firstIndex#, #recordCountPerPage#	
+	</select>	
+	<select id="TReqUserDAO.selectTReqUserListTotCnt_S" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM t_req_user
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				<isNotEmpty property="searchKeyword">
+					LOGIN_ID = #searchKeyword#
+				</isNotEmpty>
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				<isNotEmpty property="searchKeyword">
+					USER_NM LIKE CONCAT('%',#searchKeyword#,'%')
+				</isNotEmpty>
+			</isEqual>
+	</select>
+	
+	<!-- 아이디 중복 체크 -->
+    <select id="TReqUserDAO.idCheck" parameterClass="String" resultClass="int">
+        SELECT COUNT(LOGIN_ID) 
+        FROM 
+        	T_MEM_ACCPT 
+        WHERE 
+        	LOGIN_ID = #loginId#
+    </select>
+	
+
+
+</sqlMap>

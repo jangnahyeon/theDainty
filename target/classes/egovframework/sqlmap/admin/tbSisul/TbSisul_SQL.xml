@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TbSisul">
+	
+	<typeAlias  alias="egovMap" type="org.egovframe.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="tbSisulSerarchVO" type="dlink_new.admin.vo.TbSisulDefaultVO"/>
+	
+	<resultMap id="tbSisul" class="dlink_new.admin.vo.TbSisulVO">
+		<result property="sisulSeq" column="SISUL_SEQ" columnIndex="1"/>
+		<result property="sisulNm" column="SISUL_NM" columnIndex="2"/>
+		<result property="fileSeq" column="FILE_SEQ" columnIndex="3"/>
+		<result property="useYn" column="USE_YN" columnIndex="4"/>
+		<result property="regDt" column="REG_DT" columnIndex="5"/>
+		<result property="regId" column="REG_ID" columnIndex="6"/>
+		<result property="updDt" column="UPD_DT" columnIndex="7"/>
+		<result property="updId" column="UPD_ID" columnIndex="8"/>
+	</resultMap>
+	
+	<insert id="tbSisulDAO.insertTbSisul_S">
+		<![CDATA[
+			INSERT INTO tb_sisul 
+				( SISUL_SEQ
+				  , SISUL_NM
+				  , FILE_SEQ
+				  , USE_YN
+				  , REG_DT
+				  , REG_ID
+				  , UPD_DT
+				  , UPD_ID )
+			VALUES ( ( SELECT IFNULL( MAX( SISUL_SEQ ), 0 ) + 1 FROM tb_sisul s )
+				  , #sisulNm#
+				  , #fileSeq#
+				  , #useYn#
+				  , NOW()
+				  , #regId#
+				  , NOW()
+				  , #updId# )
+		]]>
+	</insert>
+	
+	<update id="tbSisulDAO.updateTbSisul_S">
+		<![CDATA[
+			UPDATE tb_sisul
+			SET 
+				SISUL_NM=#sisulNm#
+				, USE_YN=#useYn#				
+				, UPD_DT=NOW()
+				, UPD_ID=#updId#
+			WHERE 1=1
+				AND SISUL_SEQ = #sisulSeq#
+			]]>
+	</update>
+	
+	<delete id="tbSisulDAO.deleteTbSisul_S">
+		<![CDATA[
+			DELETE FROM tb_sisul 
+			WHERE 1=1
+				AND SISUL_SEQ = #sisulSeq#
+			]]>
+	</delete>
+	
+	<select id="tbSisulDAO.selectTbSisul_S" resultMap="tbSisul">
+		<![CDATA[
+			SELECT
+				SISUL_SEQ
+				, SISUL_NM
+				, FILE_SEQ
+				, USE_YN
+				, DATE_FORMAT(REG_DT,'%Y-%m-%d') AS REG_DT
+				, REG_ID
+				, UPD_DT
+				, UPD_ID
+			FROM tb_sisul
+			WHERE 1=1
+				AND SISUL_SEQ = #sisulSeq#
+			]]>
+	</select>
+	
+	<select id="tbSisulDAO.selectTbSisulList_D" parameterClass="tbSisulSerarchVO" resultClass="egovMap">
+			SELECT
+				SISUL_SEQ
+				, SISUL_NM
+				, FILE_SEQ
+				, USE_YN
+				, DATE_FORMAT(REG_DT,'%Y-%m-%d') AS REG_DT
+				, REG_ID
+				, UPD_DT
+				, UPD_ID
+			FROM tb_sisul
+			WHERE 1=1
+			<isNotEmpty property="searchKeyword" prepend="AND">			
+				SISUL_NM LIKE CONCAT('%',#searchKeyword#,'%')
+			</isNotEmpty>
+				ORDER BY SISUL_SEQ DESC
+				limit #firstIndex#, #recordCountPerPage#	
+	</select>	
+	<select id="tbSisulDAO.selectTbSisulListTotCnt_S" parameterClass="tbSisulSerarchVO" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM tb_sisul
+			WHERE 1=1
+			<isNotEmpty property="searchKeyword" prepend="AND">			
+				SISUL_NM LIKE CONCAT('%',#searchKeyword#,'%')
+			</isNotEmpty>
+	</select>
+
+</sqlMap>

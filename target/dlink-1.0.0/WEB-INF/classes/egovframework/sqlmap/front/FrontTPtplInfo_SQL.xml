@@ -1,0 +1,463 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="FrontTPtplInfo">
+	
+	<typeAlias  alias="egovMap" type="org.egovframe.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="TPtplInfoSerarchVO" type="dlink.front.vo.TPtplInfoVO"/>
+	
+	<resultMap id="TPtplInfo" class="dlink.front.vo.TPtplInfoVO">
+		<result property="loginId" column="LOGIN_ID" columnIndex="1"/>
+		<result property="ptplNo" column="PTPL_NO" columnIndex="2"/>
+		<result property="ptplNm" column="PTPL_NM" columnIndex="3"/>
+		<result property="ptplPart" column="PTPL_PART" columnIndex="4"/> 
+		<result property="ptplYouhaeng" column="PTPL_YOUHAENG" columnIndex="5"/>
+		<result property="ptplType" column="PTPL_TYPE" columnIndex="6"/>
+		<result property="ptplStyle" column="PTPL_STYLE" columnIndex="7"/>
+		<result property="addOption" column="ADD_OPTION" columnIndex="8"/>
+		<result property="refWord" column="REF_WORD" columnIndex="9"/>
+		<result property="concept" column="CONCEPT" columnIndex="10"/>
+		<result property="regDt" column="REG_DT" columnIndex="11"/>
+		<result property="register" column="REGISTER" columnIndex="12"/>
+		<result property="updDt" column="UPD_DT" columnIndex="13"/>
+		<result property="updater" column="UPDATER" columnIndex="14"/>
+		<result property="ptplPartNm" column="ptplPartNm" columnIndex="15"/>
+		<result property="ptplYouhaengNm" column="ptplYouhaengNm" columnIndex="16"/>
+		<result property="fileSeq" column="fileSeq" columnIndex="17"/>
+		<result property="multiSeq" column="multiSeq" columnIndex="18"/>
+		<result property="comNm" column="comNm" columnIndex="19"/>		
+	</resultMap>
+	
+	<insert id="FrontTPtplInfoDAO.insertTPtplInfo_S">
+	<selectKey keyProperty="ptplNo" resultClass="decimal" >
+    	SELECT	IFNULL(MAX(a.PTPL_NO)+1,1)
+    	FROM	t_ptpl_info a
+    </selectKey>
+		<![CDATA[
+			INSERT INTO t_ptpl_info 
+				( LOGIN_ID
+				  , PTPL_NO
+				  , PTPL_NM
+				  , PTPL_PART
+				  , PTPL_YOUHAENG
+				  , PTPL_TYPE
+				  , PTPL_STYLE
+				  , ADD_OPTION
+				  , REF_WORD
+				  , CONCEPT
+				  , REG_DT
+				  , REGISTER
+				  , UPD_DT
+				  , UPDATER )
+			VALUES ( #loginId#
+				  , #ptplNo#
+				  , #ptplNm#
+				  , #ptplPart#
+				  , #ptplYouhaeng#
+				  , #ptplType#
+				  , #ptplStyle#
+				  , #addOption#
+				  , #refWord#
+				  , #concept#
+				  , NOW()
+				  , #register#
+				  , #updDt#
+				  , #updater# )
+		]]>
+	</insert>
+	
+	<insert id="FrontTPtplInfoDAO.insertTPtplInfoImg" parameterClass="TPtplInfoSerarchVO">
+		<![CDATA[
+			INSERT INTO t_ptpl_img 
+				( LOGIN_ID
+				  , PTPL_NO
+				  , FILE_SEQ
+				  , TITLE_YN
+				  , REG_DT
+				  , REGISTER)
+			VALUES ( #loginId#
+				  , #ptplNo#
+				  , #fileSeq#
+				  , 'Y'
+				  , NOW()
+				  , #register#)
+		]]>
+	</insert>
+	
+	<insert id="FrontTPtplInfoDAO.insertTPtplInfoMultiImg" parameterClass="TPtplInfoSerarchVO">
+		<![CDATA[
+			INSERT INTO t_ptpl_img 
+				( LOGIN_ID
+				  , PTPL_NO
+				  , FILE_SEQ
+				  , TITLE_YN
+				  , REG_DT
+				  , REGISTER)
+			VALUES ( #loginId#
+				  , #ptplNo#
+				  , #fileSeq#
+				  , 'N'
+				  , NOW()
+				  , #register#)
+		]]>
+	</insert>
+	
+	<update id="FrontTPtplInfoDAO.updateTPtplInfo_S" parameterClass="TPtplInfoSerarchVO" >
+		<![CDATA[
+			UPDATE t_ptpl_info
+			SET PTPL_NM=#ptplNm#
+				, PTPL_PART=#ptplPart#
+				, PTPL_YOUHAENG=#ptplYouhaeng#
+				, PTPL_TYPE=#ptplType#
+				, PTPL_STYLE=#ptplStyle#
+				, ADD_OPTION=#addOption#
+				, REF_WORD=#refWord#
+				, CONCEPT=#concept#
+				, REGISTER=#register#
+				, UPD_DT=NOW()
+				, UPDATER=#updater#
+				WHERE PTPL_NO=#ptplNo#
+			]]>
+			<isNotEmpty property="loginId" prepend="AND" >
+				LOGIN_ID=#loginId#
+			</isNotEmpty>
+				
+	</update>
+	
+	<delete id="FrontTPtplInfoDAO.deleteTPtplInfo_S">
+		<![CDATA[
+			DELETE FROM t_ptpl_info 
+			]]>
+			WHERE PTPL_NO = #ptplNo#
+	</delete>
+	
+	<delete id="FrontTPtplInfoDAO.deleteTPtplInfoImg">
+		<![CDATA[
+			DELETE FROM t_ptpl_img
+			]]>
+			WHERE 1=1
+			<isNotEmpty property="ptplNo" prepend="AND">			
+				PTPL_NO = #ptplNo#
+			</isNotEmpty>
+			<isNotEmpty property="fileSeq" prepend="AND">			
+				FILE_SEQ = #fileSeq#
+			</isNotEmpty>
+	</delete>
+	
+	<select id="FrontTPtplInfoDAO.selectTPtplInfo_S" resultMap="TPtplInfo"  parameterClass="TPtplInfoSerarchVO" >
+		<![CDATA[
+			SELECT
+				LOGIN_ID
+				, PTPL_NO
+				, PTPL_NM
+				, PTPL_PART
+				, PTPL_YOUHAENG
+				, PTPL_TYPE
+				, PTPL_STYLE
+				, ADD_OPTION
+				, REF_WORD
+				, CONCEPT
+				, REG_DT
+				, REGISTER
+				, UPD_DT
+				, UPDATER
+				, (SELECT CODE_NM FROM T_CODE WHERE CODE = a.PTPL_PART) ptplPartNm
+				, (SELECT CODE_NM FROM T_CODE WHERE CODE = a.PTPL_YOUHAENG) ptplYouhaengNm
+				, (SELECT FILE_SEQ FROM t_ptpl_img b WHERE b.PTPL_NO = a.PTPL_NO and TITLE_YN = 'Y') AS fileSeq
+				, (SELECT GROUP_CONCAT(FILE_SEQ) FROM t_ptpl_img b WHERE b.PTPL_NO = a.PTPL_NO AND TITLE_YN = 'N') AS multiSeq
+				, (SELECT COM_NM FROM T_MEM_COM B WHERE B.LOGIN_ID = a.LOGIN_ID) AS  comNm
+			FROM t_ptpl_info a
+			WHERE PTPL_NO = #ptplNo#
+			]]>
+	</select>
+	
+	<select id="FrontTPtplInfoDAO.selectCategoryNm" resultClass="egovMap" parameterClass="egovMap" >
+			SELECT
+				CODE_NM
+			FROM T_CODE
+			WHERE CODE in 
+			<iterate property="list" open="(" close=")" conjunction=",">
+				 #list[]#
+			</iterate>
+	</select>
+	<select id="FrontTPtplInfoDAO.searchPortfolio" resultClass="egovMap" parameterClass="TPtplInfoSerarchVO" >
+			SELECT DISTINCT
+				LOGIN_ID
+				, PTPL_NO
+				, PTPL_NM
+				, PTPL_PART
+				, (SELECT CODE_NM FROM T_CODE WHERE CODE = a.PTPL_PART) ptplPartNm
+				, PTPL_YOUHAENG
+				, PTPL_TYPE
+				, PTPL_STYLE
+				, ADD_OPTION
+				, REF_WORD
+				, CONCEPT
+				, REG_DT
+				, REGISTER
+				, UPD_DT
+				, UPDATER
+			FROM t_ptpl_info a
+			WHERE 1=1
+			
+			<isNotEmpty property="arrPtplType" >
+				AND
+				<iterate property="arrPtplType" conjunction="OR">
+					PTPL_TYPE LIKE CONCAT('%',#arrPtplType[]#, '%') 
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty property="arrPtplStyle" >
+				AND
+				<iterate property="arrPtplStyle" conjunction="OR">
+					PTPL_STYLE LIKE CONCAT('%',#arrPtplStyle[]#, '%') 
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty property="arrAddOption" >
+				AND
+				<iterate property="arrAddOption" conjunction="OR">
+					ADD_OPTION LIKE CONCAT('%',#arrAddOption[]#, '%') 
+				</iterate>
+			</isNotEmpty>
+			ORDER BY CAST(PTPL_NO AS UNSIGNED) DESC
+				limit #firstIndex#, #lastIndex#	
+	</select>
+	<select id="FrontTPtplInfoDAO.selectTPtplInfoList_D" parameterClass="TPtplInfoSerarchVO" resultClass="egovMap">
+			SELECT
+								LOGIN_ID
+								, PTPL_NO
+								, PTPL_NM
+								, PTPL_PART
+								, (SELECT CODE_NM FROM T_CODE WHERE CODE = a.PTPL_PART) ptplPartNm
+								, (SELECT FILE_SEQ FROM t_ptpl_img b WHERE b.PTPL_NO = a.PTPL_NO and TITLE_YN = 'Y') AS fileSeq
+								, PTPL_YOUHAENG
+								, PTPL_TYPE
+								, PTPL_STYLE
+								, ADD_OPTION
+								, REF_WORD
+								, CONCEPT
+								, REG_DT
+								, REGISTER
+								, UPD_DT
+								, UPDATER
+								, (SELECT COM_NM FROM T_MEM_COM B WHERE B.LOGIN_ID = a.LOGIN_ID) AS  COM_NM
+								, (SELECT COUNT(*) FROM T_SEL_IMG TSI WHERE TSI.PTPL_NO = a.PTPL_NO) AS FAVORITE_CNT
+					FROM t_ptpl_info a
+			WHERE 1=1
+			<isNotEmpty prepend="AND" property="loginId" >
+				LOGIN_ID = #loginId#
+			</isNotEmpty>
+			<isNotEmpty property="ptplPart" prepend="AND" >
+				PTPL_PART LIKE CONCAT('%',#ptplPart#,'%')
+			</isNotEmpty>
+			<isNotEmpty property="ptplYouhaeng" prepend="AND" >
+				PTPL_YOUHAENG LIKE CONCAT('%',#ptplYouhaeng#,'%')
+			</isNotEmpty>
+			<isNotEmpty property="searchKeyword" prepend="AND" >
+				PTPL_NM LIKE CONCAT('%',#searchKeyword#,'%')
+				OR REF_WORD LIKE CONCAT('%','명함','%')
+			</isNotEmpty>
+			
+			<!-- <isNotEmpty property="arrPtplType" >
+				AND
+				<iterate property="arrPtplType" conjunction="OR">
+					PTPL_TYPE LIKE CONCAT('%',#arrPtplType[]#, '%') 
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty property="arrPtplStyle" >
+				AND
+				<iterate property="arrPtplStyle" conjunction="OR">
+					PTPL_STYLE LIKE CONCAT('%',#arrPtplStyle[]#, '%') 
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty property="arrAddOption" >
+				AND
+				<iterate property="arrAddOption" conjunction="OR">
+					ADD_OPTION LIKE CONCAT('%',#arrAddOption[]#, '%') 
+				</iterate>
+			</isNotEmpty> -->
+			<isEqual property="searchKeyword2" compareValue="favorite">
+				ORDER BY CAST(FAVORITE_CNT AS UNSIGNED) DESC
+			</isEqual>
+			<isEqual property="searchKeyword2" compareValue="recently">
+				ORDER BY REG_DT DESC
+			</isEqual>
+			<isEqual property="searchKeyword2" compareValue="random">
+				ORDER BY RAND( #seed# )
+			</isEqual>
+			<isEmpty property="searchKeyword2">			
+				ORDER BY PTPL_NO DESC
+			</isEmpty>
+				limit #firstIndex#, #recordCountPerPage#	
+	</select>	
+	<select id="FrontTPtplInfoDAO.selectTPtplInfoListTotCnt_S" parameterClass="TPtplInfoSerarchVO" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM t_ptpl_info
+			WHERE 1=1
+			<isNotEmpty prepend="AND" property="loginId" >
+				LOGIN_ID = #loginId#
+			</isNotEmpty>
+			<isNotEmpty property="ptplPart" prepend="AND" >
+				PTPL_PART LIKE CONCAT('%',#ptplPart#,'%')
+			</isNotEmpty>
+			<isNotEmpty property="ptplYouhaeng" prepend="AND" >
+				PTPL_YOUHAENG LIKE CONCAT('%',#ptplYouhaeng#,'%')
+			</isNotEmpty>
+			<isNotEmpty property="searchKeyword" prepend="AND" >
+				PTPL_NM LIKE CONCAT('%',#searchKeyword#,'%')
+			</isNotEmpty>
+			<isNotEmpty property="arrPtplType" >
+				AND
+				<iterate property="arrPtplType" conjunction="OR">
+					PTPL_TYPE LIKE CONCAT('%',#arrPtplType[]#, '%') 
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty property="arrPtplStyle" >
+				AND
+				<iterate property="arrPtplStyle" conjunction="OR">
+					PTPL_STYLE LIKE CONCAT('%',#arrPtplStyle[]#, '%') 
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty property="arrAddOption" >
+				AND
+				<iterate property="arrAddOption" conjunction="OR">
+					ADD_OPTION LIKE CONCAT('%',#arrAddOption[]#, '%') 
+				</iterate>
+			</isNotEmpty>
+	</select>
+
+
+	<select id="FrontTPtplInfoDAO.selectPtplFavoriteCnt" parameterClass="TPtplInfoSerarchVO" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM t_sel_img
+			WHERE PTPL_NO=#ptplNo# AND USER_ID = #loginId#
+	</select>
+	
+	<insert id="FrontTPtplInfoDAO.insertPtplFavorite" parameterClass="TPtplInfoSerarchVO">
+		<![CDATA[
+			INSERT INTO t_sel_img 
+				( USER_ID
+				  , SEL_SEQ
+				  , LOGIN_ID
+				  , PTPL_NO
+				  , FILE_SEQ
+				  , SEL_GB
+				  , SEL_DT )
+			VALUES ( #loginId#
+				  , (SELECT T2 FROM (SELECT IFNULL(MAX(CAST(SEL_SEQ AS UNSIGNED)),0)+1 AS T2 FROM t_sel_img) B)
+				  , #loginId#
+				  , #ptplNo#
+				  , (SELECT FILE_SEQ FROM T_PTPL_IMG WHERE PTPL_NO = #ptplNo# AND TITLE_YN = 'Y')
+				  , #selGb#
+				  , now() )
+		]]>
+	</insert>
+	
+	<delete id="FrontTPtplInfoDAO.deleteTPtplFavorite">
+		<![CDATA[
+			DELETE FROM T_SEL_IMG 
+			]]>
+			WHERE PTPL_NO = #ptplNo#
+			AND USER_ID = #loginId#
+	</delete>
+	
+	
+	
+	<select id="FrontTPtplInfoDAO.selectInterestPtplList" parameterClass="TPtplInfoSerarchVO" resultClass="egovMap">
+			SELECT
+					A.LOGIN_ID
+					, A.PTPL_NO
+					, A.PTPL_NM
+					, A.PTPL_PART
+					, (SELECT CODE_NM FROM T_CODE WHERE CODE = a.PTPL_PART) AS ptplPartNm
+					, (SELECT FILE_SEQ FROM t_ptpl_img b WHERE b.PTPL_NO = a.PTPL_NO AND TITLE_YN = 'Y') AS fileSeq
+					, A.PTPL_YOUHAENG
+					, A.PTPL_TYPE
+					, A.PTPL_STYLE
+					, A.ADD_OPTION
+					, A.REF_WORD
+					, A.CONCEPT
+					, A.REG_DT
+					, A.REGISTER
+					, A.UPD_DT
+					, A.UPDATER			
+					, B.SEL_DT	
+			FROM 
+						t_ptpl_info A
+			LEFT OUTER JOIN 
+						t_sel_img B
+					ON 
+						A.PTPL_NO = B.PTPL_NO
+			WHERE 
+					1=1
+				AND
+					B.SEL_GB = #selGb#
+				AND
+					B.LOGIN_ID =  #loginId#
+				
+					<isNotEmpty property="ptplPart" prepend="AND" >
+				A.PTPL_PART LIKE CONCAT('%',#ptplPart#,'%')
+			</isNotEmpty>
+			
+			<isNotEmpty property="arrPtplType" >
+				AND
+				<iterate property="arrPtplType" conjunction="OR">
+					A.PTPL_TYPE LIKE CONCAT('%',#arrPtplType[]#, '%') 
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty property="arrPtplStyle" >
+				AND
+				<iterate property="arrPtplStyle" conjunction="OR">
+					A.PTPL_STYLE LIKE CONCAT('%',#arrPtplStyle[]#, '%') 
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty property="arrAddOption" >
+				AND
+				<iterate property="arrAddOption" conjunction="OR">
+					A.ADD_OPTION LIKE CONCAT('%',#arrAddOption[]#, '%') 
+				</iterate>
+			</isNotEmpty>
+							
+				ORDER BY B.SEL_DT DESC
+				limit #firstIndex#, #recordCountPerPage#	
+	</select>	
+	<select id="FrontTPtplInfoDAO.selectInterestPtplListTotCnt" parameterClass="TPtplInfoSerarchVO" resultClass="int">
+			SELECT 
+					COUNT(*) totcnt
+			FROM 
+						t_ptpl_info A
+			LEFT OUTER JOIN 
+						t_sel_img B
+					ON 
+						A.PTPL_NO = B.PTPL_NO
+			WHERE 
+					1=1
+				AND
+					B.SEL_GB = #selGb#
+				AND
+					B.LOGIN_ID =  #loginId#
+					<isNotEmpty property="ptplPart" prepend="AND" >
+				A.PTPL_PART LIKE CONCAT('%',#ptplPart#,'%')
+			</isNotEmpty>
+			
+			<isNotEmpty property="arrPtplType" >
+				AND
+				<iterate property="arrPtplType" conjunction="OR">
+					A.PTPL_TYPE LIKE CONCAT('%',#arrPtplType[]#, '%') 
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty property="arrPtplStyle" >
+				AND
+				<iterate property="arrPtplStyle" conjunction="OR">
+					A.PTPL_STYLE LIKE CONCAT('%',#arrPtplStyle[]#, '%') 
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty property="arrAddOption" >
+				AND
+				<iterate property="arrAddOption" conjunction="OR">
+					A.ADD_OPTION LIKE CONCAT('%',#arrAddOption[]#, '%') 
+				</iterate>
+			</isNotEmpty>
+			
+	</select>
+	
+</sqlMap>

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TWord">
+	
+	<typeAlias  alias="egovMap" type="org.egovframe.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="SearchVo" type="dlink.admin.vo.SearchVO"/>
+	<typeAlias  alias="TWordVo" type="dlink.admin.vo.TWordVO"/>
+	
+	<resultMap id="TWord" class="dlink.admin.vo.TWordVO">
+		<result property="wordNo" column="WORD_NO" columnIndex="1"/>
+		<result property="wordNm" column="WORD_NM" columnIndex="2"/>
+		<result property="cont" column="CONT" columnIndex="3"/>
+		<result property="openYn" column="OPEN_YN" columnIndex="4"/>
+		<result property="register" column="REGISTER" columnIndex="5"/>
+		<result property="regDt" column="REG_DT" columnIndex="6"/>
+	</resultMap>
+	
+	<select id="TWordDAO.selectForInsertCd" parameterClass="TWordVo" resultClass="int" >
+		SELECT 
+				IFNULL(MAX(WORD_NO),0)+1
+		FROM 
+			t_word
+	</select>
+	
+	<insert id="TWordDAO.insertTWord_S">
+		<![CDATA[
+			INSERT INTO t_word 
+				( 
+					WORD_NO
+				  , WORD_NM
+				  , CONT
+				  , OPEN_YN
+				  , REGISTER
+				  , REG_DT )
+			VALUES ( 
+					#wordNo#
+				  , #wordNm#
+				  , #cont#
+				  , #openYn#
+				  , #register#
+				  , NOW() )
+		]]>
+	</insert>
+	
+	<update id="TWordDAO.updateTWord_S">
+		<![CDATA[
+			UPDATE 
+					t_word
+			SET 
+				 WORD_NM = #wordNm#
+				, CONT = #cont#
+				, OPEN_YN = #openYn#
+				, REGISTER = #register#
+				, REG_DT = NOW()
+			WHERE
+				WORD_NO = #wordNo#
+			]]>
+	</update>
+	
+	<delete id="TWordDAO.deleteTWord_S">
+		<![CDATA[
+			DELETE 
+				FROM t_word 
+			WHERE
+				WORD_NO = #wordNo#
+			]]>
+	</delete>
+	
+	<select id="TWordDAO.selectTWord_S" resultMap="TWord">
+		<![CDATA[
+			SELECT
+				WORD_NO
+				, WORD_NM
+				, CONT
+				, OPEN_YN
+				, REGISTER
+				, REG_DT
+			FROM t_word
+			WHERE
+				WORD_NO = #wordNo#
+			]]>
+	</select>
+	
+	<select id="TWordDAO.selectTWordList_D" parameterClass="SearchVo" resultClass="egovMap">
+			SELECT
+								WORD_NO
+								, WORD_NM
+								, CONT
+								, OPEN_YN
+								, REGISTER
+								, REG_DT
+					FROM t_word
+			WHERE 
+				1=1		
+			
+				<isEqual prepend="AND" property="searchCondition" compareValue="0">
+					(
+							WORD_NM LIKE CONCAT('%',#searchKeyword#,'%')
+						OR
+							CONT LIKE CONCAT('%',#searchKeyword#,'%')
+					)
+				</isEqual>
+				<isEqual prepend="AND" property="searchCondition" compareValue="1">
+					WORD_NM LIKE CONCAT('%',#searchKeyword#,'%')
+				</isEqual>
+				<isEqual prepend="AND" property="searchCondition" compareValue="2">
+					CONT LIKE CONCAT('%',#searchKeyword#,'%')
+				</isEqual>
+			
+			
+			 ORDER BY REG_DT DESC 
+					limit #firstIndex#, #recordCountPerPage#			
+	</select>	
+	<select id="TWordDAO.selectTWordListTotCnt_S" parameterClass="SearchVo" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM t_word
+			WHERE 1=1
+				<isEqual prepend="AND" property="searchCondition" compareValue="0">
+					(
+							WORD_NM LIKE CONCAT('%',#searchKeyword#,'%')
+						OR
+							CONT LIKE CONCAT('%',#searchKeyword#,'%')
+					)
+				</isEqual>
+				<isEqual prepend="AND" property="searchCondition" compareValue="1">
+					WORD_NM LIKE CONCAT('%',#searchKeyword#,'%')
+				</isEqual>
+				<isEqual prepend="AND" property="searchCondition" compareValue="2">
+					CONT LIKE CONCAT('%',#searchKeyword#,'%')
+				</isEqual>
+	</select>
+
+</sqlMap>

@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="FrontDsnBank">
+	
+	<typeAlias  alias="frontDsnBankVO" type="dlink.front.vo.FrontDsnBankVO"/>
+	
+	<resultMap id="frontDsnBankMap" class="dlink.front.vo.FrontDsnBankVO">
+		<result property="dsnNo" column="DSN_NO" columnIndex="1"/>
+		<result property="dsnNm" column="DSN_NM" columnIndex="2"/>
+		<result property="dsnPart" column="DSN_PART" columnIndex="3"/>
+		<result property="refWord" column="REF_WORD" columnIndex="4"/>
+		<result property="concept" column="CONCEPT" columnIndex="5"/>
+		<result property="fileSeq" column="FILE_SEQ" columnIndex="6"/>
+		<result property="fileNm" column="FILE_NM" columnIndex="7"/>
+		<result property="regDt" column="REG_DT" columnIndex="8"/>
+		<result property="register" column="REGISTER" columnIndex="9"/>
+	</resultMap>
+	
+	<select id="FrontDsnBankDAO.selectDsnBankList" parameterClass="frontDsnBankVO" resultClass="egovMap">
+			SELECT
+						A.DSN_NO
+						, A.DSN_NM
+						, A.DSN_PART
+						, A.REF_WORD
+						, A.CONCEPT
+						, A.FILE_SEQ
+						, (SELECT FILE_NM FROM t_attfile WHERE t_attfile.FILE_SEQ = A.FILE_SEQ) AS FILE_NM
+						, DATE_FORMAT(A.REG_DT, '%Y-%m-%d') AS REG_DT 
+						, A.REGISTER
+						, (SELECT COUNT(*) FROM T_SEL_IMG TSI WHERE TSI.DSN_NO = A.DSN_NO) AS FAVORITE_CNT
+				FROM t_dsn_bank_temp A
+				LEFT OUTER JOIN (SELECT * FROM T_SEL_IMG WHERE SEL_GB = 'dsn' AND USER_ID = #userId#) B
+				ON A.DSN_NO = B.DSN_NO
+				WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				<isNotEmpty property="searchKeyword">
+				DSN_NM LIKE CONCAT('%',#searchKeyword#,'%')
+				</isNotEmpty>
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				<isNotEmpty property="searchKeyword">
+				REF_WORD LIKE CONCAT('%',#searchKeyword#,'%')
+				</isNotEmpty>
+			</isEqual>
+			
+			<isEmpty property="searchKeyword2">
+				ORDER BY CAST(ORD AS UNSIGNED) DESC 
+			</isEmpty>
+			<isEqual property="searchKeyword2" compareValue="random">
+				ORDER BY CAST(ORD AS UNSIGNED) DESC 
+			</isEqual>
+			<isEqual property="searchKeyword2" compareValue="favorite">
+				ORDER BY CAST(FAVORITE_CNT AS UNSIGNED) DESC 
+			</isEqual>
+			<isEqual property="searchKeyword2" compareValue="date">
+				ORDER BY REG_DT DESC
+			</isEqual>
+				limit #firstIndex#, #recordCountPerPage#	
+	</select>
+
+	<select id="FrontDsnBankDAO.selectDsnBankListTotCnt" parameterClass="frontDsnBankVO" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM t_dsn_bank_temp
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				<isNotEmpty property="searchKeyword">
+				DSN_NM LIKE CONCAT('%',#searchKeyword#,'%')
+				</isNotEmpty>
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				<isNotEmpty property="searchKeyword">
+				REF_WORD LIKE CONCAT('%',#searchKeyword#,'%')
+				</isNotEmpty>
+			</isEqual>
+	</select>
+	
+	<select id="FrontDsnBankDAO.selectDsnBankFavoriteCnt" parameterClass="frontDsnBankVO" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM t_sel_img
+			WHERE DSN_NO=#dsnNo# AND USER_ID = #userId#
+	</select>
+	
+	
+	<insert id="FrontDsnBankDAO.insertDsnBank" parameterClass="frontDsnBankVO">
+		<![CDATA[
+			INSERT INTO t_sel_img 
+				( USER_ID
+				  , SEL_SEQ
+				  , LOGIN_ID
+				  , PTPL_NO
+				  , FILE_SEQ
+				  , SEL_GB
+				  , DSN_NO
+				  , SEL_DT )
+			VALUES ( #userId#
+				  , (SELECT T2 FROM (SELECT IFNULL(MAX(CAST(SEL_SEQ AS UNSIGNED)),0)+1 AS T2 FROM t_sel_img) B)
+				  , #loginId#
+				  , #ptplNo#
+				  , (SELECT FILE_SEQ FROM T_DSN_BANK WHERE DSN_NO = #dsnNo#)
+				  , #selGb#
+				  , #dsnNo#
+				  , now() )
+		]]>
+	</insert>
+	
+	<delete id="FrontDsnBankDAO.deleteDsnBank" parameterClass="frontDsnBankVO">
+		<![CDATA[
+			DELETE FROM t_sel_img WHERE DSN_NO=#dsnNo# AND USER_ID = #userId#
+			]]>
+	</delete>
+	
+	<statement id="FrontDsnBankDAO.createTable">
+		create temporary table t_dsn_bank_temp
+			select
+			AA.*,
+			@rownum := @rownum + 1 as ORD
+		from
+			(
+			select
+				A.*
+			from
+				t_dsn_bank A
+			order by
+				RAND()) AA,
+			(
+			select
+				@rownum := 0) tmp
+	</statement>
+	
+	
+	
+	
+		<select id="FrontDsnBankDAO.selectInterestDsnBankList" parameterClass="frontDsnBankVO" resultClass="egovMap">
+			SELECT
+						A.DSN_NO
+						, A.DSN_NM
+						, A.DSN_PART
+						, A.REF_WORD
+						, A.CONCEPT
+						, A.FILE_SEQ
+						, (SELECT FILE_NM FROM t_attfile WHERE t_attfile.FILE_SEQ = A.FILE_SEQ) AS FILE_NM
+						, DATE_FORMAT(A.REG_DT, '%Y-%m-%d') AS REG_DT 
+						, A.REGISTER
+						, (SELECT COUNT(*) FROM T_SEL_IMG TSI WHERE TSI.DSN_NO = A.DSN_NO) AS FAVORITE_CNT
+				FROM 
+						t_dsn_bank A
+				LEFT OUTER JOIN 
+						t_sel_img B
+					ON 
+						A.DSN_NO = B.DSN_NO
+				WHERE 	
+					1=1
+						AND
+							B.SEL_GB = #selGb#
+						AND
+							B.USER_ID =  #userId#
+		
+				limit #firstIndex#, #recordCountPerPage#	
+	</select>
+
+	<select id="FrontDsnBankDAO.selectInterestDsnBankListTotCnt" parameterClass="frontDsnBankVO" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM 
+						t_dsn_bank A
+				LEFT OUTER JOIN 
+						t_sel_img B
+					ON 
+						A.DSN_NO = B.DSN_NO
+				WHERE 	
+					1=1
+						AND
+							B.SEL_GB = #selGb#
+						AND
+							B.USER_ID =  #userId#
+			
+	</select>
+</sqlMap>

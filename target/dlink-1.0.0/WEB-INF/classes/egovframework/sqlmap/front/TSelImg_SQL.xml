@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TSelImg">
+	
+	<typeAlias  alias="egovMap" type="org.egovframe.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="SearchVo" type="dlink.admin.vo.SearchVO"/>
+	
+	<resultMap id="TSelImg" class="dlink.front.vo.TSelImgVO">
+		<result property="userId" column="USER_ID" columnIndex="1"/>
+		<result property="selSeq" column="SEL_SEQ" columnIndex="2"/>
+		<result property="loginId" column="LOGIN_ID" columnIndex="3"/>
+		<result property="ptplNo" column="PTPL_NO" columnIndex="4"/>
+		<result property="seq" column="SEQ" columnIndex="5"/>
+		<result property="selGb" column="SEL_GB" columnIndex="6"/>
+		<result property="dsnNo" column="DSN_NO" columnIndex="7"/>
+		<result property="selDt" column="SEL_DT" columnIndex="8"/>
+		<result property="fileSeq" column="FILE_SEQ" columnIndex="9"/>
+	</resultMap>
+	
+	<insert id="TSelImgDAO.insertTSelImg_S">
+		<![CDATA[
+			INSERT INTO t_sel_img 
+				( USER_ID
+				  , SEL_SEQ
+				  , LOGIN_ID
+				  , PTPL_NO
+				  , FILE_SEQ
+				  , SEL_GB
+				  , DSN_NO 
+				 , SEL_DT 
+				)
+			VALUES ( 
+					#userId#
+				  , (SELECT T2 FROM (SELECT IFNULL(MAX(CAST(SEL_SEQ AS UNSIGNED)),0)+1 AS T2 FROM t_sel_img) B)
+				  , #loginId#
+				  , #ptplNo#
+				  , #fileSeq#
+				  , #selGb#
+				  , #dsnNo#
+				 , now() 
+				)
+		]]>
+	</insert>
+	
+	<update id="TSelImgDAO.updateTSelImg_S">
+		<![CDATA[
+			UPDATE t_sel_img
+			SET USER_ID=#userId#
+				, SEL_SEQ=#selSeq#
+				, LOGIN_ID=#loginId#
+				, PTPL_NO=#ptplNo#
+				, SEQ=#seq#
+				, SEL_GB=#selGb#
+				, DSN_NO=#dsnNo#
+				, SEL_DT=#selDt#
+			]]>
+	</update>
+	
+	<delete id="TSelImgDAO.deleteTSelImg_S">
+		<![CDATA[
+			DELETE FROM t_sel_img 
+			WHERE					  
+					USER_ID = #userId#
+				AND
+					SEL_GB = #selGb#
+				AND
+					LOGIN_ID=#loginId#
+			]]>
+	</delete>
+	
+	<select id="TSelImgDAO.selectTSelImg_S" resultMap="TSelImg">
+		<![CDATA[
+			SELECT
+				USER_ID
+				, SEL_SEQ
+				, LOGIN_ID
+				, PTPL_NO
+				, SEQ
+				, SEL_GB
+				, DSN_NO
+				, SEL_DT
+			FROM t_sel_img
+			]]>
+	</select>
+	
+	<select id="TSelImgDAO.selectTSelImgList_D" parameterClass="SearchVo" resultClass="egovMap">
+			SELECT
+					USER_ID ,
+					SEL_SEQ,
+					SEL_GB,
+					LOGIN_ID,
+					PTPL_NO,
+					DSN_NO,
+					SEL_DT,
+					FILE_SEQ
+					<!-- (SELECT FILE_SEQ FROM T_MEM_COM_FILE B WHERE B.LOGIN_ID = A.LOGIN_ID) AS tMemComFileSeq,
+					(SELECT FILE_SEQ FROM T_PTPL_IMG C WHERE C.PTPL_NO = A.PTPL_NO AND TITLE_YN = 'Y') AS tPtplImgFileSeq -->
+			FROM
+					t_sel_img A
+			WHERE 
+					1=1
+				AND
+					A.USER_ID =  #userId#
+				AND
+					A.SEL_GB = #selGb#
+			<!-- <isEqual prepend="AND" property="searchCondition" compareValue="0">
+				USER_ID = #searchKeyword#
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				SEL_SEQ LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual> -->
+			ORDER BY CAST(SEL_SEQ AS UNSIGNED) ASC
+			limit #firstIndex#, #recordCountPerPage#	
+	</select>	
+	<select id="TSelImgDAO.selectTSelImgListTotCnt_S" parameterClass="SearchVo" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM t_sel_img
+			WHERE 
+					1=1
+				AND
+					USER_ID =  #userId#
+				AND
+					SEL_GB = #selGb#
+			<!-- <isEqual prepend="AND" property="searchCondition" compareValue="0">
+				USER_ID = #searchKeyword#
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				SEL_SEQ LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual> -->
+	</select>
+	
+	
+		<select id="TSelImgDAO.selectTSelImgFavoriteCnt" parameterClass="dlink.front.vo.TSelImgVO" resultClass="int">
+			SELECT 
+				COUNT(*) totcnt
+			FROM 
+				t_sel_img
+			WHERE  
+					USER_ID = #userId#
+				AND
+					SEL_GB = #selGb#
+				AND
+					LOGIN_ID=#loginId#
+	</select>
+	
+</sqlMap>

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="MtsAtalkAuth">
+	
+	<typeAlias  alias="egovMap" type="org.egovframe.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="mtsAtalkAuthSerarchVO" type="dlink.common.vo.MtsAtalkAuthDefaultVO"/>
+	
+	<resultMap id="mtsAtalkAuth" class="dlink.common.vo.MtsAtalkAuthVO">
+		
+		<result property="hpNm" column="HP_NM" columnIndex="1"/>
+		<result property="authNm" column="AUTH_NM" columnIndex="2"/>
+		<result property="regDt" column="REG_DT" columnIndex="3"/>
+		<result property="sessionVal" column="SESSION_VAL" columnIndex="4"/>
+		<result property="siteCd" column="SITE_CD" columnIndex="5"/>
+		
+		
+	</resultMap>
+	
+	<insert id="mtsAtalkAuthDAO.insertMtsAtalkAuth_S">
+		<![CDATA[
+			INSERT INTO mts_atalk_auth 
+				( HP_NM
+				  , AUTH_NM
+				  , REG_DT
+				  , SESSION_VAL)
+			VALUES ( #hpNm#
+				  , #authNm#
+				  , NOW()
+				  , #sessionVal#)
+		]]>
+	</insert>
+	
+	<delete id="mtsAtalkAuthDAO.deleteMtsAtalkAuth_S">
+		<![CDATA[
+			DELETE FROM mts_atalk_auth WHERE 1=1
+			]]>
+			and HP_NM = #hpNm#
+	</delete>
+	
+	<!-- <update id="mtsAtalkAuthDAO.updateMtsAtalkAuth_S">
+		<![CDATA[
+			UPDATE mts_atalk_auth
+			SET HP_NM=#hpNm#
+				, AUTH_NM=#authNm#
+				, REG_DT=#regDt#
+				, SESSION_VAL=#sessionVal#
+				, SITE_CD=#siteCd#
+				, HP_NM=#hpNm#
+				, AUTH_NM=#authNm#
+				, REG_DT=#regDt#
+				, USE_YN=#useYn#
+				, SITE_CD=#siteCd#
+				, HP_NM=#hpNm#
+				, AUTH_NM=#authNm#
+				, REG_DT=#regDt#
+				, USE_YN=#useYn#
+			]]>
+	</update>
+	
+	
+	<select id="mtsAtalkAuthDAO.selectMtsAtalkAuth_S" resultMap="mtsAtalkAuth">
+		<![CDATA[
+			SELECT
+				HP_NM
+				, AUTH_NM
+				, REG_DT
+				, SESSION_VAL
+				, SITE_CD
+				, HP_NM
+				, AUTH_NM
+				, REG_DT
+				, USE_YN
+				, SITE_CD
+				, HP_NM
+				, AUTH_NM
+				, REG_DT
+				, USE_YN
+			FROM mts_atalk_auth
+			]]>
+	</select>
+	
+	<select id="mtsAtalkAuthDAO.selectMtsAtalkAuthList_D" parameterClass="SearchVo" resultClass="egovMap">
+			SELECT
+				HP_NM
+				, AUTH_NM
+				, REG_DT
+				, SESSION_VAL
+				, SITE_CD
+			FROM 
+				mts_atalk_auth
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				HP_NM = #searchKeyword#
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				AUTH_NM LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+				ORDER BY AUTH_NM
+				limit #firstIndex#, #recordCountPerPage#	
+	</select> -->
+		
+	<select id="mtsAtalkAuthDAO.selectMtsAtalkAuthListTotCnt_S" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM mts_atalk_auth
+			WHERE 
+				1 = 1
+			<isNotEmpty property="hpNm" prepend="AND">
+				HP_NM = #hpNm#
+			</isNotEmpty>
+			<isNotEmpty property="authNm" prepend="AND">
+				AUTH_NM = #authNm#
+			</isNotEmpty>
+			<isNotEmpty property="sessionVal" prepend="AND">
+				SESSION_VAL = #sessionVal#
+			</isNotEmpty>
+	</select>
+	
+	
+	
+
+</sqlMap>

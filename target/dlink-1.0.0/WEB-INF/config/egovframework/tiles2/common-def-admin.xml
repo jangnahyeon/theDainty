@@ -1,0 +1,53 @@
+<!DOCTYPE tiles-definitions PUBLIC
+"-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+"http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+
+<tiles-definitions>    
+    <definition name="adminLayout" template="/WEB-INF/jsp/dlink_new/tiles/admin/adminLayout.jsp">
+        <put-attribute name="adminHeader" 		value="/WEB-INF/jsp/dlink_new/tiles/admin/adminHeader.jsp" />
+        <put-attribute name="adminLeft" 		value="/WEB-INF/jsp/dlink_new/tiles/admin/adminMagLeft.jsp" />
+        <put-attribute name="adminInnerTitle" 	value="/WEB-INF/jsp/dlink_new/tiles/admin/adminInnerTitle.jsp" />
+        <put-attribute name="adminFooter" 		value="/WEB-INF/jsp/dlink_new/tiles/admin/adminFooter.jsp" />
+    </definition>	
+	
+	<definition name="/admin/code/*" extends="adminLayout">
+	    <put-attribute name="content"
+	        value="/WEB-INF/jsp/dlink_new/admin/code/{1}.jsp" />
+	</definition>
+	
+	<definition name="/admin/mem/*" extends="adminLayout">
+	    <put-attribute name="content"
+	        value="/WEB-INF/jsp/dlink_new/admin/mem/{1}.jsp" />
+	</definition>
+	
+	<definition name="/admin/tbBrd/*" extends="adminLayout">
+	    <put-attribute name="content"
+	        value="/WEB-INF/jsp/dlink_new/admin/tbBrd/{1}.jsp" />
+	</definition>
+	
+	<definition name="/admin/tbPortf/*" extends="adminLayout">
+	    <put-attribute name="content"
+	        value="/WEB-INF/jsp/dlink_new/admin/tbPortf/{1}.jsp" />
+	</definition>
+	
+	<definition name="/admin/tbSisul/*" extends="adminLayout">
+	    <put-attribute name="content"
+	        value="/WEB-INF/jsp/dlink_new/admin/tbSisul/{1}.jsp" />
+	</definition>
+	
+	<definition name="/admin/tbSisulRsv/*" extends="adminLayout">
+	    <put-attribute name="content"
+	        value="/WEB-INF/jsp/dlink_new/admin/tbSisulRsv/{1}.jsp" />
+	</definition>
+	
+	<definition name="/admin/tbSisulHld/*" extends="adminLayout">
+	    <put-attribute name="content"
+	        value="/WEB-INF/jsp/dlink_new/admin/tbSisulHld/{1}.jsp" />
+	</definition>	
+	
+	<definition name="/admin/dBankMag/*" extends="adminLayout">
+	    <put-attribute name="content"
+	        value="/WEB-INF/jsp/dlink_new/admin/dBankMag/{1}.jsp" />
+	</definition>
+	
+</tiles-definitions>

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TbMenuFooter">
+	
+	<typeAlias  alias="egovMap" type="org.egovframe.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="tbMenuFooterSerarchVO" type="dlink_new.front.vo.TbMenuFooterVO"/>
+	
+	<resultMap id="tbMenuFooter" class="dlink_new.front.vo.TbMenuFooterVO">
+		<result property="menuSeq" column="MENU_SEQ" columnIndex="1"/>
+		<result property="menuNm" column="MENU_NM" columnIndex="2"/>
+		<result property="menuUrl" column="MENU_URL" columnIndex="3"/>
+		<result property="menuOrder" column="MENU_ORDER" columnIndex="4"/>
+		<result property="useYn" column="USE_YN" columnIndex="5"/>
+		<result property="regDt" column="REG_DT" columnIndex="6"/>
+		<result property="regId" column="REG_ID" columnIndex="7"/>
+		<result property="updDt" column="UPD_DT" columnIndex="8"/>
+		<result property="updId" column="UPD_ID" columnIndex="9"/>
+	</resultMap>
+	
+	<insert id="tbMenuFooterDAO.insertTbMenuFooter_S">
+		<![CDATA[
+			INSERT INTO tb_menu_footer 
+				( MENU_SEQ
+				  , MENU_NM
+				  , MENU_URL
+				  , MENU_ORDER
+				  , USE_YN
+				  , REG_DT
+				  , REG_ID
+				  , UPD_DT
+				  , UPD_ID )
+			VALUES ( ( SELECT IFNULL( MAX( MENU_SEQ ), 0 ) + 1 FROM tb_menu_footer mf )
+				  , #menuNm#
+				  , #menuUrl#
+				  , #menuOrder#
+				  , #useYn#
+				  , #regDt#
+				  , #regId#
+				  , #updDt#
+				  , #updId# )
+		]]>
+	</insert>
+	
+	<update id="tbMenuFooterDAO.updateTbMenuFooter_S">
+		<![CDATA[
+			UPDATE tb_menu_footer
+			SET MENU_SEQ=#menuSeq#
+				, MENU_NM=#menuNm#
+				, MENU_URL=#menuUrl#
+				, MENU_ORDER=#menuOrder#
+				, USE_YN=#useYn#
+				, REG_DT=#regDt#
+				, REG_ID=#regId#
+				, UPD_DT=#updDt#
+				, UPD_ID=#updId#
+			WHERE 1=1
+				AND MENU_SEQ = #menuSeq#
+			]]>
+	</update>
+	
+	<delete id="tbMenuFooterDAO.deleteTbMenuFooter_S">
+		<![CDATA[
+			DELETE FROM tb_menu_footer
+			WHERE 1=1
+				AND MENU_SEQ = #menuSeq# 
+			]]>
+	</delete>
+	
+	<select id="tbMenuFooterDAO.selectTbMenuFooter_S" resultMap="tbMenuFooter">
+		<![CDATA[
+			SELECT
+				MENU_SEQ
+				, MENU_NM
+				, MENU_URL
+				, MENU_ORDER
+				, USE_YN
+				, REG_DT
+				, REG_ID
+				, UPD_DT
+				, UPD_ID
+			FROM tb_menu_footer
+			WHERE 1=1
+				AND MENU_SEQ = #menuSeq#
+			]]>
+	</select>
+	
+	<select id="tbMenuFooterDAO.selectTbMenuFooterList_D" parameterClass="tbMenuFooterSerarchVO" resultMap="tbMenuFooter">
+			SELECT
+				MENU_SEQ
+				, MENU_NM
+				, MENU_URL
+				, MENU_ORDER
+				, USE_YN
+				, REG_DT
+				, REG_ID
+				, UPD_DT
+				, UPD_ID
+			FROM tb_menu_footer
+			WHERE 1=1
+			<isNotEmpty property="useYn">
+				AND USE_YN = #useYn#
+			</isNotEmpty>
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				MENU_SEQ = #searchKeyword#
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				MENU_NM LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+				ORDER BY MENU_ORDER, MENU_SEQ
+				limit #firstIndex#, #recordCountPerPage#	
+	</select>	
+	<select id="tbMenuFooterDAO.selectTbMenuFooterListTotCnt_S" parameterClass="tbMenuFooterSerarchVO" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM tb_menu_footer
+			WHERE 1=1
+			<isNotEmpty property="useYn">
+				AND USE_YN = #useYn#
+			</isNotEmpty>
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				MENU_SEQ = #searchKeyword#
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				MENU_NM LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+	</select>
+
+</sqlMap>

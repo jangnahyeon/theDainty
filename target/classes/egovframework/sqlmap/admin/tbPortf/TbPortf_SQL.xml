@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TbPortf">
+	
+	<typeAlias  alias="egovMap" type="org.egovframe.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="tbPortfSerarchVO" type="dlink_new.admin.vo.TbPortfVO"/>
+	
+	<resultMap id="tbPortf" class="dlink_new.admin.vo.TbPortfVO">
+		<result property="portfSeq" column="PORTF_SEQ" columnIndex="1"/>
+		<result property="code" column="CODE" columnIndex="2"/>
+		<result property="memSeq" column="MEM_SEQ" columnIndex="3"/>
+		<result property="memId" column="MEM_ID" columnIndex="4"/>
+		<result property="title" column="TITLE" columnIndex="5"/>
+		<result property="fileSeq" column="FILE_SEQ" columnIndex="6"/>
+		<result property="regDt" column="REG_DT" columnIndex="7"/>
+		<result property="regId" column="REG_ID" columnIndex="8"/>
+		<result property="updDt" column="UPD_DT" columnIndex="9"/>
+		<result property="updId" column="UPD_ID" columnIndex="10"/>
+		<result property="fileNm" column="FILE_NM" columnIndex="11"/>
+		<result property="orderNo" column="ORDER_NO" columnIndex="12"/>
+	</resultMap>
+	
+	<insert id="tbPortfDAO.insertTbPortf_S">
+		<![CDATA[
+			INSERT INTO tb_portf 
+				( PORTF_SEQ
+				  , CODE
+				  , MEM_SEQ
+				  , MEM_ID
+				  , TITLE
+				  , FILE_SEQ
+				  , REG_DT
+				  , REG_ID
+				  , UPD_DT
+				  , UPD_ID
+				  , ORDER_NO )
+			VALUES ( ( SELECT IFNULL( MAX( PORTF_SEQ ), 0 ) + 1 FROM tb_portf p )
+				  , #code#
+				  , #memSeq#
+				  , #memId#
+				  , #title#
+				  , #fileSeq#
+				  , NOW()
+				  , #regId#
+				  , NOW()
+				  , #updId#
+				  , #orderNo# )
+		]]>
+	</insert>
+	
+	<update id="tbPortfDAO.updateTbPortf_S" parameterClass="tbPortfSerarchVO">
+			UPDATE tb_portf
+			SET 
+				TITLE=#title#
+				, FILE_SEQ=#fileSeq#
+				<isNotEmpty property="orderNo">
+				, ORDER_NO=#orderNo#
+				</isNotEmpty>
+				<isNotEmpty property="updId">					
+				, UPD_DT=NOW()
+				, UPD_ID=#updId#
+				</isNotEmpty>
+			WHERE 1=1
+				AND PORTF_SEQ = #portfSeq#
+	</update>
+	
+	<delete id="tbPortfDAO.deleteTbPortf_S">
+		<![CDATA[
+			DELETE FROM tb_portf 
+			WHERE 1=1
+				AND PORTF_SEQ = #portfSeq#
+			]]>
+	</delete>
+	
+	<select id="tbPortfDAO.selectTbPortf_S" resultMap="tbPortf">
+		<![CDATA[
+			SELECT
+				PORTF_SEQ
+				, CODE
+				, MEM_SEQ
+				, MEM_ID
+				, TITLE
+				, FILE_SEQ
+				, REG_DT
+				, REG_ID
+				, UPD_DT
+				, UPD_ID
+				, (SELECT FILE_NM FROM tb_att_file B WHERE A.FILE_SEQ = B.FILE_SEQ) FILE_NM
+				, ORDER_NO
+			FROM tb_portf A
+			WHERE 1=1
+				AND PORTF_SEQ = #portfSeq#
+			]]>
+	</select>
+	
+	<select id="tbPortfDAO.selectOrderNoList" parameterClass="tbPortfSerarchVO" resultClass="egovMap">
+			SELECT
+				PORTF_SEQ
+				, ORDER_NO
+			FROM tb_portf
+			WHERE 1=1
+				AND CODE=#code#
+					ORDER BY ORDER_NO ASC
+	</select>
+	
+	<select id="tbPortfDAO.selectTbPortfList_D" parameterClass="tbPortfSerarchVO" resultClass="egovMap">
+			SELECT
+				PORTF_SEQ
+				, CODE
+				, MEM_SEQ
+				, MEM_ID
+				, TITLE
+				, FILE_SEQ
+				, DATE_FORMAT(REG_DT,'%Y-%m-%d') AS REG_DT
+				, REG_ID
+				, UPD_DT
+				, UPD_ID
+				, ORDER_NO
+			FROM tb_portf
+			WHERE 1=1
+			<isNotEmpty property="code">
+				AND CODE = #code#
+			</isNotEmpty>
+			<isNotEmpty property="searchKeyword">
+				AND TITLE LIKE CONCAT('%',#searchKeyword#,'%')
+			</isNotEmpty>
+				ORDER BY ORDER_NO ASC
+				limit #firstIndex#, #recordCountPerPage#	
+	</select>	
+	<select id="tbPortfDAO.selectTbPortfListTotCnt_S" parameterClass="tbPortfSerarchVO" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM tb_portf
+			WHERE 1=1
+			<isNotEmpty property="code">
+				AND CODE = #code#
+			</isNotEmpty>
+			<isNotEmpty property="searchKeyword">
+				AND TITLE LIKE CONCAT('%',#searchKeyword#,'%')
+			</isNotEmpty>
+	</select>
+
+</sqlMap>

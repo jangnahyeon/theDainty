@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="TReqMake">
+	
+	<typeAlias  alias="egovMap" type="org.egovframe.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="SearchVo" type="dlink.admin.vo.SearchVO"/>
+	<typeAlias  alias="TReqMakeVO" type="dlink.admin.vo.TReqMakeVO"/>
+	
+	<resultMap id="TReqMakeVO" class="dlink.admin.vo.TReqMakeVO">
+		<result property="reqNo" column="REQ_NO" columnIndex="1"/>
+		<result property="loginId" column="LOGIN_ID" columnIndex="2"/>
+		<result property="ptplNo" column="PTPL_NO" columnIndex="3"/>
+		<result property="seq" column="SEQ" columnIndex="4"/>
+		<result property="regGb" column="REG_GB" columnIndex="5"/>
+		<result property="cont" column="CONT" columnIndex="6"/>
+		<result property="regDt" column="REG_DT" columnIndex="7"/>
+		<result property="register" column="REGISTER" columnIndex="8"/>		
+	</resultMap>
+	
+	<select id="TReqMakeDAO.selectForInsertReqNo" parameterClass="TReqMakeVO" resultClass="int" >
+		SELECT 
+				LPAD(IFNULL(MAX(REQ_NO+1),1),5,'0')
+		FROM 
+			t_req_make		
+	</select>
+	
+	<select id="TReqMakeDAO.selectForInsertSeq" parameterClass="TReqMakeVO" resultClass="int" >
+		SELECT 
+			IFNULL(MAX(SEQ),0)+1
+		FROM 
+			t_req_make	
+		WHERE
+				REQ_NO = #reqNo#
+			AND
+				PTPL_NO = #ptplNo#	
+	</select>
+	
+	
+	<insert id="TReqMakeDAO.insertTReqMake_S">
+		<![CDATA[
+			INSERT INTO t_req_make 
+				( 
+					REQ_NO
+					, SEQ
+					, CONT
+					, REG_DT
+					, REGISTER
+					, LOGIN_ID
+					, PTPL_NO
+					, REG_GB
+			 )
+			VALUES ( 
+					#reqNo#
+				  , #seq#
+				  , #cont#
+				  , NOW()
+				  , #register#
+				  , #loginId#
+				  , #ptplNo#				 
+				  , #regGb#
+				)
+		]]>
+	</insert>
+	
+	<update id="TReqMakeDAO.updateTReqMake_S">
+		<![CDATA[
+			UPDATE t_req_make
+			SET 
+					CONT = #cont#
+				  , REG_DT = NOW()
+				  , REGISTER = #register#			 			 
+				  , REG_GB = #regGb#
+				  , LOGIN_ID = #loginId#
+			WHERE
+					REQ_NO = #reqNo#
+				AND		  
+				   SEQ = #seq#				
+				AND
+					PTPL_NO = #ptplNo#		
+			]]>
+	</update>
+	
+	<delete id="TReqMakeDAO.deleteTReqMake_S">
+		<![CDATA[
+			DELETE FROM t_req_make 
+			WHERE
+					REQ_NO = #reqNo#						
+			]]>
+	</delete>
+	
+	<select id="TReqMakeDAO.selectTReqMake_S" resultMap="TReqMakeVO">
+		<![CDATA[
+			SELECT
+				REQ_NO
+				, SEQ
+				, CONT
+				, REG_DT
+				, REGISTER
+				, LOGIN_ID
+				, PTPL_NO
+				, REG_GB
+			FROM 
+					t_req_make
+			WHERE
+					REQ_NO = #reqNo#
+				AND
+					SEQ = #seq#
+				AND
+					PTPL_NO = #ptplNo#	
+			]]>
+	</select>
+	
+	<select id="TReqMakeDAO.selectTReqMakeList_D" parameterClass="SearchVo" resultClass="egovMap">
+			SELECT
+						A.REQ_NO
+						, A.SEQ
+						, A.CONT
+						, A.REG_DT
+						, A.REGISTER
+						, A.LOGIN_ID
+						, A.PTPL_NO
+						, B.LOGIN_ID AS memLoginId
+						, A.REG_GB
+			FROM 
+					t_req_make A
+			LEFT JOIN 
+					t_ptpl_info B
+				ON 
+					A.PTPL_NO = B.PTPL_NO 
+			WHERE 
+					1=1					
+				AND 
+					A.SEQ = ( 
+							SELECT 
+									MIN(c.SEQ)
+							FROM 
+									t_req_make c
+						)	
+				<isEqual prepend="AND" property="Register" compareValue="front">				
+						A.REGISTER = #loginId#
+				</isEqual>				
+				<isEqual prepend="AND" property="Register" compareValue="usertype">
+					B.LOGIN_ID = #loginId#
+				</isEqual>
+				<isEqual prepend="AND" property="searchCondition" compareValue="0">
+					CONT LIKE CONCAT('%',#searchKeyword#,'%')
+				</isEqual>
+				<isEqual prepend="AND" property="searchCondition" compareValue="1">
+					CONT LIKE CONCAT('%',#searchKeyword#,'%')
+				</isEqual>
+			
+			
+			ORDER BY A.REQ_NO DESC 
+				limit #firstIndex#, #recordCountPerPage#	
+	</select>	
+	<select id="TReqMakeDAO.selectTReqMakeListTotCnt_S" parameterClass="SearchVo" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM 
+					t_req_make A
+			LEFT JOIN 
+					t_ptpl_info B
+				ON 
+					A.PTPL_NO = B.PTPL_NO 
+			WHERE 
+					1=1					
+				AND 
+					A.SEQ = ( 
+							SELECT 
+									MIN(c.SEQ)
+							FROM 
+									t_req_make c
+						)	
+			<isEqual prepend="AND" property="Register" compareValue="front">				
+					A.REGISTER = #loginId#
+			</isEqual>				
+			<isEqual prepend="AND" property="Register" compareValue="usertype">
+				B.LOGIN_ID = #loginId#
+			</isEqual>	
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">					
+				CONT LIKE CONCAT('%',#searchKeyword#,'%')					
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				CONT LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>			
+	</select>
+		
+	<select id="TReqMakeDAO.selectCommentsTReqMakeList" parameterClass="TReqMakeVO" resultClass="egovMap">
+		<![CDATA[
+			SELECT
+					REQ_NO
+					, SEQ
+					, CONT
+					, REG_DT
+					, REGISTER
+					, LOGIN_ID
+					, PTPL_NO
+					, REG_GB
+			FROM 
+					t_req_make
+			WHERE
+					REQ_NO = #reqNo#
+				AND
+					PTPL_NO = #ptplNo#	
+			
+			]]>
+	</select>
+
+	
+</sqlMap>

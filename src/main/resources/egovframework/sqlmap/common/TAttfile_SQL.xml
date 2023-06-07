@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TAttfile">
+	
+	<typeAlias  alias="egovMap" type="org.egovframe.rte.psl.dataaccess.util.EgovMap"/>
+	
+	<resultMap id="TAttfile" class="dlink.common.vo.TAttfileVO">
+		<result property="fileSeq" column="FILE_SEQ" columnIndex="1"/>
+		<result property="fileSaveNm" column="FILE_SAVE_NM" columnIndex="2"/>
+		<result property="fileNm" column="FILE_NM" columnIndex="3"/>
+		<result property="fileSize" column="FILE_SIZE" columnIndex="4"/>
+		<result property="fileType" column="FILE_TYPE" columnIndex="5"/>
+		<result property="savePath" column="SAVE_PATH" columnIndex="6"/>
+		<result property="regDt" column="REG_DT" columnIndex="7"/>
+		<result property="register" column="REGISTER" columnIndex="8"/>
+	</resultMap>
+	
+	<insert id="TAttfileDAO.insertTAttfile_S">
+		<![CDATA[
+			INSERT INTO t_attfile 
+				( FILE_SEQ
+				  , FILE_SAVE_NM
+				  , FILE_NM
+				  , FILE_SIZE
+				  , FILE_TYPE
+				  , SAVE_PATH
+				  , REG_DT
+				  , REGISTER )
+			VALUES ( #fileSeq#
+				  , #fileSaveNm#
+				  , #fileNm#
+				  , #fileSize#
+				  , #fileType#
+				  , #savePath#
+				  , now()
+				  , #register# )
+		]]>
+	</insert>
+	
+	
+	<delete id="TAttfileDAO.deleteTAttfile_S">
+		<![CDATA[
+			DELETE FROM t_attfile WHERE FILE_SEQ = #fileSeq#
+			]]>
+	</delete>
+	
+	<select id="TAttfileDAO.selectTAttfile_S" resultMap="TAttfile">
+		<![CDATA[
+			SELECT
+				FILE_SEQ
+				, FILE_SAVE_NM
+				, FILE_NM
+				, FILE_SIZE
+				, FILE_TYPE
+				, SAVE_PATH
+				, REG_DT
+				, REGISTER
+			FROM t_attfile
+				WHERE FILE_SEQ = #fileSeq#
+			]]>
+	</select>
+	
+	
+	<select id="TAttfileDAO.selectFileSeq" resultClass="int">
+		<![CDATA[
+			SELECT IFNULL(MAX(FILE_SEQ), 0)+1 AS SAVE_SEQ FROM t_attfile
+			]]>
+	</select>
+	
+	
+		
+	<select id="TAttfileDAO.selectTAttfileList_D" parameterClass="dlink.common.vo.TAttfileVO" resultClass="egovMap">
+		SELECT
+				FILE_SEQ
+				, FILE_SAVE_NM
+				, FILE_NM
+				, FILE_SIZE
+				, FILE_TYPE
+				, SAVE_PATH
+				, REG_DT
+				, REGISTER
+			FROM t_attfile
+				WHERE FILE_SEQ = #fileSeq#
+	</select>	
+
+</sqlMap>

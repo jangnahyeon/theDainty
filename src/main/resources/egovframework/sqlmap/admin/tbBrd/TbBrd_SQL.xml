@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TbBrd">
+	
+	<typeAlias  alias="egovMap" type="org.egovframe.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="tbBrdSerarchVO" type="dlink_new.admin.vo.TbBrdDefaultVO"/>
+	<typeAlias  alias="tbBrdVO" type="dlink_new.admin.vo.TbBrdVO"/>
+	
+	<resultMap id="tbBrd" class="dlink_new.admin.vo.TbBrdVO">
+		<result property="brdSeq" column="BRD_SEQ" columnIndex="1"/>
+		<result property="menuSeq" column="MENU_SEQ" columnIndex="2"/>
+		<result property="memSeq" column="MEM_SEQ" columnIndex="3"/>
+		<result property="memId" column="MEM_ID" columnIndex="4"/>
+		<result property="title" column="TITLE" columnIndex="5"/>
+		<result property="cont" column="CONT" columnIndex="6"/>
+		<result property="srcNm" column="SRC_NM" columnIndex="7"/>
+		<result property="readCnt" column="READ_CNT" columnIndex="8"/>
+		<result property="regDt" column="REG_DT" columnIndex="9"/>
+		<result property="regId" column="REG_ID" columnIndex="10"/>
+		<result property="updDt" column="UPD_DT" columnIndex="11"/>
+		<result property="updId" column="UPD_ID" columnIndex="12"/>
+		<result property="link" column="LINK" columnIndex="13"/>
+		
+		<!-- <result property="fileSeq" column="FILE_SEQ"/>
+		<result property="cmt" column="CMT"/> -->
+		
+		<result property="memVO" column="{memSeq=MEM_SEQ, memId=MEM_ID}" select="tbMemDAO.selectTbMem_S" />
+		
+		<result property="brdFileVOList" column="{brdSeq=BRD_SEQ}" select="tbBrdFileDAO.selectTbBrdFileList_D" />
+		<result property="brdCmtCnt" column="{brdSeq=BRD_SEQ}" select="tbBrdCmtDAO.selectTbBrdCmtListTotCnt_S" />
+		
+		<result property="brdFileCnt" column="{brdSeq=BRD_SEQ}" select="tbBrdFileDAO.selectTbBrdFileListTotCnt_S" />		
+		
+	</resultMap>
+	
+	<insert id="tbBrdDAO.insertTbBrd_S">
+		<!-- <selectKey keyProperty="brdSeq" resultClass="int">
+			SELECT IFNULL( MAX( BRD_SEQ ), 0 ) + 1 FROM tb_brd b
+		</selectKey> -->
+		<!-- <![CDATA[ -->
+			INSERT INTO tb_brd 
+				( <!-- BRD_SEQ
+				  ,  -->
+				  MENU_SEQ
+				  , MEM_SEQ
+				  , MEM_ID
+				  , TITLE
+				  , CONT
+				  , Link
+				  , SRC_NM
+				  , READ_CNT
+				  , REG_DT
+				  , REG_ID
+				  , UPD_DT
+				  , UPD_ID )
+			VALUES ( <!-- #brdSeq#
+				  ,  -->
+				  #menuSeq#
+				  , #memSeq#
+				  , #memId#
+				  , #title#
+				  , #cont#
+				  , #link#
+				  , #srcNm#
+				  , 0
+				  , NOW()
+				  , #regId#
+				  , NOW()
+				  , #updId# )
+		<!-- ]]> -->
+		<selectKey keyProperty="brdSeq" resultClass="int">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+	
+	<update id="tbBrdDAO.updateTbBrd_S">
+		<!-- <![CDATA[ -->
+			UPDATE tb_brd
+			SET 
+			<isNotEqual property="searchCondition" compareValue="readCnt">
+				MEM_SEQ=#memSeq#
+				, MEM_ID=#memId#
+				, TITLE=#title#
+				, CONT=#cont#
+				, LINK=#link#
+				, SRC_NM=#srcNm#
+			</isNotEqual>
+			<isEqual property="searchCondition" compareValue="readCnt">
+				READ_CNT = READ_CNT + 1				
+			</isEqual>
+				, UPD_DT=NOW()
+				, UPD_ID=#updId#
+			WHERE 1=1
+				AND BRD_SEQ = #brdSeq#
+				AND MENU_SEQ = #menuSeq#
+			<!-- ]]> -->
+	</update>
+	
+	<delete id="tbBrdDAO.deleteTbBrd_S">
+		<![CDATA[
+			DELETE FROM tb_brd
+			WHERE 1=1
+				AND BRD_SEQ = #brdSeq# 
+				AND MENU_SEQ = #menuSeq#
+			]]>
+	</delete>
+	
+	<select id="tbBrdDAO.selectTbBrd_S" resultMap="tbBrd">
+		<!-- <![CDATA[ -->
+			SELECT
+				BRD_SEQ
+				, MENU_SEQ
+				, MEM_SEQ
+				, MEM_ID
+				, TITLE
+				, CONT
+				, LINK
+				, SRC_NM
+				, READ_CNT
+				, REG_DT
+				, REG_ID
+				, UPD_DT
+				, UPD_ID
+			FROM tb_brd
+			WHERE 1=1				
+				<isEqual prepend="AND" property="searchCondition" compareValue="">
+					(
+						BRD_SEQ = #brdSeq#
+						AND MENU_SEQ = #menuSeq#
+					)
+				</isEqual>
+				
+				<isEqual prepend="AND" property="searchCondition" compareValue="srcNm">
+					SRC_NM = #srcNm#
+				</isEqual>				
+				<isEqual property="searchCondition" compareValue="srcNm">
+					ORDER BY BRD_SEQ DESC LIMIT 1
+				</isEqual>
+				
+				<isEqual prepend="AND" property="searchCondition" compareValue="prevBrd">
+					(
+						BRD_SEQ = ( SELECT MAX(B.BRD_SEQ) FROM tb_brd B WHERE B.BRD_SEQ <![CDATA[ < ]]> #brdSeq# AND MENU_SEQ = #menuSeq# )
+						AND MENU_SEQ = #menuSeq#
+					)
+				</isEqual>				
+				<isEqual property="searchCondition" compareValue="prevBrd">
+					ORDER BY BRD_SEQ DESC LIMIT 1
+				</isEqual>		
+				
+				<isEqual prepend="AND" property="searchCondition" compareValue="nextBrd">
+					(
+						BRD_SEQ = ( SELECT MIN(B.BRD_SEQ) FROM tb_brd B WHERE B.BRD_SEQ <![CDATA[ > ]]> #brdSeq# AND MENU_SEQ = #menuSeq# )
+						AND MENU_SEQ = #menuSeq#
+					)
+				</isEqual>				
+				<isEqual property="searchCondition" compareValue="nextBrd">
+					ORDER BY BRD_SEQ DESC LIMIT 1
+				</isEqual>		
+				
+			<!-- ]]> -->
+	</select>
+	
+	<select id="tbBrdDAO.selectTbBrdList_D" parameterClass="tbBrdSerarchVO" resultClass="egovMap">
+			 SELECT *
+		   	FROM (
+		           SELECT @ROWNUM := @ROWNUM + 1 AS RN 
+					, BRD_SEQ
+					, MENU_SEQ
+					, MEM_SEQ
+					, MEM_ID
+					, TITLE
+					, CONT
+					, LINK
+					, SRC_NM
+					, READ_CNT
+					, DATE_FORMAT(REG_DT, '%Y-%m-%d') AS REG_DT
+					, REG_ID
+					, UPD_DT
+					, UPD_ID
+				FROM tb_brd , (SELECT @ROWNUM:=0) RN_TB
+				WHERE 1=1
+				<isNotEmpty property="menuSeq">
+					AND MENU_SEQ = #menuSeq#
+				</isNotEmpty>
+				<isEqual prepend="AND" property="searchCondition" compareValue="all">
+					(TITLE LIKE CONCAT('%',#searchKeyword#,'%')	|| SRC_NM LIKE CONCAT('%',#searchKeyword#,'%'))
+				</isEqual>
+				<isEqual prepend="AND" property="searchCondition" compareValue="title">
+					TITLE LIKE CONCAT('%',#searchKeyword#,'%')
+				</isEqual>
+				<isEqual prepend="AND" property="searchCondition" compareValue="srcNm">
+					SRC_NM LIKE CONCAT('%',#searchKeyword#,'%')
+				</isEqual>
+						ORDER BY REG_DT ASC
+					  ) A
+					ORDER BY RN DESC
+					limit #firstIndex#, #recordCountPerPage#	
+	</select>	
+	<select id="tbBrdDAO.selectTbBrdListTotCnt_S" parameterClass="tbBrdSerarchVO" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM tb_brd
+			WHERE 1=1
+			<isNotEmpty property="menuSeq">
+				AND MENU_SEQ = #menuSeq#
+			</isNotEmpty>
+			<isEqual prepend="AND" property="searchCondition" compareValue="all">
+				(TITLE LIKE CONCAT('%',#searchKeyword#,'%')	|| SRC_NM LIKE CONCAT('%',#searchKeyword#,'%'))
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="title">
+				TITLE LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="srcNm">
+				SRC_NM LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+	</select>
+<!-- 	<select id="tbBrdDAO.selectTbBrdLast" parameterClass="tbBrdVO" resultClass="egovMap">
+		<![CDATA[
+	    	SELECT
+				A.BRD_SEQ
+				, A.MENU_SEQ
+				, A.MEM_SEQ
+				, A.MEM_ID
+				, A.TITLE
+				, A.CONT
+				, A.SRC_NM
+				, A.READ_CNT
+				, A.REG_DT
+				, A.REG_ID
+				, A.UPD_DT
+				, A.UPD_ID
+				, COUNT(B.FILE_SEQ) FILE_SEQ
+				, COUNT(C.CONT) CMT
+			FROM tb_brd A 
+			LEFT OUTER JOIN tb_brd_file B
+			ON A.BRD_SEQ = B.BRD_SEQ
+			LEFT OUTER JOIN tb_brd_cmt C
+			ON A.BRD_SEQ = C.BRD_SEQ
+			WHERE 1=1
+			AND SRC_NM = '공지사항'
+			GROUP BY A.BRD_SEQ, B.BRD_SEQ, C.BRD_SEQ
+			ORDER BY BRD_SEQ DESC LIMIT 1
+		]]>
+	</select> -->
+
+</sqlMap>

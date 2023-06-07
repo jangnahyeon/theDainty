@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TFaq">
+	
+	<typeAlias  alias="egovMap" type="org.egovframe.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="SearchVo" type="dlink.admin.vo.SearchVO"/>
+		<typeAlias  alias="TFaqVO" type="dlink.admin.vo.TFaqVO"/>
+		
+	<resultMap id="TFaq" class="dlink.admin.vo.TFaqVO">
+		<result property="faqNo" column="FAQ_NO" columnIndex="1"/>
+		<result property="question" column="QUESTION" columnIndex="2"/>
+		<result property="answer" column="ANSWER" columnIndex="3"/>
+		<result property="openYn" column="OPEN_YN" columnIndex="4"/>
+		<result property="register" column="REGISTER" columnIndex="5"/>
+		<result property="regDt" column="REG_DT" columnIndex="6"/>
+	</resultMap>
+	
+	<select id="TFaqDAO.selectForInsertCd" parameterClass="TFaqVO" resultClass="int" >
+		SELECT 
+				IFNULL(MAX(FAQ_NO),0)+1
+		FROM 
+			t_faq
+	</select>
+	
+	<insert id="TFaqDAO.insertTFaq_S">
+		<![CDATA[
+			INSERT INTO t_faq 
+				( FAQ_NO
+				  , QUESTION
+				  , ANSWER
+				  , OPEN_YN
+				  , REGISTER
+				  , REG_DT )
+			VALUES ( #faqNo#
+				  , #question#
+				  , #answer#
+				  , #openYn#
+				  , #register#
+				  , NOW() )
+		]]>
+	</insert>
+	
+	<update id="TFaqDAO.updateTFaq_S">
+		<![CDATA[
+			UPDATE t_faq
+			SET 
+				 QUESTION=#question#
+				, ANSWER=#answer#
+				, OPEN_YN=#openYn#
+				, REGISTER=#register#
+				, REG_DT=NOW()
+			WHERE
+				FAQ_NO = #faqNo#
+			]]>
+	</update>
+	
+	<delete id="TFaqDAO.deleteTFaq_S">
+		<![CDATA[
+			DELETE FROM t_faq 
+			WHERE
+				FAQ_NO = #faqNo#
+			]]>
+	</delete>
+	
+	<select id="TFaqDAO.selectTFaq_S" resultMap="TFaq">
+		<![CDATA[
+			SELECT
+				FAQ_NO
+				, QUESTION
+				, ANSWER
+				, OPEN_YN
+				, REGISTER
+				, REG_DT
+			FROM t_faq
+			WHERE
+				FAQ_NO = #faqNo#
+			]]>
+	</select>
+	
+	<select id="TFaqDAO.selectTFaqList_D" parameterClass="SearchVo" resultClass="egovMap">
+			SELECT
+								FAQ_NO
+								, QUESTION
+								, ANSWER
+								, OPEN_YN
+								, REGISTER
+								, REG_DT
+					FROM t_faq
+			WHERE 1=1
+				<isEqual prepend="AND" property="searchCondition" compareValue="0">
+					(
+							QUESTION LIKE CONCAT('%',#searchKeyword#,'%')
+						OR
+							ANSWER LIKE CONCAT('%',#searchKeyword#,'%')
+					)
+				</isEqual>
+				<isEqual prepend="AND" property="searchCondition" compareValue="1">
+					QUESTION LIKE CONCAT('%',#searchKeyword#,'%')
+				</isEqual>
+						
+			ORDER BY REG_DT DESC
+				limit #firstIndex#, #recordCountPerPage#	
+	</select>	
+	<select id="TFaqDAO.selectTFaqListTotCnt_S" parameterClass="SearchVo" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM t_faq
+			WHERE 1=1
+				<isEqual prepend="AND" property="searchCondition" compareValue="0">
+					(
+							QUESTION LIKE CONCAT('%',#searchKeyword#,'%')
+						OR
+							ANSWER LIKE CONCAT('%',#searchKeyword#,'%')
+					)
+				</isEqual>
+				<isEqual prepend="AND" property="searchCondition" compareValue="1">
+					QUESTION LIKE CONCAT('%',#searchKeyword#,'%')
+				</isEqual>
+	</select>
+
+</sqlMap>

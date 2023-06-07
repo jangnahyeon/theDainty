@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TReqCom">
+	
+	<typeAlias  alias="egovMap" type="org.egovframe.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="TReqComVO" type="dlink.front.vo.TReqComVO"/>
+	
+	<resultMap id="TReqCom" class="dlink.front.vo.TReqComVO">
+		<result property="comId" column="COM_ID" columnIndex="1"/>
+		<result property="comNm" column="COM_NM" columnIndex="2"/>
+		<result property="comType" column="COM_TYPE" columnIndex="3"/>
+		<result property="ceoNm" column="CEO_NM" columnIndex="4"/>
+		<result property="sex" column="SEX" columnIndex="5"/>
+		<result property="comNo" column="COM_NO" columnIndex="6"/>
+		<result property="comAddr" column="COM_ADDR" columnIndex="7"/>
+		<result property="comDtlAddr" column="COM_DTL_ADDR" columnIndex="8"/>
+		<result property="comZip" column="COM_ZIP" columnIndex="9"/>
+		<result property="comUrl" column="COM_URL" columnIndex="10"/>
+		<result property="ceoMobileNo" column="CEO_MOBILE_NO" columnIndex="11"/>
+		<result property="damdangNm" column="DAMDANG_NM" columnIndex="12"/>
+		<result property="damdangDept" column="DAMDANG_DEPT" columnIndex="13"/>
+		<result property="damdangPos" column="DAMDANG_POS" columnIndex="14"/>
+		<result property="damdangMobileNo" column="DAMDANG_MOBILE_NO" columnIndex="15"/>
+		<result property="damdangEmail" column="DAMDANG_EMAIL" columnIndex="16"/>
+		<result property="reqDt" column="REQ_DT" columnIndex="17"/>
+		<result property="reqPart" column="REQ_PART" columnIndex="18"/>
+		<result property="acceptYn" column="ACCEPT_YN" columnIndex="19"/>
+		<result property="acceptCause" column="ACCEPT_CAUSE" columnIndex="20"/>
+		<result property="regDt" column="REG_DT" columnIndex="21"/>
+		<result property="imgUrl" column="IMG_URL" columnIndex="22"/>
+		<result property="loginPwd" column="LOGIN_PWD" columnIndex="23"/>
+	</resultMap>
+	
+	<insert id="TReqComDAO.insertTReqCom_S">
+		<![CDATA[
+			INSERT INTO t_req_com 
+				( COM_ID
+				  , COM_NM
+				  , COM_TYPE
+				  , CEO_NM
+				  , SEX
+				  , COM_NO
+				  , COM_ADDR
+				  , COM_DTL_ADDR
+				  , COM_ZIP
+				  , COM_URL
+				  , CEO_MOBILE_NO
+				  , DAMDANG_NM
+				  , DAMDANG_DEPT
+				  , DAMDANG_POS
+				  , DAMDANG_MOBILE_NO
+				  , DAMDANG_EMAIL
+				  , REQ_DT
+				  , REQ_PART
+				  , ACCEPT_YN
+				  , ACCEPT_CAUSE
+				  , REG_DT
+				  , IMG_URL
+				  , LOGIN_PWD )
+			VALUES ( #comId#
+				  , #comNm#
+				  , #comType#
+				  , #ceoNm#
+				  , #sex#
+				  , #comNo#
+				  , #comAddr#
+				  , #comDtlAddr#
+				  , #comZip#
+				  , #comUrl#
+				  , #ceoMobileNo#
+				  , #damdangNm#
+				  , #damdangDept#
+				  , #damdangPos#
+				  , #damdangMobileNo#
+				  , #damdangEmail#
+				   , now()
+				  , #reqPart#
+				  , #acceptYn#
+				  , #acceptCause#
+				   , DATE_FORMAT(now(), '%Y%m%d%H%i%S')
+				  , #imgUrl#
+				  , #loginPwd# )
+		]]>
+	</insert>
+	
+	<!-- 파일첨부 -->
+	<insert id="TReqComDAO.insertTMemComFile" >
+		<![CDATA[
+			INSERT INTO t_mem_com_file
+				(	LOGIN_ID
+				  , FILE_SEQ
+				  , FILE_KIND)
+			VALUES (#loginId#
+				  , #fileSeq#
+				  , #fileKind#
+				  )
+		]]>
+	</insert>
+	
+	
+	<update id="TReqComDAO.updateTReqCom_S">
+		<![CDATA[
+			UPDATE t_req_com
+			SET COM_ID=#comId#
+				, COM_NM=#comNm#
+				, COM_TYPE=#comType#
+				, CEO_NM=#ceoNm#
+				, SEX=#sex#
+				, COM_NO=#comNo#
+				, COM_ADDR=#comAddr#
+				, COM_DTL_ADDR=#comDtlAddr#
+				, COM_ZIP=#comZip#
+				, COM_URL=#comUrl#
+				, CEO_MOBILE_NO=#ceoMobileNo#
+				, DAMDANG_NM=#damdangNm#
+				, DAMDANG_DEPT=#damdangDept#
+				, DAMDANG_POS=#damdangPos#
+				, DAMDANG_MOBILE_NO=#damdangMobileNo#
+				, DAMDANG_EMAIL=#damdangEmail#
+				, REQ_DT=#reqDt#
+				, REQ_PART=#reqPart#
+				, ACCEPT_YN=#acceptYn#
+				, ACCEPT_CAUSE=#acceptCause#
+				, REG_DT=#regDt#
+				, IMG_URL=#imgUrl#
+				, LOGIN_PWD=#loginPwd#
+			WHERE COM_ID=#comId# AND REQ_DT=#reqDt#
+			]]>
+	</update>
+	
+	<delete id="TReqComDAO.deleteTReqCom_S">
+		<![CDATA[
+			DELETE FROM t_req_com 
+			]]>
+	</delete>
+	
+	<select id="TReqComDAO.selectTReqCom_S" resultMap="TReqCom">
+		
+			SELECT
+				COM_ID
+				, COM_NM
+				, COM_TYPE
+				, CEO_NM
+				, SEX
+				, COM_NO
+				, COM_ADDR
+				, COM_DTL_ADDR
+				, COM_ZIP
+				, COM_URL
+				, CEO_MOBILE_NO
+				, DAMDANG_NM
+				, DAMDANG_DEPT
+				, DAMDANG_POS
+				, DAMDANG_MOBILE_NO
+				, DAMDANG_EMAIL
+				, DATE_FORMAT(REQ_DT, '%Y%m%d%H%i%S') as REQ_DT
+				, REQ_PART
+				, ACCEPT_YN
+				, ACCEPT_CAUSE
+				, REG_DT
+				, IMG_URL
+				, LOGIN_PWD
+			FROM t_req_com
+			WHERE 
+				1 = 1				
+				<isNotEmpty prepend="AND" property="comId">
+					COM_ID = #comId#
+				</isNotEmpty>
+				<isNotEmpty prepend="AND" property="reqDt">
+					DATE_FORMAT(REQ_DT, '%Y%m%d%H%i%S') =  #reqDt#
+				</isNotEmpty>
+			
+	</select>
+	
+	<select id="TReqComDAO.selectTReqComList_D" resultClass="egovMap">
+		SELECT * FROM (
+			SELECT
+				COM_ID
+				, COM_NM
+				, COM_TYPE
+				, CEO_NM
+				, SEX
+				, COM_NO
+				, COM_ADDR
+				, COM_DTL_ADDR
+				, COM_ZIP
+				, COM_URL
+				, CEO_MOBILE_NO
+				, DAMDANG_NM
+				, DAMDANG_DEPT
+				, DAMDANG_POS
+				, DAMDANG_MOBILE_NO
+				, DAMDANG_EMAIL
+				, REQ_PART
+				, ACCEPT_YN
+				, DATE_FORMAT(REQ_DT, '%Y%m%d%H%i%S')  AS  REQ_DT
+				, IMG_URL
+				, LOGIN_PWD
+				, DATE_FORMAT(REG_DT, '%Y-%m-%d') AS REG_DT
+			FROM t_req_com
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				<isNotEmpty property="searchKeyword">
+					COM_ID LIKE CONCAT('%',#searchKeyword#,'%')
+				</isNotEmpty>
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				<isNotEmpty property="searchKeyword">
+					COM_NM LIKE CONCAT('%',#searchKeyword#,'%')
+				</isNotEmpty>
+			</isEqual>
+				ORDER BY REG_DT DESC
+			) A
+				limit #firstIndex#, #recordCountPerPage#	
+	</select>	
+	
+	<select id="TReqComDAO.selectTReqComListTotCnt_S" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM t_req_com
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				<isNotEmpty property="searchKeyword">
+					COM_ID LIKE CONCAT('%',#searchKeyword#,'%')
+				</isNotEmpty>
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				<isNotEmpty property="searchKeyword">
+					COM_NM LIKE CONCAT('%',#searchKeyword#,'%')
+				</isNotEmpty>
+			</isEqual>
+	</select>
+	
+	<!-- 아이디 중복 체크 -->
+    <select id="TReqComDAO.comIdCheck" parameterClass="String" resultClass="int">
+        SELECT COUNT(LOGIN_ID) 
+        FROM 
+        	 T_MEM_ACCPT
+        WHERE 
+        	LOGIN_ID = #comId#
+    </select>
+
+
+	<select id="TReqComDAO.selectReqComFileList" resultClass="egovMap">
+		SELECT
+			REQ_DT,	COM_ID,	FILE_SEQ,	FILE_KIND
+		FROM 
+			t_req_com_file
+		WHERE 
+			DATE_FORMAT(REQ_DT, '%Y%m%d%H%i%S') =  #reqDt# 
+			AND COM_ID = #comId#
+	</select>
+	
+	<update id="TReqComDAO.updateTReqComAccept">
+		<![CDATA[
+			UPDATE t_req_com
+			SET ACCEPT_YN=#acceptYn#
+				, ACCEPT_CAUSE=#acceptCause#
+			WHERE COM_ID=#comId# AND DATE_FORMAT(REQ_DT, '%Y%m%d%H%i%S') =  #reqDt# 
+			]]>
+	</update>
+	
+	<insert id="TReqComDAO.insertMemAccpt" >
+		<![CDATA[
+			INSERT INTO t_mem_accpt(LOGIN_ID	,LOGIN_PWD	,USER_TYPE	,MEM_DT	,PWD_CHG_DT	,NEXT_CHG_DT	,SMS_YN	,MAIL_YN	,OUT_DT	,REG_DT	,UPD_DT	,UPDATER	,REGISTER)
+			SELECT 
+				COM_ID	,LOGIN_PWD	,'MG0002' , now(), now(), DATE_ADD(NOW(), INTERVAL 90 DAY), 'Y', 'Y', null, now(), now(),#register#, #register#
+			FROM 
+				t_req_com
+			WHERE COM_ID=#comId# AND DATE_FORMAT(REQ_DT, '%Y%m%d%H%i%S') =  #reqDt#
+		]]>
+	</insert>
+	
+	<insert id="TReqComDAO.insertMemCom" >
+		<![CDATA[
+			INSERT INTO t_mem_com
+				(LOGIN_ID	,COM_NM	,COM_TYPE	,CEO_NM	,SEX	
+					,COM_NO	,COM_ADDR	,COM_DTL_ADDR	,COM_ZIP	,COM_URL	
+					,CEO_MOBILE_NO	,DAMDANG_NM	,DAMDANG_DEPT	,DAMDANG_POS	,DAMDANG_MOBILE_NO	
+					,DAMDANG_EMAIL	,REG_DT	,IMG_PATH	,REQ_PART	,SPEC_YN)
+			SELECT 
+				COM_ID ,COM_NM	,COM_TYPE	,CEO_NM	,SEX
+				,COM_NO	,COM_ADDR	,COM_DTL_ADDR	,COM_ZIP	,COM_URL
+				,CEO_MOBILE_NO	,DAMDANG_NM	,DAMDANG_DEPT	,DAMDANG_POS	,DAMDANG_MOBILE_NO	
+				,DAMDANG_EMAIL	,now()	,''	,REQ_PART	,'N'
+			FROM 
+				t_req_com
+			WHERE COM_ID=#comId# AND DATE_FORMAT(REQ_DT, '%Y%m%d%H%i%S') =  #reqDt#
+		]]>
+	</insert>
+	
+	<insert id="TReqComDAO.insertMemComFile">
+		<![CDATA[
+			INSERT INTO t_mem_com_file(LOGIN_ID	,FILE_SEQ	,FILE_KIND)
+			SELECT COM_ID	,FILE_SEQ	,FILE_KIND FROM t_req_com_file
+			WHERE COM_ID=#comId# AND DATE_FORMAT(REQ_DT, '%Y%m%d%H%i%S') =  #reqDt# 
+		]]>
+	</insert>
+</sqlMap>

@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="MtsAtalkMsg">
+	
+	<typeAlias  alias="egovMap" type="org.egovframe.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="mtsAtalkMsgSerarchVO" type="dlink.front.vo.MtsAtalkMsgDefaultVO"/>
+	
+	<resultMap id="mtsAtalkMsg" class="dlink.front.vo.MtsAtalkMsgVO">
+		<result property="tranPr" column="TRAN_PR" columnIndex="1"/>
+		<result property="tranRefkey" column="TRAN_REFKEY" columnIndex="2"/>
+		<result property="tranId" column="TRAN_ID" columnIndex="3"/>
+		<result property="tranSenderKey" column="TRAN_SENDER_KEY" columnIndex="4"/>
+		<result property="tranTmplCd" column="TRAN_TMPL_CD" columnIndex="5"/>
+		<result property="tranButton" column="TRAN_BUTTON" columnIndex="6"/>
+		<result property="tranPhone" column="TRAN_PHONE" columnIndex="7"/>
+		<result property="tranMsg" column="TRAN_MSG" columnIndex="8"/>
+		<result property="tranDate" column="TRAN_DATE" columnIndex="9"/>
+		<result property="tranType" column="TRAN_TYPE" columnIndex="10"/>
+		<result property="tranStatus" column="TRAN_STATUS" columnIndex="11"/>
+		<result property="tranSenddate" column="TRAN_SENDDATE" columnIndex="12"/>
+		<result property="tranReportdate" column="TRAN_REPORTDATE" columnIndex="13"/>
+		<result property="tranRsltdate" column="TRAN_RSLTDATE" columnIndex="14"/>
+		<result property="tranRslt" column="TRAN_RSLT" columnIndex="15"/>
+		<result property="tranReplaceMsg" column="TRAN_REPLACE_MSG" columnIndex="16"/>
+		<result property="tranSubject" column="TRAN_SUBJECT" columnIndex="17"/>
+		<result property="tranCallback" column="TRAN_CALLBACK" columnIndex="18"/>
+		<result property="tranReplaceType" column="TRAN_REPLACE_TYPE" columnIndex="19"/>
+		<result property="tranEtc1" column="TRAN_ETC1" columnIndex="20"/>
+		<result property="tranEtc2" column="TRAN_ETC2" columnIndex="21"/>
+		<result property="tranEtc3" column="TRAN_ETC3" columnIndex="22"/>
+		<result property="tranEtc4" column="TRAN_ETC4" columnIndex="23"/>
+		<result property="tranEndTelco" column="TRAN_END_TELCO" columnIndex="24"/>
+		<result property="tranLog" column="TRAN_LOG" columnIndex="25"/>
+		<result property="tranGrpseq" column="TRAN_GRPSEQ" columnIndex="26"/>
+		<result property="tranTitle" column="TRAN_TITLE" columnIndex="27"/>
+		<result property="tranNationPhone" column="TRAN_NATION_PHONE" columnIndex="28"/>	
+	</resultMap>
+	
+	<insert id="mtsAtalkMsgDAO.insertMtsAtalkMsg_S">
+		<![CDATA[
+			INSERT INTO mts_atalk_msg 
+				(   
+					TRAN_SENDER_KEY
+				    , TRAN_TMPL_CD
+				    , TRAN_CALLBACK
+				    , TRAN_PHONE
+				    , TRAN_SUBJECT
+				    , TRAN_MSG
+				    , TRAN_DATE
+				    , TRAN_TYPE
+				    , TRAN_STATUS
+				    , TRAN_REPLACE_TYPE
+				    , TRAN_REPLACE_MSG
+				    , TRAN_ID
+				    , TRAN_PR
+			 )
+			VALUES ( 
+				 #site_z_key#
+			    , #tranTmplCd#
+			    , #tranCallback#
+			    , #tranPhone#
+			    , #tranSubject# 
+			    , #tranMsg#
+			    , NOW()
+			    , 5
+			    , '1'
+			    , #tranReplaceType#
+			    , #tranReplaceMsg#
+			    , #tranId#
+			    , (SELECT T2 FROM (SELECT IFNULL(MAX(CAST(TRAN_PR AS UNSIGNED)),0)+1 AS T2 FROM mts_atalk_msg) B)
+				  )
+		]]>
+	</insert>
+	
+	<update id="mtsAtalkMsgDAO.updateMtsAtalkMsg_S">
+		<![CDATA[
+			UPDATE mts_atalk_msg
+			SET 
+				TRAN_REFKEY=#tranRefkey#
+				, TRAN_ID=#tranId#
+				, TRAN_SENDER_KEY=#tranSenderKey#
+				, TRAN_TMPL_CD=#tranTmplCd#
+				, TRAN_BUTTON=#tranButton#
+				, TRAN_PHONE=#tranPhone#
+				, TRAN_MSG=#tranMsg#
+				, TRAN_DATE=#tranDate#
+				, TRAN_TYPE=#tranType#
+				, TRAN_STATUS=#tranStatus#
+				, TRAN_SENDDATE=#tranSenddate#
+				, TRAN_REPORTDATE=#tranReportdate#
+				, TRAN_RSLTDATE=#tranRsltdate#
+				, TRAN_RSLT=#tranRslt#
+				, TRAN_REPLACE_MSG=#tranReplaceMsg#
+				, TRAN_SUBJECT=#tranSubject#
+				, TRAN_CALLBACK=#tranCallback#
+				, TRAN_REPLACE_TYPE=#tranReplaceType#
+				, TRAN_ETC1=#tranEtc1#
+				, TRAN_ETC2=#tranEtc2#
+				, TRAN_ETC3=#tranEtc3#
+				, TRAN_ETC4=#tranEtc4#
+				, TRAN_END_TELCO=#tranEndTelco#
+				, TRAN_LOG=#tranLog#
+				, TRAN_GRPSEQ=#tranGrpseq#
+				, TRAN_TITLE=#tranTitle#
+				, TRAN_NATION_PHONE=#tranNationPhone#
+				WHERE TRAN_PR=#tranPr#
+			]]>
+	</update>
+	
+	<delete id="mtsAtalkMsgDAO.deleteMtsAtalkMsg_S">
+		<![CDATA[
+			DELETE FROM mts_atalk_msg 
+			]]>
+	</delete>
+	
+	<select id="mtsAtalkMsgDAO.selectMtsAtalkMsg_S" resultMap="mtsAtalkMsg">
+		<![CDATA[
+			SELECT
+				TRAN_PR
+				, TRAN_REFKEY
+				, TRAN_ID
+				, TRAN_SENDER_KEY
+				, TRAN_TMPL_CD
+				, TRAN_BUTTON
+				, TRAN_PHONE
+				, TRAN_MSG
+				, TRAN_DATE
+				, TRAN_TYPE
+				, TRAN_STATUS
+				, TRAN_SENDDATE
+				, TRAN_REPORTDATE
+				, TRAN_RSLTDATE
+				, TRAN_RSLT
+				, TRAN_REPLACE_MSG
+				, TRAN_SUBJECT
+				, TRAN_CALLBACK
+				, TRAN_REPLACE_TYPE
+				, TRAN_ETC1
+				, TRAN_ETC2
+				, TRAN_ETC3
+				, TRAN_ETC4
+				, TRAN_END_TELCO
+				, TRAN_LOG
+				, TRAN_GRPSEQ
+				, TRAN_TITLE
+				, TRAN_NATION_PHONE				
+			FROM mts_atalk_msg
+			]]>
+	</select>
+	
+	<select id="mtsAtalkMsgDAO.selectMtsAtalkMsgList_D" parameterClass="mtsAtalkMsgSerarchVO" resultClass="egovMap">
+			SELECT
+							TRAN_PR
+							, TRAN_REFKEY
+							, TRAN_ID
+							, TRAN_SENDER_KEY
+							, TRAN_TMPL_CD
+							, TRAN_BUTTON
+							, TRAN_PHONE
+							, TRAN_MSG
+							, TRAN_DATE
+							, TRAN_TYPE
+							, TRAN_STATUS
+							, TRAN_SENDDATE
+							, TRAN_REPORTDATE
+							, TRAN_RSLTDATE
+							, TRAN_RSLT
+							, TRAN_REPLACE_MSG
+							, TRAN_SUBJECT
+							, TRAN_CALLBACK
+							, TRAN_REPLACE_TYPE
+							, TRAN_ETC1
+							, TRAN_ETC2
+							, TRAN_ETC3
+							, TRAN_ETC4
+							, TRAN_END_TELCO
+							, TRAN_LOG
+							, TRAN_GRPSEQ
+							, TRAN_TITLE
+							, TRAN_NATION_PHONE								
+				FROM mts_atalk_msg
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				(
+						TRAN_PHONE LIKE CONCAT('%',#searchKeyword#,'%')
+					OR
+						TRAN_MSG LIKE CONCAT('%',#searchKeyword#,'%')
+				)
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				TRAN_PHONE LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="2">
+				TRAN_MSG LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+			
+			
+				ORDER BY TRAN_DATE DESC
+				limit #firstIndex#, #recordCountPerPage#	
+	</select>	
+	<select id="mtsAtalkMsgDAO.selectMtsAtalkMsgListTotCnt_S" parameterClass="mtsAtalkMsgSerarchVO" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM mts_atalk_msg
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				(
+						TRAN_PHONE LIKE CONCAT('%',#searchKeyword#,'%')
+					OR
+						TRAN_MSG LIKE CONCAT('%',#searchKeyword#,'%')
+				)
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				TRAN_PHONE LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="2">
+				TRAN_MSG LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+	</select>
+
+</sqlMap>

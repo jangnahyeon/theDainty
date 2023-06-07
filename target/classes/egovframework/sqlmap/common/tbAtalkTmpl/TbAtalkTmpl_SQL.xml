@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TbAtalkTmpl">
+	
+	<typeAlias  alias="egovMap" type="org.egovframe.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="tbAtalkTmplSerarchVO" type="dlink_new.common.vo.TbAtalkTmplDefaultVO"/>
+	
+	<resultMap id="tbAtalkTmpl" class="dlink_new.common.vo.TbAtalkTmplVO">
+		<result property="tmplSeq" column="TMPL_SEQ" columnIndex="1"/>
+		<result property="tmplCd" column="TMPL_CD" columnIndex="2"/>
+		<result property="tranSenderKey" column="TRAN_SENDER_KEY" columnIndex="3"/>
+		<result property="tranPhone" column="TRAN_PHONE" columnIndex="4"/>
+		<result property="tranMsg" column="TRAN_MSG" columnIndex="5"/>
+		<result property="useYn" column="USE_YN" columnIndex="6"/>
+		<result property="regDt" column="REG_DT" columnIndex="7"/>
+		<result property="regId" column="REG_ID" columnIndex="8"/>
+		<result property="updDt" column="UPD_DT" columnIndex="9"/>
+		<result property="updId" column="UPD_ID" columnIndex="10"/>
+	</resultMap>
+	
+	<insert id="tbAtalkTmplDAO.insertTbAtalkTmpl_S">
+		<![CDATA[
+			INSERT INTO tb_atalk_tmpl 
+				( TMPL_SEQ
+				  , TMPL_CD
+				  , TRAN_SENDER_KEY
+				  , TRAN_PHONE
+				  , TRAN_MSG
+				  , USE_YN
+				  , REG_DT
+				  , REG_ID
+				  , UPD_DT
+				  , UPD_ID )
+			VALUES ( #tmplSeq#
+				  , #tmplCd#
+				  , #tranSenderKey#
+				  , #tranPhone#
+				  , #tranMsg#
+				  , #useYn#
+				  , NOW()
+				  , #regId#
+				  , NOW()
+				  , #updId# )
+		]]>
+	</insert>
+	
+	<update id="tbAtalkTmplDAO.updateTbAtalkTmpl_S">
+		<![CDATA[
+			UPDATE tb_atalk_tmpl
+			SET TMPL_SEQ=#tmplSeq#
+				, TMPL_CD=#tmplCd#
+				, TRAN_SENDER_KEY=#tranSenderKey#
+				, TRAN_PHONE=#tranPhone#
+				, TRAN_MSG=#tranMsg#
+				, USE_YN=#useYn#
+				, REG_DT=NOW()
+				, REG_ID=#regId#
+				, UPD_DT=NOW()
+				, UPD_ID=#updId#
+			]]>
+	</update>
+	
+	<delete id="tbAtalkTmplDAO.deleteTbAtalkTmpl_S">
+		<![CDATA[
+			DELETE FROM tb_atalk_tmpl 
+			]]>
+	</delete>
+	
+	<select id="tbAtalkTmplDAO.selectTbAtalkTmpl_S" resultMap="tbAtalkTmpl">
+		<![CDATA[
+			SELECT
+				TMPL_SEQ
+				, TMPL_CD
+				, TRAN_SENDER_KEY
+				, TRAN_PHONE
+				, TRAN_MSG
+				, USE_YN
+				, REG_DT
+				, REG_ID
+				, UPD_DT
+				, UPD_ID
+			FROM tb_atalk_tmpl
+			WHERE 1=1
+				AND TMPL_CD = #tmplCd#
+			]]>
+	</select>
+	
+	<select id="tbAtalkTmplDAO.selectTbAtalkTmplList_D" parameterClass="tbAtalkTmplSerarchVO" resultClass="egovMap">
+			SELECT
+				TMPL_SEQ
+				, TMPL_CD
+				, TRAN_SENDER_KEY
+				, TRAN_PHONE
+				, TRAN_MSG
+				, USE_YN
+				, REG_DT
+				, REG_ID
+				, UPD_DT
+				, UPD_ID
+			FROM tb_atalk_tmpl
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				TMPL_SEQ = #searchKeyword#
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				TMPL_CD LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+				ORDER BY TMPL_SEQ DESC
+				limit #firstIndex#, #recordCountPerPage#	
+	</select>	
+	<select id="tbAtalkTmplDAO.selectTbAtalkTmplListTotCnt_S" parameterClass="tbAtalkTmplSerarchVO" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM tb_atalk_tmpl
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				TMPL_SEQ = #searchKeyword#
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				TMPL_CD LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+	</select>
+	
+	<insert id="mtsAtalkMsgDAO.insertMtsAtalkMsg_S">
+		
+		<!-- <![CDATA[ -->
+			INSERT INTO mts_atalk_msg 
+				( 
+					<!-- TRAN_PR				  
+				  ,  -->
+				  TRAN_SENDER_KEY
+				  , TRAN_TMPL_CD
+				  , TRAN_PHONE
+				  , TRAN_MSG
+				  , TRAN_DATE
+				  , TRAN_TYPE
+				  , TRAN_STATUS				 
+				  , TRAN_REPLACE_MSG
+				  , TRAN_SUBJECT
+				  , TRAN_CALLBACK
+				  , TRAN_REPLACE_TYPE				  
+				)
+			VALUES 
+				( 
+					<!-- #tranPr#
+				  ,  -->
+				  #tranSenderKey#
+				  , #tranTmplCd#
+				  , #tranPhone#
+				  , #tranMsg#
+				  , NOW()
+				  , 5
+				  , '1'				  
+				  , #tranReplaceMsg#
+				  , #tranSubject#
+				  , #tranCallback#
+				  , #tranReplaceType#				  
+				)
+		<!-- ]]> -->
+		
+		<selectKey keyProperty="tranPr" resultClass="java.lang.Integer">
+			<!-- SELECT IFNULL( MAX( TRAN_PR ), 0 ) + 1 FROM mts_atalk_msg_log A -->
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+
+</sqlMap>

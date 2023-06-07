@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="FrontMypage">
+	
+	<typeAlias  alias="egovMap" type="org.egovframe.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="TImgInfoSearchVO" type="dlink_new.admin.vo.TImgInfo"/>
+	
+	
+	<select id="FrontMypageDAO.selectMypageDsnList" parameterClass="TImgInfoSearchVO" resultClass="egovMap">
+		SELECT * FROM 
+			(
+				SELECT
+					a.DSN_SEQ
+					, a.CODE
+					, a.DSN_NM
+					, a.DETAIL
+	  				, a.USE_YN
+	  				, a.REG_DT
+	  				, b.FILE_SEQ
+	  				, b.TITLE_YN
+						FROM tb_dsn_bank a INNER JOIN tb_dsn_bank_file b ON a.DSN_SEQ = b.DSN_SEQ 
+				WHERE 1=1
+				AND b.TITLE_YN = 'N'
+				AND a.USE_YN = 'Y'
+				<isNotEmpty property="searchKeyword" >
+					<isEqual prepend="AND" property="searchCondition" compareValue="">
+						(a.DSN_NM LIKE CONCAT('%',#searchKeyword#,'%') || a.DETAIL LIKE CONCAT('%',#searchKeyword#,'%'))
+					</isEqual>
+					<isEqual prepend="AND" property="searchCondition" compareValue="1">
+						a.DETAIL LIKE CONCAT('%',#searchKeyword#,'%')
+					</isEqual>
+					<isEqual prepend="AND" property="searchCondition" compareValue="2">
+						a.DSN_NM LIKE CONCAT('%',#searchKeyword#,'%')
+					</isEqual>
+				</isNotEmpty>
+				<isNotEmpty property="code" >
+					<isEqual prepend="AND" property="code" compareValue="0001">
+						code = '0001'
+					</isEqual>
+					<isEqual prepend="AND" property="code" compareValue="0002">
+						code = '0002'
+					</isEqual>
+					<isEqual prepend="AND" property="code" compareValue="0003">
+						code = '0003'
+					</isEqual>
+				</isNotEmpty>
+			) A
+			INNER JOIN tb_dsn_sel B
+			ON A.DSN_SEQ = B.DSN_SEQ
+			AND B.MEM_ID = #memId#
+			ORDER BY  CAST(a.DSN_SEQ AS UNSIGNED) DESC
+			limit #firstIndex#, #lastIndex#	
+	</select>	
+	
+	<select id="FrontMypageDAO.selectMypageDsnListTotCnt" parameterClass="TImgInfoSearchVO" resultClass="int">
+			SELECT COUNT(*) FROM 
+			(
+				SELECT C.DSN_SEQ
+				FROM tb_dsn_bank C
+				WHERE 1=1
+				AND USE_YN = 'Y'
+				<isNotEmpty property="searchKeyword" >
+					<isEqual prepend="AND" property="searchCondition" compareValue="">
+						(DSN_NM LIKE CONCAT('%',#searchKeyword#,'%') || DETAIL LIKE CONCAT('%',#searchKeyword#,'%'))
+					</isEqual>
+					<isEqual prepend="AND" property="searchCondition" compareValue="1">
+						DETAIL LIKE CONCAT('%',#searchKeyword#,'%')
+					</isEqual>
+					<isEqual prepend="AND" property="searchCondition" compareValue="2">
+						DSN_NM LIKE CONCAT('%',#searchKeyword#,'%')
+					</isEqual>
+				</isNotEmpty>
+				<isNotEmpty property="code" >
+					<isEqual prepend="AND" property="code" compareValue="0001">
+						code = '0001'
+					</isEqual>
+					<isEqual prepend="AND" property="code" compareValue="0002">
+						code = '0002'
+					</isEqual>
+					<isEqual prepend="AND" property="code" compareValue="0003">
+						code = '0003'
+					</isEqual>
+				</isNotEmpty>
+				) A
+			INNER JOIN tb_dsn_sel B
+			ON A.DSN_SEQ = B.DSN_SEQ
+			AND B.MEM_ID = #memId#
+	</select>
+	
+	<delete id="FrontMypageDAO.deleteLikeInfo">
+		<![CDATA[
+			DELETE FROM tb_dsn_sel 
+			WHERE DSN_SEQ=#dsnSeq#
+			AND MEM_ID = #memId#
+			AND MEM_SEQ = #memSeq#
+			]]>
+	</delete>
+</sqlMap>

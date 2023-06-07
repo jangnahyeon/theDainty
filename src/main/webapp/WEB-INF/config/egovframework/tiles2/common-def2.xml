@@ -1,0 +1,119 @@
+<!DOCTYPE tiles-definitions PUBLIC
+"-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+"http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+
+<tiles-definitions>
+    
+	<definition name="frontMain" template="/WEB-INF/jsp/tiles2/mainLayout.jsp">
+		<put-attribute name="header" value="/WEB-INF/jsp/tiles2/header.jsp" />
+		<put-attribute name="footer" value="/WEB-INF/jsp/tiles2/footer.jsp" />
+	</definition>
+	
+	<definition name="frontDsnStd" template="/WEB-INF/jsp/tiles2/layout.jsp">
+		<put-attribute name="header" value="/WEB-INF/jsp/tiles2/header.jsp" />
+		<put-attribute name="subTabmenu" value="/WEB-INF/jsp/tiles2/dsnStd/subTabmenu.jsp" />
+		<put-attribute name="title" value="/WEB-INF/jsp/tiles2/title.jsp" />
+		<put-attribute name="footer" value="/WEB-INF/jsp/tiles2/footer.jsp" />
+	</definition>
+	
+	<definition name="frontDsnBank" template="/WEB-INF/jsp/tiles2/layout.jsp">
+		<put-attribute name="header" value="/WEB-INF/jsp/tiles2/header.jsp" />
+		<put-attribute name="subTabmenu" value="/WEB-INF/jsp/tiles2/dsnBank/subTabmenu.jsp" />
+		<put-attribute name="title" value="/WEB-INF/jsp/tiles2/title.jsp" />
+		<put-attribute name="footer" value="/WEB-INF/jsp/tiles2/footer.jsp" />
+	</definition>
+	
+	
+	<definition name="frontContent" template="/WEB-INF/jsp/tiles2/layout.jsp">
+		<put-attribute name="header" value="/WEB-INF/jsp/tiles2/header.jsp" />
+		<put-attribute name="subTabmenu" value="/WEB-INF/jsp/tiles2/content/subTabmenu.jsp" />
+		<put-attribute name="title" value="/WEB-INF/jsp/tiles2/title.jsp" />
+		<put-attribute name="footer" value="/WEB-INF/jsp/tiles2/footer.jsp" />
+	</definition>
+	
+
+    <definition name="adminNtc" template="/WEB-INF/jsp/tiles2/adminLayout.jsp">
+        <put-attribute name="adminHeader" value="/WEB-INF/jsp/tiles2/adminHeader.jsp" />
+        <put-attribute name="adminLeft" value="/WEB-INF/jsp/tiles2/adminNtcMagLeft.jsp" />
+        <put-attribute name="adminInnerTitle" value="/WEB-INF/jsp/tiles2/adminInnerTitle.jsp" />
+        <put-attribute name="adminFooter" value="/WEB-INF/jsp/tiles2/adminFooter.jsp" />
+    </definition>
+	
+    <definition name="adminBsn" template="/WEB-INF/jsp/tiles2/adminLayout.jsp">
+        <put-attribute name="adminHeader" value="/WEB-INF/jsp/tiles2/adminHeader.jsp" />
+        <put-attribute name="adminLeft" value="/WEB-INF/jsp/tiles2/adminBsnMagLeft.jsp" />
+        <put-attribute name="adminInnerTitle" value="/WEB-INF/jsp/tiles2/adminInnerTitle.jsp" />
+        <put-attribute name="adminFooter" value="/WEB-INF/jsp/tiles2/adminFooter.jsp" />
+    </definition>
+	
+    <definition name="adminSisul" template="/WEB-INF/jsp/tiles2/adminLayout.jsp">
+        <put-attribute name="adminHeader" value="/WEB-INF/jsp/tiles2/adminHeader.jsp" />
+        <put-attribute name="adminLeft" value="/WEB-INF/jsp/tiles2/adminSisulMagLeft.jsp" />
+        <put-attribute name="adminInnerTitle" value="/WEB-INF/jsp/tiles2/adminInnerTitle.jsp" />
+        <put-attribute name="adminFooter" value="/WEB-INF/jsp/tiles2/adminFooter.jsp" />
+    </definition>
+    
+    <definition name="adminMem" template="/WEB-INF/jsp/tiles2/adminLayout.jsp">
+        <put-attribute name="adminHeader" value="/WEB-INF/jsp/tiles2/adminHeader.jsp" />
+        <put-attribute name="adminLeft" value="/WEB-INF/jsp/tiles2/adminMemMagLeft.jsp" />
+        <put-attribute name="adminInnerTitle" value="/WEB-INF/jsp/tiles2/adminInnerTitle.jsp" />
+        <put-attribute name="adminFooter" value="/WEB-INF/jsp/tiles2/adminFooter.jsp" />
+    </definition>
+    
+    <definition name="adminDBank" template="/WEB-INF/jsp/tiles2/adminLayout.jsp">
+        <put-attribute name="adminHeader" value="/WEB-INF/jsp/tiles2/adminHeader.jsp" />
+        <put-attribute name="adminLeft" value="/WEB-INF/jsp/tiles2/adminDBankMagLeft.jsp" />
+        <put-attribute name="adminInnerTitle" value="/WEB-INF/jsp/tiles2/adminInnerTitle.jsp" />
+        <put-attribute name="adminFooter" value="/WEB-INF/jsp/tiles2/adminFooter.jsp" />
+    </definition>
+    
+	<definition name="/front2/*" extends="frontMain">
+		<put-attribute name="content"
+			value="/WEB-INF/jsp/front2/{1}.jsp" />
+	</definition> 
+	
+	<definition name="/front2/dsnStd/*" extends="frontDsnStd">
+		<put-attribute name="content"
+			value="/WEB-INF/jsp/front2/dsnStd/{1}.jsp" />
+	</definition>
+		
+	<definition name="/front2/dsnBank/*" extends="frontDsnBank">
+		<put-attribute name="content"
+			value="/WEB-INF/jsp/front2/dsnBank/{1}.jsp" />
+	</definition>
+	
+	<definition name="/front2/content/*" extends="frontContent">
+		<put-attribute name="content"
+			value="/WEB-INF/jsp/front2/content/{1}.jsp" />
+	</definition>
+	
+	<definition name="/admin2/ntcMag/*" extends="adminNtc">
+	    <put-attribute name="content"
+	        value="/WEB-INF/jsp/admin2/ntcMag/{1}.jsp" />
+	</definition>
+
+	<definition name="/admin2/bsnMag/*" extends="adminBsn">
+	    <put-attribute name="content"
+	        value="/WEB-INF/jsp/admin2/bsnMag/{1}.jsp" />
+	</definition>
+
+	<definition name="/admin2/sisulMag/*" extends="adminSisul">
+	    <put-attribute name="content"
+	        value="/WEB-INF/jsp/admin2/sisulMag/{1}.jsp" />
+	</definition>
+	
+	<definition name="/admin2/memMag/*" extends="adminMem">
+	    <put-attribute name="content"
+	        value="/WEB-INF/jsp/admin2/memMag/{1}.jsp" />
+	</definition>
+	
+	<definition name="/admin/dBankMag/*" extends="adminDBank">
+	    <put-attribute name="content"
+	        value="/WEB-INF/jsp/dlink_new/admin/dBankMag/{1}.jsp" />
+	</definition>
+	
+	<definition name="/front/dBankMag/*" extends="frontDsnBank">
+	    <put-attribute name="content"
+	        value="/WEB-INF/jsp/dlink_new/front/dBankMag/{1}.jsp" />
+	</definition>
+</tiles-definitions>

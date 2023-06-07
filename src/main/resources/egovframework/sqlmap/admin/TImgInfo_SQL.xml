@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TImgInfo">
+	
+	<typeAlias  alias="egovMap" type="org.egovframe.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="TImgInfoSearchVO" type="dlink_new.admin.vo.TImgInfo"/>
+	
+	<resultMap id="TImgInfo" class="dlink_new.admin.vo.TImgInfo">
+		<result property="dsnSeq" column="DSN_SEQ" columnIndex="1"/>
+		<result property="dsnNm" column="DSN_NM" columnIndex="2"/>
+		<result property="detail" column="DETAIL" columnIndex="3"/>
+		<result property="useYn" column="USE_YN" columnIndex="4"/>
+		<result property="regDt" column="REG_DT" columnIndex="5"/>
+		<result property="regId" column="REG_ID" columnIndex="6"/>
+		<result property="updDt" column="UPD_DT" columnIndex="7"/>
+		<result property="updId" column="UPD_ID" columnIndex="8"/>
+		<result property="fileSeq" column="FILE_SEQ" columnIndex="9"/>
+		<result property="fileNm" column="FILE_NM" columnIndex="10"/>		
+		<result property="thumFileSeq" column="THUM_FILE_SEQ" columnIndex="11"/>
+		<result property="thumFileNm" column="THUM_FILE_NM" columnIndex="12"/>
+		<result property="code" column="CODE" columnIndex="13"/>
+		<result property="downCnt" column="DOWN_CNT" columnIndex="14"/>
+		<result property="srcTrm" column="SRC_TRM" columnIndex="15"/>
+		<result property="orderNo" column="ORDER_NO" columnIndex="16"/>
+	</resultMap>
+	
+	<resultMap id="TImgFile" class="dlink_new.admin.vo.TImgInfo">
+		<result property="dsnSeq" column="DSN_SEQ" columnIndex="1"/>
+		<result property="fileSeq" column="FILE_SEQ" columnIndex="2"/>
+		<result property="titleYn" column="TITLE_YN" columnIndex="3"/>
+		<result property="fileNm" column="FILE_NM" columnIndex="4"/>
+	</resultMap>
+	
+	<insert id="AdminDsnBankDAO.insertImgInfo">
+	<selectKey keyProperty="dsnSeq" resultClass="int" >
+    	SELECT	IFNULL(MAX(a.DSN_SEQ)+1,1)
+    	FROM	tb_dsn_bank a
+    </selectKey>
+		<![CDATA[
+			INSERT INTO tb_dsn_bank 
+				( DSN_SEQ
+				  , CODE
+				  , DSN_NM
+				  , DETAIL
+				  , USE_YN
+				  , REG_DT
+				  , REG_ID
+				  , SRC_TRM
+				  , ORDER_NO
+				   )
+			VALUES ( 
+				  #dsnSeq#
+				  , #code#
+				  , #dsnNm#
+				  , #detail#
+				  , #useYn#
+				  , now()
+				  , #regId#
+				  , #srcTrm#
+				  , #orderNo#
+				   )
+		]]>
+	</insert>
+	
+	<insert id="AdminDsnBankDAO.insertImg">
+		<![CDATA[
+			INSERT INTO tb_dsn_bank_file
+				( DSN_SEQ
+				  , FILE_SEQ
+				  , TITLE_YN
+				  , REG_DT
+				  , REG_ID
+				   )
+			VALUES ( 
+				  #dsnSeq#
+				  , #fileSeq#
+				  , #titleYn#
+				  , now()
+				  , #regId#
+				   )
+		]]>
+	</insert>
+	
+	<select id="AdminDsnBankDAO.selectImgInfoList" parameterClass="TImgInfoSearchVO" resultClass="egovMap">
+			SELECT
+				a.DSN_SEQ
+				, a.DSN_NM
+				, a.DETAIL
+  				, a.USE_YN
+  				, a.REG_DT
+  				, a.SRC_TRM
+  				, a.ORDER_NO
+  				, b.FILE_SEQ
+  				, b.TITLE_YN
+					FROM tb_dsn_bank a INNER JOIN tb_dsn_bank_file b ON a.DSN_SEQ = b.DSN_SEQ 
+			WHERE 1=1
+			AND b.TITLE_YN = 'N'
+			<isNotEmpty property="searchKeyword" >
+				<isEqual prepend="AND" property="searchCondition" compareValue="">
+					(a.DSN_NM LIKE CONCAT('%',#searchKeyword#,'%') ||
+					 a.DETAIL LIKE CONCAT('%',#searchKeyword#,'%') ||
+					 a.SRC_TRM LIKE CONCAT('%',#searchKeyword#,'%') )
+				</isEqual>
+				<isEqual prepend="AND" property="searchCondition" compareValue="1">
+					a.DETAIL LIKE CONCAT('%',#searchKeyword#,'%')
+				</isEqual>
+				<isEqual prepend="AND" property="searchCondition" compareValue="2">
+					a.DSN_NM LIKE CONCAT('%',#searchKeyword#,'%')
+				</isEqual>
+			</isNotEmpty>
+			<isNotEmpty property="code" >
+				<isEqual prepend="AND" property="code" compareValue="0001">
+					a.code = '0001'
+				</isEqual>
+				<isEqual prepend="AND" property="code" compareValue="0002">
+					a.code = '0002'
+				</isEqual>
+				<isEqual prepend="AND" property="code" compareValue="0003">
+					a.code = '0003'
+				</isEqual>
+			</isNotEmpty>
+			<!-- <isNotEmpty prepend="AND" property="regDtStrt">
+				<isNotEmpty property="regDtEnd">
+				a.REG_DT BETWEEN #regDtStrt# and #regDtEnd#
+				</isNotEmpty>
+			</isNotEmpty> -->
+				ORDER BY  CAST(a.ORDER_NO AS UNSIGNED) ASC
+				limit #firstIndex#, #lastIndex#	
+	</select>	
+	<select id="AdminDsnBankDAO.selectImgInfoListTotCnt" parameterClass="TImgInfoSearchVO" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM tb_dsn_bank
+			WHERE 1=1
+			<isNotEmpty property="searchKeyword" >
+				<isEqual prepend="AND" property="searchCondition" compareValue="">
+					(DSN_NM LIKE CONCAT('%',#searchKeyword#,'%') ||
+					 DETAIL LIKE CONCAT('%',#searchKeyword#,'%') ||
+					 SRC_TRM LIKE CONCAT('%',#searchKeyword#,'%') )
+				</isEqual>
+				<isEqual prepend="AND" property="searchCondition" compareValue="1">
+					DETAIL LIKE CONCAT('%',#searchKeyword#,'%')
+				</isEqual>
+				<isEqual prepend="AND" property="searchCondition" compareValue="2">
+					DSN_NM LIKE CONCAT('%',#searchKeyword#,'%')
+				</isEqual>
+			</isNotEmpty>
+			<isNotEmpty property="code" >
+				<isEqual prepend="AND" property="code" compareValue="0001">
+					code = '0001'
+				</isEqual>
+				<isEqual prepend="AND" property="code" compareValue="0002">
+					code = '0002'
+				</isEqual>
+				<isEqual prepend="AND" property="code" compareValue="0003">
+					code = '0003'
+				</isEqual>
+			</isNotEmpty>
+			<!-- <isNotEmpty prepend="AND" property="regDtStrt">
+				<isNotEmpty property="regDtEnd">
+					REG_DT BETWEEN #regDtStrt# and #regDtEnd#
+				</isNotEmpty>
+			</isNotEmpty> -->
+	</select>
+	
+	<select id="AdminDsnBankDAO.selectImgInfo" parameterClass="TImgInfoSearchVO"  resultMap="TImgInfo">
+		<![CDATA[
+			SELECT
+				a.DSN_SEQ
+				, a.CODE
+				, a.DSN_NM
+				, a.DETAIL
+  				, a.USE_YN
+  				, DATE_FORMAT(a.REG_DT,'%Y-%m-%d') AS REG_DT
+  				, a.REG_ID
+				, a.UPD_DT
+				, a.UPD_ID
+				, a.SRC_TRM
+				, a.ORDER_NO
+				, (SELECT FILE_NM FROM tb_att_file b INNER JOIN tb_dsn_bank_file c ON b.FILE_SEQ = c.FILE_SEQ WHERE c.TITLE_YN = 'N' AND c.DSN_SEQ = a.DSN_SEQ) THUM_FILE_NM
+				, (SELECT FILE_NM FROM tb_att_file b INNER JOIN tb_dsn_bank_file c ON b.FILE_SEQ = c.FILE_SEQ WHERE c.TITLE_YN = 'Y'AND c.DSN_SEQ = a.DSN_SEQ) FILE_NM
+				, (SELECT FILE_SEQ FROM tb_dsn_bank_file WHERE DSN_SEQ = a.DSN_SEQ AND TITLE_YN = 'N') THUM_FILE_SEQ
+				, (SELECT FILE_SEQ FROM tb_dsn_bank_file WHERE DSN_SEQ = a.DSN_SEQ AND TITLE_YN = 'Y') FILE_SEQ
+				, (SELECT COUNT(*) FROM tb_dsn_down WHERE DSN_SEQ = #dsnSeq#) DOWN_CNT
+					FROM tb_dsn_bank a 
+			WHERE 1=1
+			]]>
+			AND a.DSN_SEQ = #dsnSeq#
+	</select>
+	
+	<select id="AdminDsnBankDAO.selectImgList" parameterClass="TImgInfoSearchVO" resultMap="TImgFile">
+			SELECT
+				 b.DSN_SEQ
+  				, b.FILE_SEQ
+  				, b.TITLE_YN
+  				, (SELECT FILE_NM FROM `tb_att_file` WHERE FILE_SEQ = b.FILE_SEQ) FILE_NM
+				FROM tb_dsn_bank_file b  
+			WHERE 1=1
+			AND b.DSN_SEQ = #dsnSeq#
+			AND b.TITLE_YN = 'Y'
+	</select>
+	
+	<delete id="AdminDsnBankDAO.deleteImg">
+		<![CDATA[
+			DELETE FROM tb_dsn_bank_file
+			]]>
+			WHERE 1=1	
+			AND FILE_SEQ = #fileSeq#			
+	</delete>
+	
+	<delete id="AdminDsnBankDAO.deleteImgAll">
+		<![CDATA[
+			DELETE FROM tb_dsn_bank_file
+			]]>
+			WHERE 1=1
+			<isNotEmpty property="dsnSeq" prepend="AND">			
+				DSN_SEQ = #dsnSeq#
+			</isNotEmpty>
+	</delete>
+	
+	<update id="AdminDsnBankDAO.updateImgInfo">
+			UPDATE tb_dsn_bank
+			SET DSN_NM=#dsnNm#
+				, DETAIL=#detail#
+				, USE_YN=#useYn#
+				<isNotEmpty property="orderNo">
+				, ORDER_NO=#orderNo#
+				</isNotEmpty>
+				<isNotEmpty property="updId">
+				, UPD_DT=NOW()
+				, UPD_ID=#updId#
+				</isNotEmpty>
+				, SRC_TRM=#srcTrm#
+			WHERE DSN_SEQ=#dsnSeq#
+	</update>
+	
+	<delete id="AdminDsnBankDAO.deleteImgInfo">
+		<![CDATA[
+			DELETE FROM tb_dsn_bank
+			]]>
+			WHERE 1=1
+			<isNotEmpty property="dsnSeq" prepend="AND">			
+				DSN_SEQ = #dsnSeq#
+			</isNotEmpty>
+	</delete>
+	
+	<select id="AdminDsnBankDAO.selectDownInfo" parameterClass="TImgInfoSearchVO"  resultClass="egovMap">
+			SELECT DSN_SEQ, MEM_SEQ, MEM_ID, DATE_FORMAT(REG_DT,'%Y-%m-%d %H:%i:%S') AS REG_DT
+			, (SELECT MEM_NM FROM tb_mem B WHERE B.MEM_SEQ = A.MEM_SEQ) MEM_NM
+			FROM tb_dsn_down A
+			WHERE 1=1
+			AND DSN_SEQ = #dsnSeq#
+			ORDER BY  CAST(DOWN_SEQ AS UNSIGNED) DESC
+			
+	</select>
+	
+	<select id="AdminDsnBankDAO.selectOrderNoList" parameterClass="TImgInfoSearchVO"  resultClass="egovMap">
+		SELECT
+			DSN_SEQ
+			, ORDER_NO
+		FROM tb_dsn_bank
+		WHERE 1=1
+			 AND CODE=#code#
+				ORDER BY  CAST(ORDER_NO AS UNSIGNED) ASC
+	</select>
+	
+</sqlMap>

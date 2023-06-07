@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TbBrdCmt">
+	
+	<typeAlias  alias="egovMap" type="org.egovframe.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="tbBrdCmtSerarchVO" type="dlink_new.admin.vo.TbBrdCmtDefaultVO"/>
+	<typeAlias  alias="tbBrdCmtVO" type="dlink_new.admin.vo.TbBrdCmtVO"/>
+	
+	<resultMap id="tbBrdCmt" class="dlink_new.admin.vo.TbBrdCmtVO">
+		<result property="cmtSeq" column="CMT_SEQ" columnIndex="1"/>
+		<result property="brdSeq" column="BRD_SEQ" columnIndex="2"/>
+		<result property="memSeq" column="MEM_SEQ" columnIndex="3"/>
+		<result property="memId" column="MEM_ID" columnIndex="4"/>
+		<result property="cont" column="CONT" columnIndex="5"/>
+		<result property="regDt" column="REG_DT" columnIndex="6"/>
+		<result property="regId" column="REG_ID" columnIndex="7"/>
+		<result property="updDt" column="UPD_DT" columnIndex="8"/>
+		<result property="updId" column="UPD_ID" columnIndex="9"/>
+		
+		<result property="memVO" column="{memSeq=MEM_SEQ, memId=MEM_ID}" select="tbMemDAO.selectTbMem_S" />
+	</resultMap>
+	
+	<insert id="tbBrdCmtDAO.insertTbBrdCmt_S">
+		<selectKey keyProperty="cmtSeq" resultClass="int">
+			SELECT IFNULL( MAX( CMT_SEQ ), 0 ) + 1 FROM tb_brd_cmt bc
+		</selectKey>
+		<![CDATA[
+			INSERT INTO tb_brd_cmt 
+				( CMT_SEQ
+				  , BRD_SEQ
+				  , MEM_SEQ
+				  , MEM_ID
+				  , CONT
+				  , REG_DT
+				  , REG_ID
+				  , UPD_DT
+				  , UPD_ID )
+			VALUES ( #cmtSeq#
+				  , #brdSeq#
+				  , #memSeq#
+				  , #memId#
+				  , #cont#
+				  , NOW()
+				  , #regId#
+				  , NOW()
+				  , #updId# )
+		]]>
+	</insert>
+	
+	<update id="tbBrdCmtDAO.updateTbBrdCmt_S">
+		<![CDATA[
+			UPDATE tb_brd_cmt
+			SET 
+				CONT=#cont#				
+				, UPD_DT=NOW()
+				, UPD_ID=#updId#
+			WHERE 1=1			
+				AND CMT_SEQ=#cmtSeq#
+				]]>
+	</update>
+	
+	<delete id="tbBrdCmtDAO.deleteTbBrdCmt_S">
+		<!-- <![CDATA[ -->
+			DELETE FROM tb_brd_cmt 
+			WHERE 1=1
+			<isNotEqual property="brdSeq" compareValue="0">
+				AND BRD_SEQ = #brdSeq#
+			</isNotEqual>
+			<isEqual property="brdSeq" compareValue="0">
+				AND CMT_SEQ = #cmtSeq#
+			</isEqual>
+				<!-- ]]> -->
+	</delete>
+	
+	<select id="tbBrdCmtDAO.selectTbBrdCmt_S" resultMap="tbBrdCmt">
+		<![CDATA[
+			SELECT
+				CMT_SEQ
+				, BRD_SEQ
+				, MEM_SEQ
+				, MEM_ID
+				, CONT
+				, REG_DT
+				, REG_ID
+				, UPD_DT
+				, UPD_ID
+			FROM tb_brd_cmt
+			WHERE CMT_SEQ=#cmtSeq#
+				]]>
+	</select>
+	
+	<select id="tbBrdCmtDAO.selectTbBrdCmtList_D" parameterClass="tbBrdCmtVO" resultMap="tbBrdCmt">
+			SELECT
+				CMT_SEQ
+				, BRD_SEQ
+				, MEM_SEQ
+				, MEM_ID
+				, CONT
+				, REG_DT
+				, REG_ID
+				, UPD_DT
+				, UPD_ID
+			FROM tb_brd_cmt
+			WHERE 1=1
+				AND BRD_SEQ = #brdSeq#
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				CMT_SEQ = #searchKeyword#
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				BRD_SEQ LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+				ORDER BY 
+					CMT_SEQ DESC
+				limit #firstIndex#, #recordCountPerPage#	
+	</select>	
+	<select id="tbBrdCmtDAO.selectTbBrdCmtListTotCnt_S" parameterClass="tbBrdCmtVO" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM tb_brd_cmt
+			WHERE 1=1
+				AND BRD_SEQ = #brdSeq#
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				CMT_SEQ = #searchKeyword#
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				BRD_SEQ LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+	</select>
+	
+	<update id="tbBrdCmtDAO.updateBrdCmt">
+		<![CDATA[
+			UPDATE tb_brd_cmt
+			SET CONT=#contUpdate#
+				, UPD_DT=NOW()
+				, UPD_ID=#updId#
+			WHERE CMT_SEQ=#cmtSeq#
+			]]>
+			
+	</update>
+
+</sqlMap>

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TbCodeGb">
+	
+	<typeAlias  alias="egovMap" type="org.egovframe.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="tbCodeGbSerarchVO" type="dlink_new.admin.vo.TbCodeGbDefaultVO"/>
+	<typeAlias  alias="tbCodeGbVO" type="dlink_new.admin.vo.TbCodeGbVO"/>
+	
+	<resultMap id="tbCodeGb" class="dlink_new.admin.vo.TbCodeGbVO">
+		<result property="gbCd" column="GB_CD" columnIndex="1"/>
+		<result property="gbNm" column="GB_NM" columnIndex="2"/>
+		<result property="useYn" column="USE_YN" columnIndex="3"/>
+		<result property="regDt" column="REG_DT" columnIndex="4"/>
+		<result property="regId" column="REG_ID" columnIndex="5"/>
+		<result property="updDt" column="UPD_DT" columnIndex="6"/>
+		<result property="updId" column="UPD_ID" columnIndex="7"/>
+	</resultMap>
+	
+	<insert id="tbCodeGbDAO.insertTbCodeGb_S">
+		<![CDATA[
+			INSERT INTO tb_code_gb 
+				( GB_CD
+				  , GB_NM
+				  , USE_YN
+				  , REG_DT
+				  , REG_ID
+				  , UPD_DT
+				  , UPD_ID )
+			VALUES ( #gbCd#
+				  , #gbNm#
+				  , #useYn#
+				  , NOW()
+				  , #regId#
+				  , NOW()
+				  , #updId# )
+		]]>
+	</insert>
+	
+	<update id="tbCodeGbDAO.updateTbCodeGb_S">
+		<![CDATA[
+			UPDATE tb_code_gb
+			SET GB_CD=#gbCd#
+				, GB_NM=#gbNm#
+				, USE_YN=#useYn#				
+				, UPD_DT=NOW()
+				, UPD_ID=#updId#
+			WHERE 1=1
+				AND GB_CD = #gbCd#
+			]]>
+	</update>
+	
+	<delete id="tbCodeGbDAO.deleteTbCodeGb_S">
+		<![CDATA[
+			DELETE FROM tb_code_gb 
+			WHERE 1=1
+				AND GB_CD = #gbCd#
+			]]>
+	</delete>
+	
+	<select id="tbCodeGbDAO.selectTbCodeGb_S" resultMap="tbCodeGb">
+		<![CDATA[
+			SELECT
+				GB_CD
+				, GB_NM
+				, USE_YN
+				, REG_DT
+				, REG_ID
+				, UPD_DT
+				, UPD_ID
+			FROM tb_code_gb
+			WHERE 1=1
+				AND GB_CD = #gbCd#
+			]]>
+	</select>
+	
+	<select id="tbCodeGbDAO.selectTbCodeGbList_D" parameterClass="tbCodeGbSerarchVO" resultClass="egovMap">
+			SELECT
+				GB_CD
+				, GB_NM
+				, USE_YN
+				, REG_DT
+				, REG_ID
+				, UPD_DT
+				, UPD_ID
+			FROM tb_code_gb
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="all">
+				GB_NM LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="gbCd">
+				GB_CD LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="gbNm">
+				GB_NM LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+			<!-- <isEqual prepend="AND" property="searchCondition" compareValue="0">
+				GB_CD = #searchKeyword#
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				GB_NM LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual> -->
+				ORDER BY GB_CD
+				limit #firstIndex#, #recordCountPerPage#	
+	</select>	
+	<select id="tbCodeGbDAO.selectTbCodeGbListTotCnt_S" parameterClass="tbCodeGbSerarchVO" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM tb_code_gb
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="all">
+				GB_NM LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="gbCd">
+				GB_CD LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="gbNm">
+				GB_NM LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+			<!-- <isEqual prepend="AND" property="searchCondition" compareValue="0">
+				GB_CD = #searchKeyword#
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				GB_NM LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual> -->
+	</select>
+
+</sqlMap>

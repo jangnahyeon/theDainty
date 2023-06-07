@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TPtplInfo">
+	
+	<typeAlias  alias="egovMap" type="org.egovframe.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="TPtplInfoSearchVO" type="dlink.admin.vo.TPtplInfoVO"/>
+	
+	<resultMap id="TPtplInfo" class="dlink.admin.vo.TPtplInfoVO">
+		<result property="loginId" column="LOGIN_ID" columnIndex="1"/>
+		<result property="ptplNo" column="PTPL_NO" columnIndex="2"/>
+		<result property="ptplNm" column="PTPL_NM" columnIndex="3"/>
+		<result property="ptplPart" column="PTPL_PART" columnIndex="4"/>
+		<result property="ptplYouhaeng" column="PTPL_YOUHAENG" columnIndex="5"/>
+		<result property="ptplType" column="PTPL_TYPE" columnIndex="6"/>
+		<result property="ptplStyle" column="PTPL_STYLE" columnIndex="7"/>
+		<result property="addOption" column="ADD_OPTION" columnIndex="8"/>
+		<result property="refWord" column="REF_WORD" columnIndex="9"/>
+		<result property="concept" column="CONCEPT" columnIndex="10"/>
+		<result property="regDt" column="REG_DT" columnIndex="11"/>
+		<result property="register" column="REGISTER" columnIndex="12"/>
+		<result property="updDt" column="UPD_DT" columnIndex="13"/>
+		<result property="updater" column="UPDATER" columnIndex="14"/>
+		<result property="ptplPartNm" column="ptplPartNm" columnIndex="15"/>
+		<result property="ptplYouhaengNm" column="ptplYouhaengNm" columnIndex="16"/>
+		<result property="fileSeq" column="fileSeq" columnIndex="17"/>
+		<result property="multiSeq" column="multiSeq" columnIndex="18"/>
+		<result property="comNm" column="comNm" columnIndex="19"/>
+	</resultMap>
+	
+	<insert id="TPtplInfoDAO.insertTPtplInfo_S" parameterClass="TPtplInfoSearchVO">
+		<![CDATA[
+			INSERT INTO t_ptpl_info 
+				( LOGIN_ID
+				  , PTPL_NO
+				  , PTPL_NM
+				  , PTPL_PART
+				  , PTPL_YOUHAENG
+				  , PTPL_TYPE
+				  , PTPL_STYLE
+				  , ADD_OPTION
+				  , REF_WORD
+				  , CONCEPT
+				  , REG_DT
+				  , REGISTER
+				  , UPD_DT
+				  , UPDATER )
+			VALUES ( #loginId#
+				  , #ptplNo#
+				  , #ptplNm#
+				  , #ptplPart#
+				  , #ptplYouhaeng#
+				  , #ptplType#
+				  , #ptplStyle#
+				  , #addOption#
+				  , #refWord#
+				  , #concept#
+				  , #regDt#
+				  , #register#
+				  , #updDt#
+				  , #updater# )
+		]]>
+	</insert>
+	
+	
+	
+	<update id="TPtplInfoDAO.updateTPtplInfo_S">
+		<![CDATA[
+			UPDATE t_ptpl_info
+			SET LOGIN_ID=#loginId#
+				, PTPL_NO=#ptplNo#
+				, PTPL_NM=#ptplNm#
+				, PTPL_PART=#ptplPart#
+				, PTPL_YOUHAENG=#ptplYouhaeng#
+				, PTPL_TYPE=#ptplType#
+				, PTPL_STYLE=#ptplStyle#
+				, ADD_OPTION=#addOption#
+				, REF_WORD=#refWord#
+				, CONCEPT=#concept#
+				, REG_DT=#regDt#
+				, REGISTER=#register#
+				, UPD_DT=#updDt#
+				, UPDATER=#updater#
+			]]>
+	</update>
+	
+	<delete id="TPtplInfoDAO.deleteTPtplInfo_S" parameterClass="TPtplInfoSearchVO"> 
+		<![CDATA[
+			DELETE FROM t_ptpl_info 
+			WHERE PTPL_NO = #ptplNo#
+			]]>
+			<isNotEmpty prepend="AND" property="loginId">
+				LOGIN_ID = #loginId#
+			</isNotEmpty>
+	</delete>
+	
+	<delete id="TPtplInfoDAO.deleteTPtplInfoImg" parameterClass="TPtplInfoSearchVO"> 
+		<![CDATA[
+			DELETE FROM t_ptpl_img 
+			WHERE PTPL_NO = #ptplNo#
+			]]>
+			<isNotEmpty prepend="AND" property="loginId">
+				LOGIN_ID = #loginId#
+			</isNotEmpty>
+	</delete>
+	
+	<select id="TPtplInfoDAO.selectTPtplInfo_S" parameterClass="TPtplInfoSearchVO"  resultMap="TPtplInfo">
+		<![CDATA[
+			SELECT
+				LOGIN_ID
+				, PTPL_NO
+				, PTPL_NM
+				, PTPL_PART
+				, PTPL_YOUHAENG
+				, PTPL_TYPE
+				, PTPL_STYLE
+				, ADD_OPTION
+				, REF_WORD
+				, CONCEPT
+				, REG_DT
+				, REGISTER
+				, UPD_DT
+				, UPDATER
+				, (SELECT CODE_NM FROM T_CODE WHERE CODE = a.PTPL_PART) ptplPartNm
+				, (SELECT CODE_NM FROM T_CODE WHERE CODE = a.PTPL_YOUHAENG) ptplYouhaengNm
+				, (SELECT FILE_SEQ FROM t_ptpl_img b WHERE b.PTPL_NO = a.PTPL_NO and TITLE_YN = 'Y') AS fileSeq
+				, (SELECT GROUP_CONCAT(FILE_SEQ) FROM t_ptpl_img b WHERE b.PTPL_NO = a.PTPL_NO AND TITLE_YN = 'N') AS multiSeq
+				, (SELECT COM_NM FROM t_mem_com c WHERE c.LOGIN_ID = a.LOGIN_ID) comNm
+			FROM t_ptpl_info a
+			]]>
+			WHERE PTPL_NO = #ptplNo#
+	</select>
+	
+	<select id="TPtplInfoDAO.selectTPtplInfoImgList" parameterClass="TPtplInfoSearchVO" resultClass="egovMap">
+			SELECT
+					LOGIN_ID
+					, PTPL_NO
+					, FILE_SEQ
+					, TITLE_YN
+					, REG_DT
+					, REGISTER
+					FROM t_ptpl_img
+			WHERE 1=1
+			AND PTPL_NO = #ptplNo#
+			<isNotEmpty prepend="AND" property="titleYn">
+				TITLE_YN = 'N'
+			</isNotEmpty>
+	</select>	
+	
+	
+	<select id="TPtplInfoDAO.selectTPtplInfoList_D" parameterClass="TPtplInfoSearchVO" resultClass="egovMap">
+			SELECT
+				a.LOGIN_ID
+				, a.PTPL_NO
+				, a.PTPL_NM
+				, a.PTPL_PART
+  				, (SELECT CODE_NM FROM T_CODE WHERE CODE = a.PTPL_PART) ptplPartNm
+  				, (SELECT FILE_SEQ FROM t_ptpl_img b WHERE b.PTPL_NO = a.PTPL_NO AND TITLE_YN = 'Y') AS fileSeq
+  				, c.COM_NM AS comNm  
+   				, a.PTPL_YOUHAENG
+   				, a.PTPL_TYPE
+   				, a.PTPL_STYLE
+   				, a.ADD_OPTION
+   				, a.REF_WORD
+   				, a.CONCEPT
+   				, a.REG_DT
+   				, a.REGISTER
+   				, a.UPD_DT
+   				, a.UPDATER
+					FROM t_ptpl_info a INNER JOIN t_mem_com c ON a.LOGIN_ID = c.LOGIN_ID
+			WHERE 1=1
+			<isNotEmpty property="searchKeyword" >
+				<isEqual prepend="AND" property="searchCondition" compareValue="1">
+					c.COM_NM LIKE CONCAT('%',#searchKeyword#,'%')
+				</isEqual>
+				<isEqual prepend="AND" property="searchCondition" compareValue="2">
+					a.PTPL_NM LIKE CONCAT('%',#searchKeyword#,'%')
+				</isEqual>
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="regDtStrt">
+				<isNotEmpty property="regDtEnd">
+				a.REG_DT BETWEEN #regDtStrt# and #regDtEnd#
+				</isNotEmpty>
+			</isNotEmpty>
+				ORDER BY  CAST(a.PTPL_NO AS UNSIGNED) DESC
+				limit #firstIndex#, #lastIndex#	
+	</select>	
+	<select id="TPtplInfoDAO.selectTPtplInfoListTotCnt_S" parameterClass="TPtplInfoSearchVO" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM t_ptpl_info
+			WHERE 1=1
+			<isNotEmpty prepend="AND" property="searchKeyword">
+				PTPL_NM LIKE CONCAT('%',#searchKeyword#,'%')
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="regDtStrt">
+				<isNotEmpty property="regDtEnd">
+					REG_DT BETWEEN #regDtStrt# and #regDtEnd#
+				</isNotEmpty>
+			</isNotEmpty>
+	</select>
+
+</sqlMap>
