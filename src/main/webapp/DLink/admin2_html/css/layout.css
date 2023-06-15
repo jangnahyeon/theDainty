@@ -1,7 +1,7 @@
-@charset utf-8;
+@charset "utf-8";
 
 /** bg total common **/
-#header h1.logo,#login_box  h1,
+#header h1.logo,
 #header .gnb > ul > li > a:after,
 .leftWrap h2:after,#util li strong.user:after,
 .snavi li:before,.snavi li a:before,

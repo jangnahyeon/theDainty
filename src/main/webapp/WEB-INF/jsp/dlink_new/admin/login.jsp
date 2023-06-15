@@ -9,9 +9,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-<meta name="keywords" content="D.link 관리자시스템" />
-<meta name="description" content="D.link, 관리자시스템">
-<title>D.link 관리자시스템</title>
+<meta name="keywords" content="Dainty 관리자시스템" />
+<meta name="description" content="Dainty, 관리자시스템">
+<title>Dainty 관리자시스템</title>
 
 <link rel="stylesheet" type="text/css" href="/DLink/admin2_html/css/style.css">
 
@@ -107,6 +107,7 @@ function get_url(code) {
 	<!-- logon_area -->
 	<div id="login_box">
 		<h1 class="logo"><span class="only">D.link 관라자시스템</span></h1>
+		<div><img style="width:100px;height:auto;" src="/DLink/admin2_html/images/contents/dainty_logo.png" alt=""></div>
 		<form name="Frm" method="post" action="javascript:go_submit();" onSubmit="">
 		<div class="login_form">
 			<div class="login_body">
@@ -120,7 +121,7 @@ function get_url(code) {
 		</div>
 		</form>
 		<div class="login_footer">
-			<p class="copy">Copyright ⓒ 제주특별자치도 경제통상진흥원</p>
+			<!-- <p class="copy">Copyright ⓒ 제주특별자치도 경제통상진흥원</p> -->
 		</div>
 	</div>
 	<!-- //logon_area -->

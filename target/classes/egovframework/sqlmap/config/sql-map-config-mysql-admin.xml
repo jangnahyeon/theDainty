@@ -35,5 +35,6 @@
 	<sqlMap resource="egovframework/sqlmap/admin/tbSisulHld/TbSisulHld_SQL.xml"/>
 	<sqlMap resource="egovframework/sqlmap/admin/tbBn/TbBanner_SQL.xml"/>
 	<sqlMap resource="egovframework/sqlmap/admin/TbPopup_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/admin/tbGoods/TbGoods_SQL.xml"/>
 	
 </sqlMapConfig>

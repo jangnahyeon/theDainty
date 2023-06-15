@@ -348,9 +348,9 @@ table input[type="text"].bd_title{width:100%;}
 .view_layer_area .title{min-height:66px;margin:0 0 30px;padding:18px 60px 18px 27px;line-height:28px;color:#fff;font-size:22px;box-sizing:border-box;background:#004d85}
 
 /* 로그인 */
-#login_wrap {margin:0px auto; width:100%; height:100%; z-index:110;overflow:hidden;background: linear-gradient(to left, #ffffff 50%, #cee3ef 50%);}
-#login_wrap:after{content:'';display:block;position:absolute;top:50%;left:10%;width:530px;height:310px;margin-top:-155px;background:url(../images/contents/bg_login.png) no-repeat;}
-#login_wrap:before{content:'';display:block;position:absolute;top:0;left:0;width:100%;height:15px;background:#004d85;}
+#login_wrap {margin:0px auto; width:100%; height:100%; z-index:110;overflow:hidden;background: linear-gradient(to left, #ffffff 50%, #F6EBE0 50%);}
+#login_wrap:after{content:'';display:block;position:absolute;top:50%;left:10%;width:530px;height:310px;margin-top:-155px;background:url(../images/contents/background2.png) no-repeat;}
+#login_wrap:before{content:'';display:block;position:absolute;top:0;left:0;width:100%;height:15px;background:#D48D7B;}
 #login_box {position:absolute;left:50%;top:50%;width:500px; height:auto;margin-top:-140px;margin-left:50px; }/*margin:305px 0 250px 50px;*/
 #login_box  h1{text-align:center;font-size:0;text-indent:-9999px;width:245px;margin:0 auto 40px auto;background-position-y:507px}
 #login_box  h1 span{margin:0 auto;display:block;height:36px;}

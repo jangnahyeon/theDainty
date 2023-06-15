@@ -60,4 +60,9 @@
 	        value="/WEB-INF/jsp/dlink_new/admin/tbPopup/{1}.jsp" />
 	</definition>
 	
+	<definition name="/admin/goods/*" extends="adminLayout">
+	    <put-attribute name="content"
+	        value="/WEB-INF/jsp/dlink_new/admin/goods/{1}.jsp" />
+	</definition>
+	
 </tiles-definitions>

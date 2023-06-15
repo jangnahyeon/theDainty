@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+
+<sqlMap namespace="TbGoods">
+	<typeAlias  alias="egovMap" type="org.egovframe.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="TbGoodsSearchVO" type="dlink_new.admin.vo.TbGoodsVO"/>
+	
+	<resultMap id="TbGoods" class="dlink_new.admin.vo.TbGoodsVO">
+		<result property="goodsNo" column="GOODS_NO" columnIndex="1"/>
+		<result property="goodsNm" column="GOODS_NM" columnIndex="2"/>
+		<result property="fileSeq" column="FILE_SEQ" columnIndex="3"/>
+		<result property="color" column="COLOR" columnIndex="4"/>
+		<result property="size" column="SIZE" columnIndex="5"/>
+		<result property="unitPrice" column="UNIT_PRICE" columnIndex="6"/>
+		<result property="sellPrice" column="SELL_PRICE" columnIndex="7"/>
+		<result property="link" column="LINK" columnIndex="8"/>
+	</resultMap>
+
+	<select id="AdminGoodsDAO.selectGoodsList" parameterClass="TbGoodsSearchVO" resultClass="egovMap">
+			SELECT
+				GOODS_NO
+				, GOODS_NM
+				, FILE_SEQ
+  				, COLOR
+  				, UNIT_PRICE
+  				, SELL_PRICE
+  				, LINK
+  				, REG_DATE
+					FROM tb_goods 
+			WHERE 1=1
+				limit #firstIndex#, #lastIndex#	
+	</select>
+	
+	<select id="AdminGoodsDAO.selectGoodsListTotCnt" parameterClass="TbGoodsSearchVO" resultClass="int">
+			SELECT
+				COUNT(*) totcnt
+					FROM tb_goods 
+			WHERE 1=1
+				limit #firstIndex#, #lastIndex#	
+	</select>
+</sqlMap>
