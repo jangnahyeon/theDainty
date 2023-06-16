@@ -59,7 +59,6 @@ function fn_egov_addView(){
 				</fieldset>
 			</div>		
 		</div>
-		<p class="cl_blue left">※ 등록된 배너는 최대 3개까지 보여집니다.</p>
 		<table class="bd_tbl center">
 			<caption>회원 목록</caption>
 			<colgroup>
@@ -67,12 +66,12 @@ function fn_egov_addView(){
 				<col width="7%">
 				<col width="20%">
 				<col width="7%">
-				<col width="7%">
+				<%-- <col width="7%"> --%>
 				<%-- <col width="7%"> --%>
 	        </colgroup>
 			<thead>
 				<tr>
-					<!-- <th>순서</th> -->
+					<th>순서</th>
 					<th>이미지</th>
 					<th>제목</th>
 					<!-- <th>사용여부</th> -->
@@ -82,7 +81,7 @@ function fn_egov_addView(){
 			<tbody>
 				<tr>
 				<c:forEach var="result" items="${resultList}" varStatus="vs">
-					<%-- <td><fmt:formatNumber type="number" maxFractionDigits="0"  value="${result.rn }" /></td> --%>
+					<td><fmt:formatNumber type="number" maxFractionDigits="0"  value="${result.rn }" /></td>
 					<td>
 						<img src="/imagefile/preview.do?fileSeq=${result.fileSeq }"  style="width:140px; height:60px">
 					</td>
@@ -99,7 +98,7 @@ function fn_egov_addView(){
 		
 		
 		<div class="bd_btn_area right">
-			<a href="/admin/tbBn/addTbPopupView.do" class="btn_black">등록</a>
+			<a href="/admin/goods/addGoods.do" class="btn_black">등록</a>
 		</div>
 		
 		<div id="paging" class="bd_pagination">

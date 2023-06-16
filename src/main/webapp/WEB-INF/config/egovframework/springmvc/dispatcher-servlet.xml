@@ -97,6 +97,7 @@
       		<mvc:mapping path="/admin/tbBn/*"/>
       		<mvc:mapping path="/admin/popup/*"/>
       		<mvc:mapping path="/admin/popup/*"/>
+      		<mvc:mapping path="/admin/goods/*"/>
       		<bean id="adminMenuInterceptor" class="dlink_new.interceptors.AdminMenuInterceptor"></bean>
     	</mvc:interceptor>
     	

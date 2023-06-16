@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
 
 
 <sqlMap namespace="TbGoods">
@@ -18,17 +18,22 @@
 	</resultMap>
 
 	<select id="AdminGoodsDAO.selectGoodsList" parameterClass="TbGoodsSearchVO" resultClass="egovMap">
-			SELECT
-				GOODS_NO
-				, GOODS_NM
-				, FILE_SEQ
-  				, COLOR
-  				, UNIT_PRICE
-  				, SELL_PRICE
-  				, LINK
-  				, REG_DATE
-					FROM tb_goods 
-			WHERE 1=1
+			SELECT *
+		   	FROM (
+		           SELECT @ROWNUM := @ROWNUM + 1 AS RN
+		               	, GOODS_NO
+                        , GOODS_NM
+                        , FILE_SEQ
+                        , COLOR
+                        , UNIT_PRICE
+                        , SELL_PRICE
+                        , LINK
+		                , DATE_FORMAT(REG_DATE, '%Y-%m-%d') AS REG_DATE
+					FROM tb_goods B, (SELECT @ROWNUM:=0) RN_TB 
+					WHERE 1=1
+					ORDER BY REG_DATE ASC
+				) A
+			ORDER BY RN DESC
 				limit #firstIndex#, #lastIndex#	
 	</select>
 	
@@ -39,4 +44,35 @@
 			WHERE 1=1
 				limit #firstIndex#, #lastIndex#	
 	</select>
+	
+	<insert id="AdminGoodsDAO.insertGoods">
+		<![CDATA[
+			INSERT INTO tb_goods 
+				( GOODS_NM
+				  , FILE_SEQ
+				  , COLOR
+				  , SIZE
+				  , UNIT_PRICE
+				  , SELL_PRICE
+				  , LINK
+				  , REG_DATE
+				  , REG_ID
+				  , MOD_DATE
+				  , MOD_ID
+				   )
+			VALUES ( 
+				  #goodsNm#
+				  , #fileSeq#
+				  , #color#
+				  , #size#
+				  , #unitPrice#
+				  , #sellPrice#
+				  , #link#
+				  , NOW()
+				  , #regId#
+				  , NOW()
+				  , #modId#
+				   )
+		]]>
+	</insert>
 </sqlMap>

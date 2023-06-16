@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import dlink_new.admin.dao.AdminGoodsDAO;
 import dlink_new.admin.service.AdminGoodsService;
+import dlink_new.admin.vo.TImgInfo;
 import dlink_new.admin.vo.TbGoodsVO;
 
 @Service("AdminGoodsService")
@@ -30,6 +31,10 @@ public class AdminGoodsServiceImpl extends EgovAbstractServiceImpl implements Ad
     public int selectGoodsListTotCnt(TbGoodsVO searchVO) throws Exception {
         return adminGoodsDAO.selectGoodsListTotCnt(searchVO);
     }
+    
+    public void insertGoods(TbGoodsVO searchVO) throws Exception {
+    	adminGoodsDAO.insertGoods(searchVO);
+	}
     
     
 }

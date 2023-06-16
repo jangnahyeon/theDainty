@@ -11,6 +11,9 @@ public class TbGoodsVO extends SearchVO {
 	private String unitPrice;
 	private String sellPrice;
 	private String link;
+	private String fileNm;
+	private String regId;
+	private String modId;
 	
 	
 	public String getGoodsNo() {
@@ -60,6 +63,24 @@ public class TbGoodsVO extends SearchVO {
 	}
 	public void setLink(String link) {
 		this.link = link;
+	}
+	public String getFileNm() {
+		return fileNm;
+	}
+	public void setFileNm(String fileNm) {
+		this.fileNm = fileNm;
+	}
+	public String getRegId() {
+		return regId;
+	}
+	public void setRegId(String regId) {
+		this.regId = regId;
+	}
+	public String getModId() {
+		return modId;
+	}
+	public void setModId(String modId) {
+		this.modId = modId;
 	}
 	
 	

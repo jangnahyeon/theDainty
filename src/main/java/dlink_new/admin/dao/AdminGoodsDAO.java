@@ -5,6 +5,7 @@ import java.util.List;
 import org.egovframe.rte.psl.dataaccess.EgovAbstractDAO;
 import org.springframework.stereotype.Repository;
 
+import dlink_new.admin.vo.TImgInfo;
 import dlink_new.admin.vo.TbGoodsVO;
 
 @Repository("AdminGoodsDAO")
@@ -17,6 +18,12 @@ public class AdminGoodsDAO extends EgovAbstractDAO {
 	public int selectGoodsListTotCnt(TbGoodsVO searchVO) {
 		return (Integer)select("AdminGoodsDAO.selectGoodsListTotCnt", searchVO);
 	}
+
+	public void insertGoods(TbGoodsVO searchVO) {
+		insert("AdminGoodsDAO.insertGoods", searchVO);
+	}
+	
+	
 	
 
 }

@@ -13,9 +13,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.support.SessionStatus;
 
 import dlink_new.admin.service.AdminDsnBankService;
 import dlink_new.admin.service.AdminGoodsService;
+import dlink_new.admin.vo.TImgInfo;
+import dlink_new.admin.vo.TbBannerDefaultVO;
+import dlink_new.admin.vo.TbBannerVO;
 import dlink_new.admin.vo.TbGoodsVO;
 import dlink_new.admin.vo.TbMemVO;
 
@@ -71,4 +75,35 @@ public class AdminGoodsController {
 		}
 		return "/admin/goods/GoodsList";
 	}
+	
+	/* [관리자] 상품 등록페이지 */
+	@RequestMapping(value = "/addGoods.do")
+	public String addGoods(@ModelAttribute("searchVO") TbGoodsVO searchVO, ModelMap model, HttpServletRequest req,
+			HttpServletResponse response) throws Exception {
+		
+		try {			
+			model.addAttribute("resultList", searchVO);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return "/admin/goods/addGoods";
+	}
+	
+	 @RequestMapping("/addGoodsAct.do")
+	    public String addTbPopup(
+	    		TbGoodsVO tbGoodsVO,
+	            @ModelAttribute("searchVO") TbBannerDefaultVO searchVO, SessionStatus status, HttpSession session)
+	            throws Exception {
+	    	
+	    	TbMemVO tbMemVO = (TbMemVO) session.getAttribute("adminLoginVO");
+			if(tbMemVO == null) {
+				return "redirect:/admin/login.do";
+			}
+			
+	        adminGoodsService.insertGoods(tbGoodsVO);
+			
+	        status.setComplete();
+	        return "forward:/admin/goods/goodsList.do";
+	    }
 }

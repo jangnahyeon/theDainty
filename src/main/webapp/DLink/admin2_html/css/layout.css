@@ -1,14 +1,14 @@
 @charset "utf-8";
 
 /** bg total common **/
-#header h1.logo,
+#header h1.logo,#login_box  h1,
 #header .gnb > ul > li > a:after,
 .leftWrap h2:after,#util li strong.user:after,
 .snavi li:before,.snavi li a:before,
 .leftMenu>li>a:before,
 .sel_box div:before,.search_form .bd_sel_search input[type="button"],
 .bd_pagination .direction:before,.btn_list:before,.bt_icon.save:before,.area_select .selectbox:before,.icon_file:after,
-#footer .foot_logo{top:0;background-image:url(../images/common/bg_total.png)}
+#footer .foot_logo{top:0;background-image:url(../images/common/bg_total5.png)}
 
 #wrap {margin:0px auto; width:100%; height:100%; z-index:110;overflow:hidden;background:#fff}
 html,body {height: 100%; -ms-overflow-y: scroll;}

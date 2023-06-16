@@ -107,7 +107,6 @@ function get_url(code) {
 	<!-- logon_area -->
 	<div id="login_box">
 		<h1 class="logo"><span class="only">D.link 관라자시스템</span></h1>
-		<div><img style="width:100px;height:auto;" src="/DLink/admin2_html/images/contents/dainty_logo.png" alt=""></div>
 		<form name="Frm" method="post" action="javascript:go_submit();" onSubmit="">
 		<div class="login_form">
 			<div class="login_body">

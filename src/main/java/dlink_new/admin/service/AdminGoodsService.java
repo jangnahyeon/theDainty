@@ -10,5 +10,7 @@ public interface AdminGoodsService {
 
 	int selectGoodsListTotCnt(TbGoodsVO searchVO) throws Exception;
 
+	void insertGoods(TbGoodsVO tbGoodsVO) throws Exception;
+
 	
 }
